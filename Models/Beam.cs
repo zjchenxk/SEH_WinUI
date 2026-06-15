@@ -1,0 +1,49 @@
+﻿using SQLite;
+using System.Collections.Generic;
+
+namespace SEH.Models
+{
+    /// <summary>
+    /// 连尾组合类
+    /// </summary>
+    [Table("Beam")]
+    public class Beam
+    {
+        /// <summary>
+        /// 组合主键
+        /// </summary>
+        [PrimaryKey]
+        [Column("id")]
+        public string Id { get; set; }
+
+        /// <summary>
+        /// 节主键
+        /// </summary>
+        [Column("measure_id")]
+        public string MeasureId { get; set; }
+
+        /// <summary>
+        /// 行主键
+        /// </summary>
+        [Column("line_id")]
+        public string LineId { get; set; }
+
+        /// <summary>
+        /// 乐谱主键
+        /// </summary>
+        [Column("score_id")]
+        public string ScoreId { get; set; }
+
+        /// <summary>
+        /// 组合时值，如：0.5-八分音符，0.25-十六分音符，0.125-三十二分音符
+        /// </summary>
+        [Column("duration")]
+        public float? Duration { get; set; }
+
+        /// <summary>
+        /// 组合音符集合
+        /// </summary>
+        [Ignore]
+        public List<BeamNote>? Notes { get; set; }
+    }
+}

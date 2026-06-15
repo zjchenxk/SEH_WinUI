@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -43,8 +44,30 @@ namespace SEH
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            _window = new MainWindow();
-            _window.Activate();
+            //创建并配置Logger
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()                       //设置最低级别
+                .WriteTo.Console()                          //输出到控制台
+                .WriteTo.File(                              //输出到文件
+                    path: "Logs\\log-.txt",
+                    rollingInterval: RollingInterval.Day,   //按天滚动
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+                )
+                .CreateLogger();                            //构建实例
+
+            try
+            {
+                _window = new Views.MainWindow();
+                _window.Activate();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "发生致命错误");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
     }
 }
