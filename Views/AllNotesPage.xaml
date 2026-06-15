@@ -42,7 +42,7 @@
         </Grid.RowDefinitions>
 
         <CommandBar DefaultLabelPosition="Right">
-            <AppBarButton Icon="Add" Label="新增笔记"/>
+            <AppBarButton Icon="Add" Label="新增笔记" Click="NewNoteButton_Click"/>
             <CommandBar.Content>
                 <TextBlock Text="快速笔记" Margin="16,8" 
                    Style="{ThemeResource SubtitleTextBlockStyle}"/>
@@ -50,7 +50,10 @@
         </CommandBar>
 
         <ItemsView ItemsSource="{x:Bind model.Files}" 
-           Grid.Row="1" Margin="24" ItemTemplate="{StaticResource NoteItemTemplate}">
+           Grid.Row="1" Margin="24" ItemTemplate="{StaticResource NoteItemTemplate}"
+                   SelectionMode="None"
+                   IsItemInvokedEnabled="True"
+                   ItemInvoked="ItemsView_ItemInvoked">
             <ItemsView.Layout>
                 <UniformGridLayout MinItemWidth="200"
                            MinColumnSpacing="12"

@@ -22,7 +22,9 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TitleBar x:Name="AppTitleBar" Title="So Easy 口琴！">
+        <TitleBar x:Name="AppTitleBar" Title="So Easy 口琴！" IsBackButtonVisible="True"
+                  IsBackButtonEnabled="{x:Bind rootFrame.CanGoBack, Mode=OneWay}"
+                  BackRequested="AppTitleBar_BackRequested">
             <TitleBar.IconSource>
                 <FontIconSource Glyph="&#xF4AA;"/>
             </TitleBar.IconSource>

@@ -1,20 +1,32 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using SEH.Models;
-using System;
-using Windows.Storage;
 
 namespace SEH.Views
 {
     public sealed partial class NotePage : Page
     {
-        private File model = new File();
+        private File? model;
 
         public NotePage()
         {
             InitializeComponent();
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            if (e.Parameter is File file)
+            {
+                model = file;
+            }
+            else
+            {
+                model = new File();
+            }
+        }
 
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
@@ -29,6 +41,11 @@ namespace SEH.Views
             if (model is not null)
             {
                 await model.DeleteAsync();
+            }
+
+            if (Frame.CanGoBack == true)
+            {
+                Frame.GoBack();
             }
         }
     }

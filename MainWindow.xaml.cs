@@ -22,5 +22,13 @@ namespace SEH
             SetTitleBar(AppTitleBar);
 
         }
+
+        private void AppTitleBar_BackRequested(Microsoft.UI.Xaml.Controls.TitleBar sender, object args)
+        {
+            if (rootFrame.CanGoBack == true)
+            {
+                rootFrame.GoBack();
+            }
+        }
     }
 }
