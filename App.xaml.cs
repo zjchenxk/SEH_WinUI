@@ -57,7 +57,7 @@ namespace SEH
 
             try
             {
-                _window = new Views.MainWindow();
+                _window = new MainWindow();
                 _window.Activate();
             }
             catch (Exception ex)

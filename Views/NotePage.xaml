@@ -20,13 +20,14 @@
         </Grid.ColumnDefinitions>
 
         <TextBox x:Name="NoteEditor"
+         Text="{x:Bind model.Text, Mode=TwoWay}"
          AcceptsReturn="True"
          TextWrapping="Wrap"
          PlaceholderText="输入笔记内容"
-         Header="新增笔记"
+         Header="{x:Bind model.Date.ToString()}"
          ScrollViewer.VerticalScrollBarVisibility="Auto"
          Width="400"
-         Grid.Column="1"/>
+         Grid.Column="1" />
 
         <StackPanel Orientation="Horizontal"
             HorizontalAlignment="Right"

@@ -14,6 +14,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Views\AllNotesPage.xaml" />
     <None Remove="Views\NotePage.xaml" />
   </ItemGroup>
 
@@ -49,8 +50,12 @@
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="DataServices\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\AllNotesPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\NotePage.xaml">
