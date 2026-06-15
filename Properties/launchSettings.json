@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SEH (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "SEH (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
