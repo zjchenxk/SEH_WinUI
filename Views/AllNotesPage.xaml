@@ -41,7 +41,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <CommandBar DefaultLabelPosition="Right">
+        <CommandBar x:Name="MainCommandBar" DefaultLabelPosition="Right">
             <AppBarButton Icon="Add" Label="新增笔记" Click="NewNoteButton_Click"/>
             <CommandBar.Content>
                 <TextBlock Text="快速笔记" Margin="16,8" 

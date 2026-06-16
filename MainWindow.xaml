@@ -22,12 +22,24 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TitleBar x:Name="AppTitleBar" Title="So Easy 口琴！" IsBackButtonVisible="True"
-                  IsBackButtonEnabled="{x:Bind rootFrame.CanGoBack, Mode=OneWay}"
-                  BackRequested="AppTitleBar_BackRequested">
+        <TitleBar x:Name="AppTitleBar" Title="So Easy 口琴" 
+                  IsBackButtonVisible="False" 
+                  IsPaneToggleButtonVisible="False">
             <TitleBar.IconSource>
-                <FontIconSource Glyph="&#xF4AA;"/>
+                <ImageIconSource ImageSource="Assets/口琴48.png" />
             </TitleBar.IconSource>
+            <TitleBar.Content>
+                <CommandBar Background="Transparent" IsOpen="False" DefaultLabelPosition="Right">
+                    <AppBarButton Icon="Add" Label="新增类别"/>
+                    <AppBarButton Icon="Edit" Label="修改类别"/>
+                    <AppBarButton Icon="Delete" Label="删除类别"/>
+                    <AppBarSeparator/>
+                    <AppBarButton Icon="Add" Label="新增简谱"/>
+                    <AppBarButton Icon="Edit" Label="修改简谱"/>
+                    <AppBarButton Icon="Delete" Label="删除简谱"/>
+                    <AppBarButton Icon="MoveToFolder" Label="移动简谱"/>
+                </CommandBar>
+            </TitleBar.Content>
         </TitleBar>
 
         <!-- App content -->
@@ -37,14 +49,18 @@
                     VerticalAlignment="Center"
                     Width="250">
 
-            --><!--显示当前计数的文本，绑定到 ViewModel 中的 Count 属性--><!--
+            -->
+        <!--显示当前计数的文本，绑定到 ViewModel 中的 Count 属性-->
+        <!--
             <TextBlock Text="{x:Bind ViewModel.Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                        FontSize="48" 
                        HorizontalAlignment="Center"
                        Margin="0,0,0,20"/>
 
 
-            --><!--三个按钮的 Command 属性分别绑定到自动生成的命令--><!--
+            -->
+        <!--三个按钮的 Command 属性分别绑定到自动生成的命令-->
+        <!--
             <Button Content="增加 (+)" 
                     Command="{x:Bind ViewModel.IncrementCommand}"
                     Height="40" 

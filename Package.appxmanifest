@@ -42,6 +42,7 @@
         Square44x44Logo="Assets\Square44x44Logo.png">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:LockScreen BadgeLogo="Assets\Square48x48Logo.png" Notification="badge"/>
       </uap:VisualElements>
     </Application>
   </Applications>
