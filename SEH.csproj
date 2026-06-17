@@ -14,20 +14,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Assets\Square44x44Logo.scale-200.png" />
     <None Remove="Assets\口琴128.png" />
     <None Remove="Views\AllNotesPage.xaml" />
     <None Remove="Views\NotePage.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Assets\SplashScreen.scale-200.png" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
-    <Content Include="Assets\Square150x150Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,13 +42,14 @@
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Assets\Themes\" />
     <Folder Include="DataServices\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Update="Assets\口琴.ico">
+    <Content Update="Assets\Images\口琴.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Assets\口琴128.png">
+    <Content Update="Assets\Images\口琴128.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -88,6 +79,6 @@
     <PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
     <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
     <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
-    <ApplicationIcon>Assets\口琴.ico</ApplicationIcon>
+    <ApplicationIcon>Assets\Images\口琴.ico</ApplicationIcon>
   </PropertyGroup>
 </Project>

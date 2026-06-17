@@ -26,7 +26,7 @@
                   IsBackButtonVisible="False" 
                   IsPaneToggleButtonVisible="False">
             <TitleBar.IconSource>
-                <ImageIconSource ImageSource="Assets/口琴48.png" />
+                <ImageIconSource ImageSource="/Assets/Images/口琴48.png" />
             </TitleBar.IconSource>
             <TitleBar.Content>
                 <CommandBar Background="Transparent" IsOpen="False" DefaultLabelPosition="Right">
