@@ -8,10 +8,21 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <!-- WinUI 3 默认样式 -->
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-                <!-- Other merged dictionaries here -->
+                <!-- 自定义样式覆盖 (必须在 XamlControlsResources 之后) -->
+                <ResourceDictionary Source="/Assets/Themes/FontStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            
+
+            <!-- 控件字体大小覆盖 (默认值放大125%) -->
+            <x:Double x:Key="ControlContentThemeFontSize">18</x:Double>
+            <x:Double x:Key="ContentControlFontSize">18</x:Double>
+            <x:Double x:Key="TextStyleLargeFontSize">22</x:Double>
+            <x:Double x:Key="TextStyleExtraLargeFontSize">32</x:Double>
+            <x:Double x:Key="ToolTipContentThemeFontSize">15</x:Double>
+            <x:Double x:Key="ListViewHeaderItemThemeFontSize">25</x:Double>
+            <x:Double x:Key="GridViewHeaderItemThemeFontSize">25</x:Double>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

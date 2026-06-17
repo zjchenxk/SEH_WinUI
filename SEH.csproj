@@ -42,7 +42,6 @@
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets\Themes\" />
     <Folder Include="DataServices\" />
   </ItemGroup>
   <ItemGroup>
@@ -84,6 +83,11 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\NotePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Styles\CustomStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
