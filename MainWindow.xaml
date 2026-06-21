@@ -22,6 +22,58 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <Grid.Resources>
+            <!--自定义标题栏样式-->
+            <Style TargetType="TitleBar">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TitleBar">
+                            <Grid Background="{TemplateBinding Background}" Height="56">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- 图标和标题区域 -->
+                                <StackPanel Orientation="Horizontal" Grid.Column="0" Spacing="12" Padding="20,0,0,0">
+                                    <!-- 图标 -->
+                                    <ContentControl Content="{TemplateBinding IconSource}" Width="48" Height="48" VerticalAlignment="Center">
+                                        <ContentControl.ContentTemplate>
+                                            <DataTemplate>
+                                                <Image Source="{Binding ImageSource}" Width="48" Height="48" Stretch="Uniform"/>
+                                            </DataTemplate>
+                                        </ContentControl.ContentTemplate>
+                                    </ContentControl>
+                                    <!-- 标题 -->
+                                    <TextBlock Text="{TemplateBinding Title}"
+                                               FontSize="32"
+                                               FontWeight="Bold"
+                                               VerticalAlignment="Center"
+                                               Foreground="{TemplateBinding Foreground}"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+
+                                <!-- 自定义内容区域 -->
+                                <ContentPresenter Content="{TemplateBinding Content}"
+                                                Grid.Column="1"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Margin="20,0"/>
+
+                                <!-- 底部边框 -->
+                                <Border VerticalAlignment="Bottom"
+                                        Grid.ColumnSpan="2"
+                                        Height="1"
+                                        BorderBrush="{ThemeResource TextControlForeground}"
+                                        BorderThickness="0,0,0,1"/>
+
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Grid.Resources>
+
         <TitleBar x:Name="AppTitleBar" Title="So Easy 口琴" 
                   IsBackButtonVisible="False" 
                   IsPaneToggleButtonVisible="False">

@@ -1,7 +1,5 @@
-using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
-using WinRT.Interop;
 
 namespace SEH
 {
@@ -13,14 +11,6 @@ namespace SEH
         public MainWindow()
         {
             InitializeComponent();
-
-            //获取当前窗口的 AppWindow
-            var hWnd = WindowNative.GetWindowHandle(this);
-            var windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
-            var appWindow = AppWindow.GetFromWindowId(windowId);
-
-            //设置自定义图标（路径相对与可执行文件或当前工作目录）
-            appWindow.SetIcon(@"Assets\Images\App.ico");
 
             //隐藏系统默认标题栏
             ExtendsContentIntoTitleBar = true;
@@ -43,12 +33,5 @@ namespace SEH
             presenter.Maximize();
         }
 
-        private void AppTitleBar_BackRequested(Microsoft.UI.Xaml.Controls.TitleBar sender, object args)
-        {
-            if (rootFrame.CanGoBack == true)
-            {
-                rootFrame.GoBack();
-            }
-        }
     }
 }
