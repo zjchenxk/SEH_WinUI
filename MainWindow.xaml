@@ -72,8 +72,37 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <!-- DataTemplate for folders -->
+            <DataTemplate x:Key="FolderTemplate" x:DataType="local:ExplorerItem">
+                <TreeViewItem AutomationProperties.Name="{x:Bind Name}"
+                ItemsSource="{x:Bind Children}" IsExpanded="True">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Width="32" Source="/Assets/Images/关闭文件夹.png"/>
+                        <TextBlock Margin="0,0,10,0"/>
+                        <TextBlock Text="{x:Bind Name}" />
+                    </StackPanel>
+                </TreeViewItem>
+            </DataTemplate>
+
+            <!-- DataTemplate for files -->
+            <DataTemplate x:Key="FileTemplate" x:DataType="local:ExplorerItem">
+                <TreeViewItem AutomationProperties.Name="{x:Bind Name}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Width="32" Source="/Assets/Images/查看乐谱.png"/>
+                        <TextBlock Margin="0,0,10,0"/>
+                        <TextBlock Text="{x:Bind Name}"/>
+                    </StackPanel>
+                </TreeViewItem>
+            </DataTemplate>
+
+            <!-- Template selector for ExplorerItem types -->
+            <local:ExplorerItemTemplateSelector x:Key="ExplorerItemTemplateSelector" 
+                                                FolderTemplate="{StaticResource FolderTemplate}" 
+                                                FileTemplate="{StaticResource FileTemplate}" />
         </Grid.Resources>
 
+        <!--标题栏-->
         <TitleBar x:Name="AppTitleBar" Title="So Easy 口琴" 
                   IsBackButtonVisible="False" 
                   IsPaneToggleButtonVisible="False"
@@ -125,8 +154,38 @@
             </TitleBar.Content>
         </TitleBar>
 
-        <!-- App content -->
-        <Frame x:Name="rootFrame" Grid.Row="1" SourcePageType="views:AllNotesPage"/>
+        <SplitView Grid.Row="1" 
+                   IsPaneOpen="True" 
+                   DisplayMode="Inline" 
+                   OpenPaneLength="300">
+            <SplitView.Pane>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!--树形列表标题-->
+                    <TextBlock x:Name="PaneHeader" 
+                               Margin="20,10" 
+                               Style="{StaticResource SubtitleTextBlockStyle}" 
+                               Text="我的简谱"/>
+
+                    <!--简谱树形列表-->
+                    <TreeView x:Name="ScoreTreeView"
+                              Grid.Row="1"
+                              ItemsSource="{x:Bind DataSource}"
+                              ItemTemplateSelector="{StaticResource ExplorerItemTemplateSelector}"
+                              VerticalAlignment="Stretch"
+                              HorizontalAlignment="Stretch"/>
+
+                </Grid>
+            </SplitView.Pane>
+
+            <!--工作区-->
+            <Frame x:Name="rootFrame" SourcePageType="views:AllNotesPage"/>
+
+        </SplitView>
 
         <!--<StackPanel HorizontalAlignment="Center" 
                     VerticalAlignment="Center"
