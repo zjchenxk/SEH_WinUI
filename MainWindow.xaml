@@ -82,8 +82,8 @@
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="VerticalAlignment" Value="Top" />
                 <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
-                <Setter Property="FontSize" Value="18"/>
                 <!--在这里设置字体大小-->
+                <Setter Property="FontSize" Value="{StaticResource ControlContentThemeFontSize}"/>
                 <Setter Property="FontWeight" Value="Normal" />
                 <Setter Property="Width" Value="68" />
                 <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
