@@ -20,8 +20,7 @@
     <None Remove="Assets\Square44x44Logo.scale-200.png" />
     <None Remove="Assets\Themes\AppBarButtonStyle.xaml" />
     <None Remove="Assets\口琴128.png" />
-    <None Remove="Views\AllNotesPage.xaml" />
-    <None Remove="Views\NotePage.xaml" />
+    <None Remove="Views\HomePage.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -81,17 +80,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Views\HomePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="Assets\Themes\AppBarButtonStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Views\AllNotesPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Views\NotePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
