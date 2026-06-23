@@ -1,5 +1,6 @@
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using SEH.Commons;
 using SEH.ViewModels;
 
 namespace SEH
@@ -10,11 +11,15 @@ namespace SEH
     public partial class MainWindow : Window
     {
         public MainViewModel ViewModel { get; }
+        private readonly INavigationService NavigationService;
 
-        public MainWindow()
+        public MainWindow(MainViewModel viewModel, INavigationService navigationService)
         {
-            ViewModel = new MainViewModel();
+            ViewModel = viewModel;
             ViewModel.LoadScoreItems();
+
+            NavigationService = navigationService;
+            NavigationService.Initialize(rootFrame);
 
             InitializeComponent();
 
@@ -24,6 +29,7 @@ namespace SEH
             //用自定义的标题栏替换系统默认标题栏
             SetTitleBar(AppTitleBar);
 
+            //实现窗口最大化、最小化、关闭按钮的功能
             OverlappedPresenter presenter = OverlappedPresenter.Create();
             presenter.IsResizable = true;
             presenter.IsMinimizable = true;

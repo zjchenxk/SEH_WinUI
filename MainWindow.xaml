@@ -118,7 +118,8 @@
 
             <TitleBar.Content>
                 <CommandBar Background="Transparent" IsOpen="False" DefaultLabelPosition="Right">
-                    <AppBarButton Label="新增类别" Style="{StaticResource MyAppBarButtonStyle}">
+                    <AppBarButton Label="新增类别" Style="{StaticResource MyAppBarButtonStyle}" 
+                                  Command="{x:Bind ViewModel.NewCategoryCommand}">
                         <AppBarButton.Icon>
                             <BitmapIcon UriSource="/Assets/Images/添加.png" ShowAsMonochrome="False"/>
                         </AppBarButton.Icon>
@@ -158,6 +159,7 @@
             </TitleBar.Content>
         </TitleBar>
 
+        <!--内容区-->
         <SplitView Grid.Row="1" 
                    IsPaneOpen="True" 
                    DisplayMode="Inline" 
@@ -189,5 +191,6 @@
             <Frame x:Name="rootFrame" SourcePageType="views:HomePage"/>
 
         </SplitView>
+
     </Grid>
 </Window>

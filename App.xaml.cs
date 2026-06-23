@@ -1,4 +1,7 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml;
+using SEH.Commons;
+using SEH.ViewModels;
 using Serilog;
 using System;
 
@@ -12,6 +15,9 @@ namespace SEH
     /// </summary>
     public partial class App : Application
     {
+        //全局服务提供者
+        public static IServiceProvider Services { get; private set; }
+
         private Window? _window;
 
         /// <summary>
@@ -21,6 +27,31 @@ namespace SEH
         public App()
         {
             InitializeComponent();
+
+            //配置依赖注入容器
+            ConfigureServices();
+        }
+
+        /// <summary>
+        /// 配置依赖注入容器
+        /// </summary>
+        private void ConfigureServices()
+        {
+            var services = new ServiceCollection();
+
+            //1.注册服务
+            services.AddSingleton<INavigationService, NavigationService>();
+            //services.AddTransient<IDataService, DataService>();
+
+            //2.注册 ViewModel
+            services.AddSingleton<MainViewModel>();
+            //services.AddTransient<DetailViewModel>();
+
+            //3.注册窗口和页面
+            services.AddSingleton<MainWindow>();
+
+            //构建服务提供者
+            Services = services.BuildServiceProvider();
         }
 
         /// <summary>
@@ -42,7 +73,8 @@ namespace SEH
 
             try
             {
-                _window = new MainWindow();
+                //从容器中获取主窗口实例（此时会自动注入它所需的依赖）
+                _window = Services.GetRequiredService<MainWindow>(); //new MainWindow();
                 _window.Activate();
             }
             catch (Exception ex)
