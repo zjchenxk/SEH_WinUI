@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SEH.Commons;
-using SEH.Services;
+using SEH.Services.Interfaces;
 using SEH.Views;
 using System.Collections.Generic;
 
@@ -37,7 +37,7 @@ namespace SEH.ViewModels
         [RelayCommand]
         private void NewCategory()
         {
-            _navigationService.NavigateTo(typeof(NewCategoryPage));
+            _navigationService.NavigateTo(typeof(EditCategoryPage));
         }
 
         public MainViewModel(INavigationService navigationService, IDataService dataService)

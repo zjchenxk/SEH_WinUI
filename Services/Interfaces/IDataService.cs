@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace SEH.Services
+namespace SEH.Services.Interfaces
 {
     public interface IDataService
     {

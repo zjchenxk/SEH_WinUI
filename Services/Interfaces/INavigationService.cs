@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using System;
 
-namespace SEH.Services
+namespace SEH.Services.Interfaces
 {
     /// <summary>
     /// 导航服务接口，定义了导航功能的基本方法

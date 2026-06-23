@@ -1,12 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using SEH.Services;
+using SEH.Services.Interfaces;
 using SEH.ViewModels;
+using SEH.Views;
 using Serilog;
 using System;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace SEH
 {
@@ -45,10 +44,18 @@ namespace SEH
 
             //2.注册ViewModel
             services.AddSingleton<MainViewModel>();
-            //services.AddTransient<DetailViewModel>();
+            services.AddTransient<EditCategoryViewModel>();
 
             //3.注册窗口和页面
             services.AddSingleton<MainWindow>();
+            services.AddTransient<EditCategoryPage>();
+
+            //4.注册MessageService，并在获取实例时把 MainWindow 传给它
+            services.AddSingleton<IMessageService>(sp =>
+            {
+                var window = sp.GetRequiredService<MainWindow>();
+                return new MessageService(window);
+            });
 
             //构建服务提供者
             Services = services.BuildServiceProvider();

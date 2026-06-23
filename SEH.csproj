@@ -21,7 +21,6 @@
     <None Remove="Assets\Themes\AppBarButtonStyle.xaml" />
     <None Remove="Assets\口琴128.png" />
     <None Remove="Views\HomePage.xaml" />
-    <None Remove="Views\NewCategoryPage.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -79,7 +78,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Views\NewCategoryPage.xaml">
+    <Page Update="Views\EditCategoryPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

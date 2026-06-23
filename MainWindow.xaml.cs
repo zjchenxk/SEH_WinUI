@@ -1,6 +1,6 @@
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
-using SEH.Services;
+using SEH.Services.Interfaces;
 using SEH.ViewModels;
 
 namespace SEH
