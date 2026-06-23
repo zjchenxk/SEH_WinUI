@@ -1,8 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.DependencyInjection;
 using SEH.Commons;
-using SEH.Database;
+using SEH.Services;
 using SEH.Views;
 using System.Collections.Generic;
 
@@ -17,6 +16,12 @@ namespace SEH.ViewModels
         /// 导航服务，用于在不同页面之间进行导航
         /// </summary>
         private readonly INavigationService _navigationService;
+
+        /// <summary>
+        /// 数据服务，用于访问和操作简谱数据
+        /// </summary>
+        private readonly IDataService _dataService;
+
 
         /// <summary>
         /// 简谱列表
@@ -35,10 +40,11 @@ namespace SEH.ViewModels
             _navigationService.NavigateTo(typeof(NewCategoryPage));
         }
 
-        public MainViewModel(INavigationService navigationService)
+        public MainViewModel(INavigationService navigationService, IDataService dataService)
         {
             _scoreItems = [];
             _navigationService = navigationService;
+            _dataService = dataService;
         }
 
         /// <summary>
@@ -46,8 +52,7 @@ namespace SEH.ViewModels
         /// </summary>
         public void LoadScoreItems()
         {
-            var repository = new Repository();
-            var categories = repository.GetCategories();
+            var categories = _dataService.GetCategories();
             if (categories != null && categories.Count > 0)
             {
                 foreach (var category in categories)
@@ -59,7 +64,7 @@ namespace SEH.ViewModels
                         Type = ScoreItem.ScoreItemType.Folder,
                     };
 
-                    var scores = repository.GetScoresByCategoryId(category.Id);
+                    var scores = _dataService.GetScoresByCategoryId(category.Id);
                     if (scores != null && scores.Count > 0)
                     {
                         foreach (var score in scores)

@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using System;
 
-namespace SEH.Commons
+namespace SEH.Services
 {
     /// <summary>
     /// 导航服务实现类，负责处理页面导航逻辑

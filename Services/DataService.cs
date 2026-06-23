@@ -6,16 +6,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 
-namespace SEH.Database
+namespace SEH.Services
 {
-    /// <summary>
-    /// 存取基类
-    /// </summary>
-    public class Repository
+    public class DataService : IDataService
     {
         private SQLiteConnection? db = null;
 
-        public Repository()
+        public DataService() 
         {
             try
             {
@@ -38,7 +35,7 @@ namespace SEH.Database
             }
         }
 
-        ~Repository()
+        ~DataService()
         {
             if (db != null)
             {
@@ -744,5 +741,6 @@ namespace SEH.Database
             }
         }
         #endregion
+
     }
 }

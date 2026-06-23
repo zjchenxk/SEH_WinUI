@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
-using SEH.Commons;
+using SEH.Services;
 using SEH.ViewModels;
 using Serilog;
 using System;
@@ -41,7 +41,7 @@ namespace SEH
 
             //1.注册服务
             services.AddSingleton<INavigationService, NavigationService>();
-            //services.AddTransient<IDataService, DataService>();
+            services.AddTransient<IDataService, DataService>();
 
             //2.注册ViewModel
             services.AddSingleton<MainViewModel>();
