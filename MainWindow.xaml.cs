@@ -15,13 +15,17 @@ namespace SEH
 
         public MainWindow(MainViewModel viewModel, INavigationService navigationService)
         {
+            //将依赖注入的 ViewModel 注入到 MainWindow 中
             ViewModel = viewModel;
             ViewModel.LoadScoreItems();
 
+            //初始化组件（XAML UI 元素）
+            InitializeComponent();
+
+            //将依赖注入的 NavigationService 注入到 MainWindow 中
+            //一定要放在 InitializeComponent() 之后，否则导航服务可能无法正确初始化
             NavigationService = navigationService;
             NavigationService.Initialize(rootFrame);
-
-            InitializeComponent();
 
             //隐藏系统默认标题栏
             ExtendsContentIntoTitleBar = true;
@@ -36,6 +40,7 @@ namespace SEH
             presenter.IsMaximizable = true;
             AppWindow.SetPresenter(presenter);
 
+            //注册窗口激活事件，当窗口被激活时自动最大化
             this.Activated += MainWindow_Activated;
         }
 

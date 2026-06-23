@@ -43,7 +43,7 @@ namespace SEH
             services.AddSingleton<INavigationService, NavigationService>();
             //services.AddTransient<IDataService, DataService>();
 
-            //2.注册 ViewModel
+            //2.注册ViewModel
             services.AddSingleton<MainViewModel>();
             //services.AddTransient<DetailViewModel>();
 
@@ -74,7 +74,7 @@ namespace SEH
             try
             {
                 //从容器中获取主窗口实例（此时会自动注入它所需的依赖）
-                _window = Services.GetRequiredService<MainWindow>(); //new MainWindow();
+                _window = Services.GetRequiredService<MainWindow>();
                 _window.Activate();
             }
             catch (Exception ex)

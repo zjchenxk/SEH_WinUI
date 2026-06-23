@@ -1,8 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft.Extensions.DependencyInjection;
+using SEH.Commons;
 using SEH.Database;
+using SEH.Views;
 using System.Collections.Generic;
 
 namespace SEH.ViewModels
@@ -12,6 +13,11 @@ namespace SEH.ViewModels
     /// </summary>
     public partial class MainViewModel : ObservableObject
     {
+        /// <summary>
+        /// 导航服务，用于在不同页面之间进行导航
+        /// </summary>
+        private readonly INavigationService _navigationService;
+
         /// <summary>
         /// 简谱列表
         /// [ObservableProperty] 特性会自动生成一个名为 ScoreItems 的公共属性和对应的属性变更通知代码，只需要维护私有字段就够了
@@ -26,12 +32,13 @@ namespace SEH.ViewModels
         [RelayCommand]
         private void NewCategory()
         {
-            //rootFrame.Navigate(typeof(MainViewModel));
+            _navigationService.NavigateTo(typeof(NewCategoryPage));
         }
 
-        public MainViewModel()
+        public MainViewModel(INavigationService navigationService)
         {
             _scoreItems = [];
+            _navigationService = navigationService;
         }
 
         /// <summary>
@@ -71,46 +78,5 @@ namespace SEH.ViewModels
             }
         }
 
-    }
-
-    /// <summary>
-    /// 简谱树形列表节点类
-    /// </summary>
-    public class ScoreItem
-    {
-        public enum ScoreItemType
-        {
-            Folder,
-            File,
-        }
-
-        public string Id { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
-        public ScoreItemType Type { get; set; }
-        public List<ScoreItem> Children { get; set; } = new List<ScoreItem>();
-    }
-
-    /// <summary>
-    /// 简谱树形列表节点选择器类
-    /// </summary>
-    class ScoreItemTemplateSelector : DataTemplateSelector
-    {
-        // Template to use for folder items in the TreeView.
-        public DataTemplate? FolderTemplate { get; set; }
-
-        // Template to use for file items in the TreeView.
-        public DataTemplate? FileTemplate { get; set; }
-
-        // Determines which template to use for each item in the TreeView based on its type.
-        protected override DataTemplate? SelectTemplateCore(object item)
-        {
-            // Cast the item to the ExplorerItem type.
-            var explorerItem = (ScoreItem)item;
-
-            // Return the appropriate template: FolderTemplate for folders, FileTemplate for files.
-            return explorerItem.Type == ScoreItem.ScoreItemType.Folder
-                ? FolderTemplate
-                : FileTemplate;
-        }
     }
 }
