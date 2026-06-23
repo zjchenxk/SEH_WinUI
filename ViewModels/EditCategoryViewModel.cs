@@ -4,6 +4,7 @@ using SEH.Services.Interfaces;
 using SEH.Views;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SEH.ViewModels
 {
@@ -83,7 +84,7 @@ namespace SEH.ViewModels
         /// [RelayCommand] 特性会自动生成一个名为 SaveCommand 的公共命令属性。这个方法会在按钮被点击时执行
         /// </summary>
         [RelayCommand]
-        private void Save()
+        private async Task Save()
         {
             //触发属性验证
             ValidateAllProperties();
@@ -95,7 +96,7 @@ namespace SEH.ViewModels
                 return;
             }
 
-
+            await _messageService.ShowErrorAsync(CategoryName);
         }
 
         /// <summary>

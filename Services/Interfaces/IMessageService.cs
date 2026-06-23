@@ -4,6 +4,11 @@ namespace SEH.Services.Interfaces
 {
     public interface IMessageService
     {
-        Task ShowErrorAsync(string title, string message);
+        /// <summary>
+        /// 显示错误信息
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        Task ShowErrorAsync(string message);
     }
 }
