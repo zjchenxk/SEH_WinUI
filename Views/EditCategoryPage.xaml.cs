@@ -19,6 +19,8 @@ namespace SEH.Views
 
             //初始化组件（XAML UI 元素）
             InitializeComponent();
+
+            this.DataContext = ViewModel;
         }
 
         protected override void OnNavigatedTo(Microsoft.UI.Xaml.Navigation.NavigationEventArgs e)

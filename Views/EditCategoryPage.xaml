@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SEH.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     mc:Ignorable="d">
 
     <Grid RowSpacing="30" VerticalAlignment="Center">
@@ -20,13 +20,21 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBox x:Name="CategoryName"
-                 Grid.Column="1"
-                 Text="{x:Bind ViewModel.CategoryName, Mode=TwoWay}"
-                 PlaceholderText="输入类别名称..."
-                 Header="类别名称："
-                 MaxLength="50"
-                 Width="400"/>
+        <StackPanel Grid.Column="1" Width="400">
+            <TextBox x:Name="CategoryName"
+                     Text="{x:Bind ViewModel.CategoryName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     PlaceholderText="输入类别名称..."
+                     Header="类别名称："
+                     MaxLength="50"
+                     Width="400"/>
+
+            <!--红字错误提示，绑定到 ViewModel 的 CategoryNameError 属性-->
+            <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+            <TextBlock Text="{x:Bind ViewModel.CategoryNameError, Mode=OneWay}" 
+                       Foreground="{StaticResource SystemErrorTextColor}" 
+                       FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                       Margin="0,4,0,0"/>
+        </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="1"
                     Orientation="Horizontal"

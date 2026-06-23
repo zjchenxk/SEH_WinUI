@@ -2,11 +2,12 @@
 using CommunityToolkit.Mvvm.Input;
 using SEH.Services.Interfaces;
 using SEH.Views;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace SEH.ViewModels
 {
-    public partial class EditCategoryViewModel : ObservableObject
+    public partial class EditCategoryViewModel : ObservableValidator
     {
         /// <summary>
         /// 导航服务，用于在不同页面之间进行导航
@@ -34,8 +35,27 @@ namespace SEH.ViewModels
         /// 类别名称
         /// [ObservableProperty] 特性会自动生成一个名为 CategoryName 的公共属性和对应的属性变更通知代码，只需要维护私有字段就够了
         /// </summary>
+        [Required(ErrorMessage = "类别名称不能为空！")]
+        [MaxLength(50, ErrorMessage = "类别名称长度不能超过50个字！")]
         [ObservableProperty]
         private string _categoryName = "";
+
+        /// <summary>
+        /// 类别名称改变事件
+        /// </summary>
+        /// <param name="value"></param>
+        /// <exception cref="System.NotImplementedException"></exception>
+        partial void OnCategoryNameChanged(string value)
+        {
+            //对当前修改的属性单独进行验证
+            ValidateProperty(value, nameof(CategoryName));
+        }
+
+        /// <summary>
+        /// 类别名称错误信息，用于在界面上显示
+        /// </summary>
+        [ObservableProperty]
+        private string? _categoryNameError = "";
 
 
         public EditCategoryViewModel(INavigationService navigationService, IDataService dataService, IMessageService messageService)
@@ -43,6 +63,19 @@ namespace SEH.ViewModels
             _navigationService = navigationService;
             _dataService = dataService;
             _messageService = messageService;
+
+            this.ErrorsChanged += EditCategoryViewModel_ErrorsChanged;
+        }
+
+        private void EditCategoryViewModel_ErrorsChanged(object? sender, System.ComponentModel.DataErrorsChangedEventArgs e)
+        {
+            //当 CategoryName 属性的验证状态发生变化时，更新错误提示文本
+            if (e.PropertyName == nameof(CategoryName))
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(CategoryName));
+                CategoryNameError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
         }
 
         /// <summary>
@@ -50,18 +83,19 @@ namespace SEH.ViewModels
         /// [RelayCommand] 特性会自动生成一个名为 SaveCommand 的公共命令属性。这个方法会在按钮被点击时执行
         /// </summary>
         [RelayCommand]
-        private async Task Save()
+        private void Save()
         {
-            //1.验证逻辑：检查是否为空
-            if (string.IsNullOrWhiteSpace(CategoryName))
+            //触发属性验证
+            ValidateAllProperties();
+
+            //检查是否有错误
+            if (HasErrors)
             {
-                //2.调用服务弹出提示框
-                await _messageService.ShowErrorAsync("错误", "类别名称不能为空，请重新输入！");
+                //错误会自动通知 UI，不需要弹窗
                 return;
             }
 
-            // 3. 验证通过，执行后续业务逻辑...
-            await _messageService.ShowErrorAsync("消息", "验证通过！");
+
         }
 
         /// <summary>
