@@ -19,6 +19,13 @@ namespace SEH.Services.Interfaces
         List<Category>? GetCategories();
 
         /// <summary>
+        /// 获取指定类别
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Category? GetCategory(string id);
+
+        /// <summary>
         /// 新增类别
         /// </summary>
         /// <param name="data"></param>
@@ -44,7 +51,7 @@ namespace SEH.Services.Interfaces
         /// </summary>
         /// <param name="categoryName"></param>
         /// <returns></returns>
-        bool IsCategoryNameExists(string categoryName);
+        bool IsCategoryNameExists(string categoryName, string excludeCategoryId = "");
         #endregion
 
         #region 简谱管理

@@ -79,6 +79,23 @@ namespace SEH.ViewModels
             this.ErrorsChanged += EditCategoryViewModel_ErrorsChanged;
         }
 
+        /// <summary>
+        /// 初始化 ViewModel，加载类别数据
+        /// </summary>
+        /// <param name="categoryId"></param>
+        public void Initialize(string categoryId)
+        {
+            if (!string.IsNullOrEmpty(categoryId))
+            {
+                var category = _dataService.GetCategory(categoryId);
+                if (category != null)
+                {
+                    CategoryId = category.Id;
+                    CategoryName = category.Name;
+                }
+            }
+        }
+
         private void EditCategoryViewModel_ErrorsChanged(object? sender, System.ComponentModel.DataErrorsChangedEventArgs e)
         {
             //当 CategoryName 属性的验证状态发生变化时，更新错误提示文本
@@ -99,7 +116,7 @@ namespace SEH.ViewModels
         public static ValidationResult? IsCategoryNameExists(string categoryName, ValidationContext context)
         {
             EditCategoryViewModel instance = (EditCategoryViewModel)context.ObjectInstance;
-            bool isExists = instance._dataService.IsCategoryNameExists(categoryName);
+            bool isExists = instance._dataService.IsCategoryNameExists(categoryName, instance.CategoryId);
             if (!isExists)
             {
                 return ValidationResult.Success;
@@ -148,7 +165,7 @@ namespace SEH.ViewModels
                     Name = CategoryName.Trim()
                 };
 
-                if (!_dataService.AddCategory(data))
+                if (!_dataService.UpdateCategory(data))
                 {
                     await _messageService.ShowErrorAsync("类别保存失败！");
                     return;

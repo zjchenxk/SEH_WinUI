@@ -56,6 +56,32 @@ namespace SEH.ViewModels
         }
 
         /// <summary>
+        /// 修改类别命令
+        /// [RelayCommand] 特性会自动生成一个名为 EditCategoryCommand 的公共命令属性。这个方法会在按钮被点击时执行
+        /// </summary>
+        [RelayCommand]
+        private async Task EditCategory()
+        {
+            var _messageService = App.Services.GetRequiredService<IMessageService>();
+
+            if (SelectedScoreItem == null)
+            {
+                await _messageService.ShowInfoAsync("未选择类别！");
+                return;
+            }
+            if (SelectedScoreItem.Type == ScoreItemType.File)
+            {
+                await _messageService.ShowInfoAsync("未选择类别！");
+                return;
+            }
+
+            string categoryId = SelectedScoreItem.Id;
+            string categoryName = SelectedScoreItem.Name;
+
+            _navigationService.NavigateTo(typeof(EditCategoryPage), categoryId);
+        }
+
+        /// <summary>
         /// 删除类别命令
         /// [RelayCommand] 特性会自动生成一个名为 DeleteCategoryCommand 的公共命令属性。这个方法会在按钮被点击时执行
         /// </summary>

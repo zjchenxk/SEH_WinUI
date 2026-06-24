@@ -124,7 +124,8 @@
                             <BitmapIcon UriSource="/Assets/Images/添加.png" ShowAsMonochrome="False"/>
                         </AppBarButton.Icon>
                     </AppBarButton>
-                    <AppBarButton Label="修改类别" Style="{StaticResource MyAppBarButtonStyle}">
+                    <AppBarButton Label="修改类别" Style="{StaticResource MyAppBarButtonStyle}"
+                                  Command="{x:Bind ViewModel.EditCategoryCommand}">
                         <AppBarButton.Icon>
                             <BitmapIcon UriSource="/Assets/Images/修改.png" ShowAsMonochrome="False"/>
                         </AppBarButton.Icon>

@@ -75,6 +75,28 @@ namespace SEH.Services
         }
 
         /// <summary>
+        /// 获取指定类别
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Category? GetCategory(string id)
+        {
+            try
+            {
+                if (db != null)
+                {
+                    return db.Find<Category>(id);
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "发生致命错误");
+                return null;
+            }
+        }
+
+        /// <summary>
         /// 新增类别
         /// </summary>
         /// <param name="data"></param>
@@ -155,13 +177,13 @@ namespace SEH.Services
         /// <param name="categoryName"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public bool IsCategoryNameExists(string categoryName)
+        public bool IsCategoryNameExists(string categoryName, string excludeCategoryId = "")
         {
             try
             {
                 if (db != null)
                 {
-                    var category = db.Table<Category>().FirstOrDefault(u => u.Name == categoryName);
+                    var category = db.Table<Category>().FirstOrDefault(u => u.Name == categoryName && u.Id != excludeCategoryId);
                     return category != null;
                 }
                 return false;

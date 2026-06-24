@@ -29,8 +29,8 @@ namespace SEH.Views
 
             if (e.Parameter != null)
             {
-                // 将参数传给 ViewModel 进行初始化
-                //ViewModel.Initialize(e.Parameter);
+                //将参数传给 ViewModel 进行初始化
+                ViewModel.Initialize(e.Parameter.ToString().Trim());
             }
         }
 
