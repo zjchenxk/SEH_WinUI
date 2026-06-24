@@ -13,7 +13,7 @@ namespace SEH.Services
     {
         private SQLiteConnection? db = null;
 
-        public DataService() 
+        public DataService()
         {
             try
             {
@@ -139,6 +139,30 @@ namespace SEH.Services
                     {
                         return true;
                     }
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "发生致命错误");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 判断类别名称是否存在
+        /// </summary>
+        /// <param name="categoryName"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public bool IsCategoryNameExists(string categoryName)
+        {
+            try
+            {
+                if (db != null)
+                {
+                    var category = db.Table<Category>().FirstOrDefault(u => u.Name == categoryName);
+                    return category != null;
                 }
                 return false;
             }

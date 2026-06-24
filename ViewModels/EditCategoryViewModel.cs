@@ -38,6 +38,7 @@ namespace SEH.ViewModels
         /// </summary>
         [Required(ErrorMessage = "类别名称不能为空！")]
         [MaxLength(50, ErrorMessage = "类别名称长度不能超过50个字！")]
+        [CustomValidation(typeof(EditCategoryViewModel), nameof(IsCategoryNameExists))]
         [ObservableProperty]
         private string _categoryName = "";
 
@@ -77,6 +78,24 @@ namespace SEH.ViewModels
                 var errors = GetErrors(nameof(CategoryName));
                 CategoryNameError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
             }
+        }
+
+        /// <summary>
+        /// 验证类别名称是否存在
+        /// </summary>
+        /// <param name="categoryName"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static ValidationResult? IsCategoryNameExists(string categoryName, ValidationContext context)
+        {
+            EditCategoryViewModel instance = (EditCategoryViewModel)context.ObjectInstance;
+            bool isExists = instance._dataService.IsCategoryNameExists(categoryName);
+            if (!isExists)
+            {
+                return ValidationResult.Success;
+            }
+
+            return new("类别名称已经存在！");
         }
 
         /// <summary>

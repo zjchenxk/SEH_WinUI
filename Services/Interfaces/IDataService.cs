@@ -38,6 +38,13 @@ namespace SEH.Services.Interfaces
         /// <param name="id"></param>
         /// <returns></returns>
         bool DeleteCategory(string id);
+
+        /// <summary>
+        /// 判断类别名称是否存在
+        /// </summary>
+        /// <param name="categoryName"></param>
+        /// <returns></returns>
+        bool IsCategoryNameExists(string categoryName);
         #endregion
 
         #region 简谱管理
