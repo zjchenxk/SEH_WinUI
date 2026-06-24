@@ -35,17 +35,28 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <!-- 图标和标题区域 -->
-                                <StackPanel Orientation="Horizontal" Grid.Column="0" Spacing="12" Padding="20,0,0,0">
-                                    <!-- 图标 -->
-                                    <ContentControl Content="{TemplateBinding IconSource}" Width="48" Height="48" VerticalAlignment="Center">
+                                <!--图标和标题区域-->
+                                <StackPanel Orientation="Horizontal" 
+                                            Grid.Column="0" 
+                                            Spacing="10" 
+                                            Padding="10,0,0,0"
+                                            Width="300">
+                                    <!--图标-->
+                                    <ContentControl Content="{TemplateBinding IconSource}" 
+                                                    Width="48" 
+                                                    Height="48" 
+                                                    VerticalAlignment="Center">
                                         <ContentControl.ContentTemplate>
                                             <DataTemplate>
-                                                <Image Source="{Binding ImageSource}" Width="48" Height="48" Stretch="Uniform"/>
+                                                <Image Source="{Binding ImageSource}" 
+                                                       Width="48" 
+                                                       Height="48" 
+                                                       Stretch="Uniform"/>
                                             </DataTemplate>
                                         </ContentControl.ContentTemplate>
                                     </ContentControl>
-                                    <!-- 标题 -->
+
+                                    <!--标题-->
                                     <TextBlock Text="{TemplateBinding Title}"
                                                FontSize="32"
                                                FontWeight="Bold"
@@ -54,14 +65,13 @@
                                                TextTrimming="CharacterEllipsis"/>
                                 </StackPanel>
 
-                                <!-- 自定义内容区域 -->
+                                <!--自定义内容区域-->
                                 <ContentPresenter Content="{TemplateBinding Content}"
-                                                Grid.Column="1"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Center"
-                                                Margin="20,0"/>
+                                                  Grid.Column="1"
+                                                  HorizontalAlignment="Left"
+                                                  VerticalAlignment="Center"/>
 
-                                <!-- 底部边框 -->
+                                <!--底部边框-->
                                 <Border VerticalAlignment="Bottom"
                                         Grid.ColumnSpan="2"
                                         Height="1"
@@ -117,7 +127,7 @@
             </TitleBar.IconSource>
 
             <TitleBar.Content>
-                <CommandBar Background="Transparent" IsOpen="False" DefaultLabelPosition="Right">
+                <CommandBar Background="Transparent" IsOpen="False" DefaultLabelPosition="Right" Padding="0">
                     <AppBarButton Label="新增类别" Style="{StaticResource MyAppBarButtonStyle}" 
                                   Command="{x:Bind ViewModel.NewCategoryCommand}">
                         <AppBarButton.Icon>
@@ -165,38 +175,38 @@
         <SplitView Grid.Row="1" IsPaneOpen="True" DisplayMode="Inline" OpenPaneLength="300">
 
             <SplitView.Pane>
-                <Border BorderBrush="{ThemeResource SystemChromeHighColor}" 
-                        BorderThickness="0,0,1,0" 
-                        Background="{ThemeResource SystemChromeWhiteColor}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-                        <!--树形列表标题-->
-                        <TextBlock x:Name="PaneHeader" 
-                                   Margin="20,10" 
-                                   Style="{StaticResource SubtitleTextBlockStyle}" 
-                                   Text="我的简谱"/>
+                    <!--树形列表标题-->
+                    <TextBlock x:Name="PaneHeader" 
+                               Margin="20,10" 
+                               Style="{StaticResource SubtitleTextBlockStyle}" 
+                               Text="我的简谱"/>
 
-                        <!--简谱树形列表-->
-                        <TreeView x:Name="ScoreTreeView"
-                                  Grid.Row="1"
-                                  ItemsSource="{x:Bind ViewModel.ScoreItems, Mode=OneWay}"
-                                  SelectedItem="{x:Bind ViewModel.SelectedScoreItem, Mode=TwoWay}"
-                                  ItemTemplateSelector="{StaticResource ScoreItemTemplateSelector}"
-                                  VerticalAlignment="Stretch"
-                                  HorizontalAlignment="Stretch"/>
-                    </Grid>
-                </Border>
+                    <!--简谱树形列表-->
+                    <TreeView x:Name="ScoreTreeView"
+                              Grid.Row="1"
+                              ItemsSource="{x:Bind ViewModel.ScoreItems, Mode=OneWay}"
+                              SelectedItem="{x:Bind ViewModel.SelectedScoreItem, Mode=TwoWay}"
+                              ItemTemplateSelector="{StaticResource ScoreItemTemplateSelector}"
+                              VerticalAlignment="Stretch"
+                              HorizontalAlignment="Stretch"/>
+                </Grid>
             </SplitView.Pane>
 
             <SplitView.Content>
-                <Grid>
-                    <!--工作区-->
-                    <Frame x:Name="rootFrame" SourcePageType="views:HomePage"/>
-                </Grid>
+                <Border BorderBrush="{ThemeResource SystemChromeHighColor}" 
+                        BorderThickness="1,0,0,0" 
+                        Background="{ThemeResource SystemChromeWhiteColor}">
+                    <Grid>
+                        <!--工作区-->
+                        <Frame x:Name="rootFrame" SourcePageType="views:HomePage"/>
+                    </Grid>
+                </Border>
             </SplitView.Content>
 
         </SplitView>

@@ -6,7 +6,7 @@
         <Setter Property="Background" Value="{ThemeResource AppBarButtonRevealBackground}" />
         <Setter Property="Foreground" Value="{ThemeResource AppBarButtonForeground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource AppBarButtonRevealBorderBrush}" />
-        <Setter Property="BorderThickness" Value="{ThemeResource AppBarButtonRevealBorderThemeThickness}" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -24,7 +24,7 @@
                           MaxWidth="{TemplateBinding MaxWidth}" 
                           Background="{TemplateBinding Background}" 
                           CornerRadius="{TemplateBinding CornerRadius}" 
-                          Margin="1,0">
+                          Margin="0">
 
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="ApplicationViewStates">
