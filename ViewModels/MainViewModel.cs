@@ -46,6 +46,68 @@ namespace SEH.ViewModels
         private ScoreItem? _selectedScoreItem = null;
 
         /// <summary>
+        /// 构造函数，初始化 MainViewModel 实例
+        /// </summary>
+        /// <param name="messenger"></param>
+        /// <param name="navigationService"></param>
+        /// <param name="dataService"></param>
+        public MainViewModel(IMessenger messenger, INavigationService navigationService, IDataService dataService)
+        {
+            _messenger = messenger;
+            _navigationService = navigationService;
+            _dataService = dataService;
+
+            //注册消息接收器，当收到 RefreshScoreListMessage 消息时，调用 LoadScoreItems 方法刷新简谱列表
+            _messenger.Register<MainViewModel, RefreshScoreListMessage>(this, (r, m) =>
+            {
+                LoadScoreItems();
+            });
+
+            //初始化时加载简谱列表
+            LoadScoreItems();
+        }
+
+        /// <summary>
+        /// 读取简谱列表
+        /// </summary>
+        private void LoadScoreItems()
+        {
+            List<ScoreItem> scoreItems = [];
+
+            var categories = _dataService.GetCategories();
+            if (categories != null && categories.Count > 0)
+            {
+                foreach (var category in categories)
+                {
+                    var scoreItem = new ScoreItem
+                    {
+                        Id = category.Id,
+                        Name = category.Name,
+                        Type = ScoreItem.ScoreItemType.Folder,
+                    };
+
+                    var scores = _dataService.GetScoresByCategoryId(category.Id);
+                    if (scores != null && scores.Count > 0)
+                    {
+                        foreach (var score in scores)
+                        {
+                            scoreItem.Children.Add(new ScoreItem
+                            {
+                                Id = score.Id,
+                                Name = score.Title,
+                                Type = ScoreItem.ScoreItemType.File,
+                            });
+                        }
+                    }
+
+                    scoreItems.Add(scoreItem);
+                }
+            }
+
+            ScoreItems = scoreItems;
+        }
+
+        /// <summary>
         /// 新增类别命令
         /// [RelayCommand] 特性会自动生成一个名为 NewCategoryCommand 的公共命令属性。这个方法会在按钮被点击时执行
         /// </summary>
@@ -127,66 +189,13 @@ namespace SEH.ViewModels
         }
 
         /// <summary>
-        /// 构造函数，初始化 MainViewModel 实例
+        /// 新增简谱命令
+        /// [RelayCommand] 特性会自动生成一个名为 NewScoreCommand 的公共命令属性。这个方法会在按钮被点击时执行
         /// </summary>
-        /// <param name="messenger"></param>
-        /// <param name="navigationService"></param>
-        /// <param name="dataService"></param>
-        public MainViewModel(IMessenger messenger, INavigationService navigationService, IDataService dataService)
+        [RelayCommand]
+        private void NewScore()
         {
-            _messenger = messenger;
-            _navigationService = navigationService;
-            _dataService = dataService;
-
-            //注册消息接收器，当收到 RefreshScoreListMessage 消息时，调用 LoadScoreItems 方法刷新简谱列表
-            _messenger.Register<MainViewModel, RefreshScoreListMessage>(this, (r, m) =>
-            {
-                LoadScoreItems();
-            });
-
-            //初始化时加载简谱列表
-            LoadScoreItems();
+            _navigationService.NavigateTo(typeof(EditScorePage));
         }
-
-        /// <summary>
-        /// 读取简谱列表
-        /// </summary>
-        private void LoadScoreItems()
-        {
-            List<ScoreItem> scoreItems = [];
-
-            var categories = _dataService.GetCategories();
-            if (categories != null && categories.Count > 0)
-            {
-                foreach (var category in categories)
-                {
-                    var scoreItem = new ScoreItem
-                    {
-                        Id = category.Id,
-                        Name = category.Name,
-                        Type = ScoreItem.ScoreItemType.Folder,
-                    };
-
-                    var scores = _dataService.GetScoresByCategoryId(category.Id);
-                    if (scores != null && scores.Count > 0)
-                    {
-                        foreach (var score in scores)
-                        {
-                            scoreItem.Children.Add(new ScoreItem
-                            {
-                                Id = score.Id,
-                                Name = score.Title,
-                                Type = ScoreItem.ScoreItemType.File,
-                            });
-                        }
-                    }
-
-                    scoreItems.Add(scoreItem);
-                }
-            }
-
-            ScoreItems = scoreItems;
-        }
-
     }
 }

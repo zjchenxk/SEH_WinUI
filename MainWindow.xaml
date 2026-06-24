@@ -147,7 +147,8 @@
                         </AppBarButton.Icon>
                     </AppBarButton>
                     <AppBarSeparator/>
-                    <AppBarButton Label="新增简谱" Style="{StaticResource MyAppBarButtonStyle}">
+                    <AppBarButton Label="新增简谱" Style="{StaticResource MyAppBarButtonStyle}"
+                                  Command="{x:Bind ViewModel.NewScoreCommand}">
                         <AppBarButton.Icon>
                             <BitmapIcon UriSource="/Assets/Images/添加.png" ShowAsMonochrome="False"/>
                         </AppBarButton.Icon>

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using SEH.Services.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace SEH.ViewModels
 {
@@ -25,6 +26,93 @@ namespace SEH.ViewModels
         /// 消息服务，用于显示消息提示
         /// </summary>
         private readonly IMessageService _messageService;
+
+        /// <summary>
+        /// 类别Id
+        /// </summary>
+        [ObservableProperty]
+        private string _categoryId = "";
+
+        /// <summary>
+        /// 标题
+        /// </summary>
+        [Required(ErrorMessage = "标题不能为空！")]
+        [MaxLength(100, ErrorMessage = "标题长度不能超过100个字！")]
+        [ObservableProperty]
+        private string _title = "";
+
+        /// <summary>
+        /// 标题错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _titleError = "";
+
+        /// <summary>
+        /// 作曲人
+        /// </summary>
+        [MaxLength(50, ErrorMessage = "作曲人长度不能超过50个字！")]
+        [ObservableProperty]
+        private string _composer = "";
+
+        /// <summary>
+        /// 作曲人错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _composerError = "";
+
+        /// <summary>
+        /// 作词人
+        /// </summary>
+        [MaxLength(50, ErrorMessage = "作词人长度不能超过50个字！")]
+        [ObservableProperty]
+        private string _lyricist = "";
+
+        /// <summary>
+        /// 作词人错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _lyricistError = "";
+
+        /// <summary>
+        /// 调号（如：C、D等）
+        /// </summary>
+        [Required(ErrorMessage = "调号不能为空！")]
+        [MaxLength(1, ErrorMessage = "调号长度不能超过1个字！")]
+        [ObservableProperty]
+        private string _keySignature = "";
+
+        /// <summary>
+        /// 调号错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _keySignatureError = "";
+
+        /// <summary>
+        /// 拍号，如：3/4、4/4等。下面的数字表示以何种时值的音符为一拍，上面的数字表示每小节有几拍。
+        /// </summary>
+        [Required(ErrorMessage = "拍号不能为空！")]
+        [MaxLength(5, ErrorMessage = "拍号长度不能超过5个字！")]
+        [ObservableProperty]
+        private string _timeSignature = "";
+
+        /// <summary>
+        /// 拍号错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _timeSignatureError = "";
+
+        /// <summary>
+        /// 速度（如：80、120）
+        /// </summary>
+        [Required(ErrorMessage = "速度不能为空！")]
+        [ObservableProperty]
+        private string _tempo = "";
+
+        /// <summary>
+        /// 拍号错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _tempoError = "";
 
 
         public EditScoreViewModel(IMessenger messenger, INavigationService navigationService, IDataService dataService, IMessageService messageService)
