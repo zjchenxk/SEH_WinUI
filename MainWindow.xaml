@@ -129,7 +129,8 @@
                             <BitmapIcon UriSource="/Assets/Images/修改.png" ShowAsMonochrome="False"/>
                         </AppBarButton.Icon>
                     </AppBarButton>
-                    <AppBarButton Label="删除类别" Style="{StaticResource MyAppBarButtonStyle}">
+                    <AppBarButton Label="删除类别" Style="{StaticResource MyAppBarButtonStyle}"
+                                  Command="{x:Bind ViewModel.DeleteCategoryCommand}">
                         <AppBarButton.Icon>
                             <BitmapIcon UriSource="/Assets/Images/删除.png" ShowAsMonochrome="False"/>
                         </AppBarButton.Icon>
@@ -181,7 +182,8 @@
                         <!--简谱树形列表-->
                         <TreeView x:Name="ScoreTreeView"
                                   Grid.Row="1"
-                                  ItemsSource="{x:Bind ViewModel.ScoreItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  ItemsSource="{x:Bind ViewModel.ScoreItems, Mode=OneWay}"
+                                  SelectedItem="{x:Bind ViewModel.SelectedScoreItem, Mode=TwoWay}"
                                   ItemTemplateSelector="{StaticResource ScoreItemTemplateSelector}"
                                   VerticalAlignment="Stretch"
                                   HorizontalAlignment="Stretch"/>

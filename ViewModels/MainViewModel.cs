@@ -1,10 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 using SEH.Commons;
 using SEH.Services.Interfaces;
 using SEH.Views;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using static SEH.Commons.ScoreItem;
 
 namespace SEH.ViewModels
 {
@@ -37,6 +40,12 @@ namespace SEH.ViewModels
         private List<ScoreItem>? _scoreItems = null;
 
         /// <summary>
+        /// 选中简谱列表项
+        /// </summary>
+        [ObservableProperty]
+        private ScoreItem? _selectedScoreItem = null;
+
+        /// <summary>
         /// 新增类别命令
         /// [RelayCommand] 特性会自动生成一个名为 NewCategoryCommand 的公共命令属性。这个方法会在按钮被点击时执行
         /// </summary>
@@ -46,24 +55,77 @@ namespace SEH.ViewModels
             _navigationService.NavigateTo(typeof(EditCategoryPage));
         }
 
+        /// <summary>
+        /// 删除类别命令
+        /// [RelayCommand] 特性会自动生成一个名为 DeleteCategoryCommand 的公共命令属性。这个方法会在按钮被点击时执行
+        /// </summary>
+        [RelayCommand]
+        private async Task DeleteCategory()
+        {
+            var _messageService = App.Services.GetRequiredService<IMessageService>();
+
+            if (SelectedScoreItem == null)
+            {
+                await _messageService.ShowInfoAsync("未选择类别！");
+                return;
+            }
+            if (SelectedScoreItem.Type == ScoreItemType.File)
+            {
+                await _messageService.ShowInfoAsync("未选择类别！");
+                return;
+            }
+
+            string categoryId = SelectedScoreItem.Id;
+            string categoryName = SelectedScoreItem.Name;
+
+            //检查类别下是否有简谱
+            var scores = _dataService.GetScoresByCategoryId(categoryId);
+            if (scores != null && scores.Count > 0)
+            {
+                await _messageService.ShowErrorAsync("该类别下面存在简谱，不能删除！");
+                return;
+            }
+
+            if (await _messageService.ShowConfirmAsync($"确定要删除类别【{categoryName}】吗？") != true)
+            {
+                return;
+            }
+
+            if (!_dataService.DeleteCategory(categoryId))
+            {
+                await _messageService.ShowErrorAsync("删除类别失败！");
+                return;
+            }
+
+            LoadScoreItems();
+        }
+
+        /// <summary>
+        /// 构造函数，初始化 MainViewModel 实例
+        /// </summary>
+        /// <param name="messenger"></param>
+        /// <param name="navigationService"></param>
+        /// <param name="dataService"></param>
         public MainViewModel(IMessenger messenger, INavigationService navigationService, IDataService dataService)
         {
             _messenger = messenger;
             _navigationService = navigationService;
             _dataService = dataService;
 
-            _scoreItems = [];
-
+            //注册消息接收器，当收到 RefreshScoreListMessage 消息时，调用 LoadScoreItems 方法刷新简谱列表
             _messenger.Register<MainViewModel, RefreshScoreListMessage>(this, (r, m) =>
             {
                 LoadScoreItems();
             });
+
+            //初始化时加载简谱列表
+            LoadScoreItems();
         }
 
         /// <summary>
         /// 读取简谱列表
         /// </summary>
-        public void LoadScoreItems()
+        private void LoadScoreItems()
         {
             List<ScoreItem> scoreItems = [];
 

@@ -17,7 +17,6 @@ namespace SEH
         {
             //将依赖注入的 ViewModel 注入到 MainWindow 中
             ViewModel = viewModel;
-            ViewModel.LoadScoreItems();
 
             //初始化组件（XAML UI 元素）
             InitializeComponent();
