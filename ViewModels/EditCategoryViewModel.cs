@@ -1,7 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using SEH.Commons;
+using SEH.Models;
 using SEH.Services.Interfaces;
 using SEH.Views;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +14,11 @@ namespace SEH.ViewModels
 {
     public partial class EditCategoryViewModel : ObservableValidator
     {
+        /// <summary>
+        /// 消息服务，用于在不同的ViewModel之间传递消息
+        /// </summary>
+        private readonly IMessenger _messenger;
+
         /// <summary>
         /// 导航服务，用于在不同页面之间进行导航
         /// </summary>
@@ -60,8 +69,9 @@ namespace SEH.ViewModels
         private string? _categoryNameError = "";
 
 
-        public EditCategoryViewModel(INavigationService navigationService, IDataService dataService, IMessageService messageService)
+        public EditCategoryViewModel(IMessenger messenger, INavigationService navigationService, IDataService dataService, IMessageService messageService)
         {
+            _messenger = messenger;
             _navigationService = navigationService;
             _dataService = dataService;
             _messageService = messageService;
@@ -115,7 +125,43 @@ namespace SEH.ViewModels
                 return;
             }
 
-            await _messageService.ShowErrorAsync(CategoryName);
+            //保存类别数据
+            if (string.IsNullOrEmpty(CategoryId))
+            {
+                Category data = new()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = CategoryName.Trim()
+                };
+
+                if (!_dataService.AddCategory(data))
+                {
+                    await _messageService.ShowErrorAsync("类别保存失败！");
+                    return;
+                }
+            }
+            else
+            {
+                Category data = new()
+                {
+                    Id = CategoryId,
+                    Name = CategoryName.Trim()
+                };
+
+                if (!_dataService.AddCategory(data))
+                {
+                    await _messageService.ShowErrorAsync("类别保存失败！");
+                    return;
+                }
+            }
+
+            await _messageService.ShowInfoAsync("类别保存成功！");
+
+            //保存成功后，导航回主页
+            _navigationService.NavigateTo(typeof(HomePage));
+
+            //保存成功后，通知主窗体更新简谱树形列表
+            _messenger.Send(new RefreshScoreListMessage());
         }
 
         /// <summary>

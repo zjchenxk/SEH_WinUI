@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using SEH.Services;
 using SEH.Services.Interfaces;
@@ -39,6 +40,7 @@ namespace SEH
             var services = new ServiceCollection();
 
             //1.注册服务
+            services.AddSingleton<IMessenger, WeakReferenceMessenger>();
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddTransient<IDataService, DataService>();
 

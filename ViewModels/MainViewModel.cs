@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using SEH.Commons;
 using SEH.Services.Interfaces;
 using SEH.Views;
@@ -12,6 +13,11 @@ namespace SEH.ViewModels
     /// </summary>
     public partial class MainViewModel : ObservableObject
     {
+        /// <summary>
+        /// 消息服务，用于在不同的ViewModel之间传递消息
+        /// </summary>
+        private readonly IMessenger _messenger;
+
         /// <summary>
         /// 导航服务，用于在不同页面之间进行导航
         /// </summary>
@@ -40,11 +46,18 @@ namespace SEH.ViewModels
             _navigationService.NavigateTo(typeof(EditCategoryPage));
         }
 
-        public MainViewModel(INavigationService navigationService, IDataService dataService)
+        public MainViewModel(IMessenger messenger, INavigationService navigationService, IDataService dataService)
         {
-            _scoreItems = [];
+            _messenger = messenger;
             _navigationService = navigationService;
             _dataService = dataService;
+
+            _scoreItems = [];
+
+            _messenger.Register<MainViewModel, RefreshScoreListMessage>(this, (r, m) =>
+            {
+                LoadScoreItems();
+            });
         }
 
         /// <summary>
@@ -52,6 +65,8 @@ namespace SEH.ViewModels
         /// </summary>
         public void LoadScoreItems()
         {
+            List<ScoreItem> scoreItems = [];
+
             var categories = _dataService.GetCategories();
             if (categories != null && categories.Count > 0)
             {
@@ -78,9 +93,11 @@ namespace SEH.ViewModels
                         }
                     }
 
-                    ScoreItems.Add(scoreItem);
+                    scoreItems.Add(scoreItem);
                 }
             }
+
+            ScoreItems = scoreItems;
         }
 
     }

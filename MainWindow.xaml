@@ -181,7 +181,7 @@
                         <!--简谱树形列表-->
                         <TreeView x:Name="ScoreTreeView"
                                   Grid.Row="1"
-                                  ItemsSource="{x:Bind ViewModel.ScoreItems}"
+                                  ItemsSource="{x:Bind ViewModel.ScoreItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                   ItemTemplateSelector="{StaticResource ScoreItemTemplateSelector}"
                                   VerticalAlignment="Stretch"
                                   HorizontalAlignment="Stretch"/>
