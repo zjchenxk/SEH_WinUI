@@ -5,17 +5,17 @@ using SEH.ViewModels;
 namespace SEH.Views
 {
     /// <summary>
-    /// 编辑类别页面
+    /// 编辑简谱页面
     /// </summary>
-    public sealed partial class EditCategoryPage : Page
+    public sealed partial class EditScorePage : Page
     {
-        public EditCategoryViewModel ViewModel { get; }
+        public EditScoreViewModel ViewModel { get; }
 
 
-        public EditCategoryPage()
+        public EditScorePage()
         {
             //将依赖注入的 ViewModel 注入到 MainWindow 中
-            ViewModel = App.Services.GetRequiredService<EditCategoryViewModel>();
+            ViewModel = App.Services.GetRequiredService<EditScoreViewModel>();
 
             //初始化组件（XAML UI 元素）
             InitializeComponent();
@@ -30,9 +30,10 @@ namespace SEH.Views
             if (e.Parameter != null)
             {
                 //将参数传给 ViewModel 进行初始化
-                ViewModel.Initialize(e.Parameter.ToString().Trim());
+                //ViewModel.Initialize(e.Parameter.ToString().Trim());
             }
         }
+
 
     }
 }
