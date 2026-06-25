@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Padding="20,10,20,20" RowSpacing="10" ColumnSpacing="10">
+    <Grid Padding="20,10,20,20" RowSpacing="20">
         <Grid.RowDefinitions>
             <!--工具栏-->
             <RowDefinition Height="Auto"/>
@@ -18,6 +18,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <!--工具栏-->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <CommandBar Background="Transparent" IsOpen="False" DefaultLabelPosition="Right">
                 <AppBarButton Label="保存简谱" Style="{StaticResource MyAppBarButtonStyle}"
@@ -35,11 +36,12 @@
             </CommandBar>
         </StackPanel>
 
+        <!--基本信息-->
         <Border Grid.Row="1" 
-                Background="{ThemeResource SystemChromeLowColor}"
+                Background="{ThemeResource SystemChromeWhiteColor}"
                 CornerRadius="10" 
                 Padding="10">
-            <Grid>
+            <Grid RowSpacing="10" ColumnSpacing="10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -174,9 +176,23 @@
                        FontSize="{StaticResource ToolTipContentThemeFontSize}" 
                        Margin="0,4,0,0"/>
                 </StackPanel>
-
             </Grid>
         </Border>
 
+        <!--简谱绘制区-->
+        <Border Grid.Row="2" Background="{ThemeResource SystemChromeWhiteColor}" 
+                CornerRadius="10" 
+                Padding="10">
+            <ScrollView HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                        HorizontalContentAlignment="Center" VerticalContentAlignment="Top">
+                <!--用 Grid 包裹 Border，Grid 会根据内容自适应大小-->
+                <Grid>
+                    <Border BorderBrush="{ThemeResource SystemChromeHighColor}" BorderThickness="1" Margin="50"
+                            HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <Canvas x:Name="ScoreCanvas" Width="794" Height="1123"/>
+                    </Border>
+                </Grid>
+            </ScrollView>
+        </Border>
     </Grid>
 </Page>

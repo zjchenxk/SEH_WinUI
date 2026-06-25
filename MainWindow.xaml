@@ -223,10 +223,7 @@
                         </Border>
 
                         <!--工作区-->
-                        <Frame x:Name="rootFrame" 
-                               Grid.Row="1" 
-                               Background="{ThemeResource SystemChromeWhiteColor}" 
-                               SourcePageType="views:HomePage"/>
+                        <Frame x:Name="rootFrame" Grid.Row="1" SourcePageType="views:HomePage"/>
                     </Grid>
                 </Border>
             </SplitView.Content>
