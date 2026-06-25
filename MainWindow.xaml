@@ -21,6 +21,8 @@
             <RowDefinition Height="Auto"/>
             <!--内容区-->
             <RowDefinition Height="*"/>
+            <!--状态栏-->
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid.Resources>
@@ -153,6 +155,11 @@
                             <BitmapIcon UriSource="/Assets/Images/添加.png" ShowAsMonochrome="False"/>
                         </AppBarButton.Icon>
                     </AppBarButton>
+                    <AppBarButton Label="打开简谱" Style="{StaticResource MyAppBarButtonStyle}">
+                        <AppBarButton.Icon>
+                            <BitmapIcon UriSource="/Assets/Images/打开.png" ShowAsMonochrome="False"/>
+                        </AppBarButton.Icon>
+                    </AppBarButton>
                     <AppBarButton Label="修改简谱" Style="{StaticResource MyAppBarButtonStyle}">
                         <AppBarButton.Icon>
                             <BitmapIcon UriSource="/Assets/Images/修改.png" ShowAsMonochrome="False"/>
@@ -200,17 +207,34 @@
             </SplitView.Pane>
 
             <SplitView.Content>
-                <Border BorderBrush="{ThemeResource SystemChromeHighColor}" 
-                        BorderThickness="1,0,0,0" 
-                        Background="{ThemeResource SystemChromeWhiteColor}">
+                <Border BorderBrush="{ThemeResource SystemChromeHighColor}" BorderThickness="1,0,0,0">
                     <Grid>
+                        <Grid.RowDefinitions>
+                            <!--面包屑-->
+                            <RowDefinition Height="Auto"/>
+                            <!--工作区-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!--面包屑-->
+                        <Border BorderBrush="{ThemeResource SystemChromeHighColor}" BorderThickness="0,0,0,1" Padding="10,5">
+                            <BreadcrumbBar x:Name="BreadcrumbBar" ItemsSource="{x:Bind ViewModel.BreadcrumbItems, Mode=OneWay}"/>
+                        </Border>
+
                         <!--工作区-->
-                        <Frame x:Name="rootFrame" SourcePageType="views:HomePage"/>
+                        <Frame x:Name="rootFrame" 
+                               Grid.Row="1" 
+                               Background="{ThemeResource SystemChromeWhiteColor}" 
+                               SourcePageType="views:HomePage"/>
                     </Grid>
                 </Border>
             </SplitView.Content>
 
         </SplitView>
 
+        <!--状态栏-->
+        <Border Grid.Row="2" BorderBrush="{ThemeResource SystemChromeHighColor}" BorderThickness="0,1,0,0" Padding="10">
+            <TextBlock x:Name="StatusBar" Text="© 2026 Chenxk Software Studio. All rights reserved." HorizontalAlignment="Center"/>
+        </Border>
     </Grid>
 </Window>

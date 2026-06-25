@@ -31,6 +31,11 @@ namespace SEH.ViewModels
         /// </summary>
         private readonly IDataService _dataService;
 
+        /// <summary>
+        /// 面包屑导航项，用于显示当前所在的类别路径
+        /// </summary>
+        [ObservableProperty]
+        private string[] _breadcrumbItems = [];
 
         /// <summary>
         /// 简谱列表
@@ -108,6 +113,14 @@ namespace SEH.ViewModels
         }
 
         /// <summary>
+        /// 重置面包屑导航项为首页
+        /// </summary>
+        public void ResetBreadcrumbItems()
+        {
+            BreadcrumbItems = ["首页"];
+        }
+
+        /// <summary>
         /// 新增类别命令
         /// [RelayCommand] 特性会自动生成一个名为 NewCategoryCommand 的公共命令属性。这个方法会在按钮被点击时执行
         /// </summary>
@@ -115,6 +128,8 @@ namespace SEH.ViewModels
         private void NewCategory()
         {
             _navigationService.NavigateTo(typeof(EditCategoryPage));
+
+            BreadcrumbItems = ["首页", "新增类别"];
         }
 
         /// <summary>
@@ -141,6 +156,8 @@ namespace SEH.ViewModels
             string categoryName = SelectedScoreItem.Name;
 
             _navigationService.NavigateTo(typeof(EditCategoryPage), categoryId);
+
+            BreadcrumbItems = ["首页", "修改类别"];
         }
 
         /// <summary>
@@ -196,6 +213,8 @@ namespace SEH.ViewModels
         private void NewScore()
         {
             _navigationService.NavigateTo(typeof(EditScorePage));
+
+            BreadcrumbItems = ["首页", "新增简谱"];
         }
     }
 }

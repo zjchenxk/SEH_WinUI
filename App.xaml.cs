@@ -51,6 +51,7 @@ namespace SEH
 
             //3.注册窗口和页面
             services.AddSingleton<MainWindow>();
+            services.AddTransient<HomePage>();
             services.AddTransient<EditCategoryPage>();
             services.AddTransient<EditScorePage>();
 

@@ -1,31 +1,26 @@
-using Microsoft.UI.Xaml;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+using SEH.ViewModels;
 
 namespace SEH.Views
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// 首页
     /// </summary>
     public sealed partial class HomePage : Page
     {
         public HomePage()
         {
             InitializeComponent();
+        }
+
+        protected override void OnNavigatedTo(Microsoft.UI.Xaml.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            //在页面导航到时，调用 MainViewModel 的 ResetBreadcrumbItems 方法重置面包屑导航项为首页
+            var mainViewModel = App.Services.GetRequiredService<MainViewModel>();
+            mainViewModel.ResetBreadcrumbItems();
         }
     }
 }
