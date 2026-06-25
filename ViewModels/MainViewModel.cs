@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using SEH.Commons;
 using SEH.Services.Interfaces;
 using SEH.Views;
@@ -210,9 +211,29 @@ namespace SEH.ViewModels
         /// [RelayCommand] 特性会自动生成一个名为 NewScoreCommand 的公共命令属性。这个方法会在按钮被点击时执行
         /// </summary>
         [RelayCommand]
-        private void NewScore()
+        private async Task NewScore()
         {
-            _navigationService.NavigateTo(typeof(EditScorePage));
+            var _messageService = App.Services.GetRequiredService<IMessageService>();
+
+            if (SelectedScoreItem == null)
+            {
+                await _messageService.ShowInfoAsync("未选择类别！");
+                return;
+            }
+            if (SelectedScoreItem.Type == ScoreItemType.File)
+            {
+                await _messageService.ShowInfoAsync("未选择类别！");
+                return;
+            }
+
+            string categoryId = SelectedScoreItem.Id;
+            string categoryName = SelectedScoreItem.Name;
+
+            JObject data = new JObject();
+            data["CategoryId"] = categoryId;
+            data["CategoryName"] = categoryName;
+
+            _navigationService.NavigateTo(typeof(EditScorePage), data);
 
             BreadcrumbItems = ["首页", "新增简谱"];
         }

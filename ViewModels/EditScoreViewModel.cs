@@ -1,6 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Newtonsoft.Json.Linq;
 using SEH.Services.Interfaces;
+using SEH.Views;
 using System.ComponentModel.DataAnnotations;
 
 namespace SEH.ViewModels
@@ -123,6 +126,33 @@ namespace SEH.ViewModels
             _messageService = messageService;
         }
 
+        public void Initialize(JObject param)
+        {
+            if (param != null)
+            {
+                if (param["CategoryId"] != null)
+                {
+                    CategoryId = param["CategoryId"].ToString();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 保存简谱命令
+        /// </summary>
+        [RelayCommand]
+        private void Save()
+        {
+        }
+
+        /// <summary>
+        /// 关闭退出命令
+        /// </summary>
+        [RelayCommand]
+        private void Close()
+        {
+            _navigationService.NavigateTo(typeof(HomePage));
+        }
 
     }
 }

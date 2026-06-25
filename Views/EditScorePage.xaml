@@ -20,12 +20,14 @@
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <CommandBar Background="Transparent" IsOpen="False" DefaultLabelPosition="Right">
-                <AppBarButton Label="保存简谱" Style="{StaticResource MyAppBarButtonStyle}">
+                <AppBarButton Label="保存简谱" Style="{StaticResource MyAppBarButtonStyle}"
+                              Command="{x:Bind ViewModel.SaveCommand}">
                     <AppBarButton.Icon>
                         <BitmapIcon UriSource="/Assets/Images/保存.png" ShowAsMonochrome="False"/>
                     </AppBarButton.Icon>
                 </AppBarButton>
-                <AppBarButton Label="关闭退出" Style="{StaticResource MyAppBarButtonStyle}">
+                <AppBarButton Label="关闭退出" Style="{StaticResource MyAppBarButtonStyle}"
+                              Command="{x:Bind ViewModel.CloseCommand}">
                     <AppBarButton.Icon>
                         <BitmapIcon UriSource="/Assets/Images/关闭.png" ShowAsMonochrome="False"/>
                     </AppBarButton.Icon>

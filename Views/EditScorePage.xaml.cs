@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
+using Newtonsoft.Json.Linq;
 using SEH.ViewModels;
 
 namespace SEH.Views
@@ -30,7 +31,7 @@ namespace SEH.Views
             if (e.Parameter != null)
             {
                 //将参数传给 ViewModel 进行初始化
-                //ViewModel.Initialize(e.Parameter.ToString().Trim());
+                ViewModel.Initialize((JObject)e.Parameter);
             }
         }
 
