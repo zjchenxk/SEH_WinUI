@@ -180,7 +180,8 @@
         </TitleBar>
 
         <!--内容区-->
-        <SplitView Grid.Row="1" IsPaneOpen="True" DisplayMode="Inline" OpenPaneLength="300">
+        <SplitView Grid.Row="1" IsPaneOpen="True" DisplayMode="Inline" OpenPaneLength="300"
+                   PaneBackground="Transparent">
 
             <SplitView.Pane>
                 <Grid>
