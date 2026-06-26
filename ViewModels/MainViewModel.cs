@@ -256,9 +256,9 @@ namespace SEH.ViewModels
                 return;
             }
 
-            string scoreId = SelectedScoreItem.Id;
+            string id = SelectedScoreItem.Id;
 
-            JObject param = new(new JProperty("Id", scoreId));
+            JObject param = new(new JProperty("Id", id));
 
             _navigationService.NavigateTo(typeof(EditScorePage), param);
 
@@ -285,8 +285,21 @@ namespace SEH.ViewModels
                 return;
             }
 
-            string scoreId = SelectedScoreItem.Id;
+            string id = SelectedScoreItem.Id;
+            string title = SelectedScoreItem.Name;
 
+            if (await _messageService.ShowConfirmAsync($"确定要删除简谱【{title}】吗？") != true)
+            {
+                return;
+            }
+
+            if (!_dataService.DeleteScore(id))
+            {
+                await _messageService.ShowErrorAsync("删除简谱失败！");
+                return;
+            }
+
+            LoadScoreItems();
         }
 
         /// <summary>
