@@ -22,6 +22,7 @@
     <None Remove="Assets\口琴128.png" />
     <None Remove="Views\EditScorePage.xaml" />
     <None Remove="Views\HomePage.xaml" />
+    <None Remove="Views\MoveScorePage.xaml" />
     <None Remove="Views\ViewScorePage.xaml" />
   </ItemGroup>
 
@@ -79,6 +80,11 @@
     <Content Update="Assets\Images\口琴128.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\MoveScorePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\ViewScorePage.xaml">

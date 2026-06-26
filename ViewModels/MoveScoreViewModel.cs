@@ -2,7 +2,7 @@
 
 namespace SEH.ViewModels
 {
-    public partial class ViewScoreViewModel : ObservableValidator
+    public partial class MoveScoreViewModel : ObservableObject
     {
     }
 }
