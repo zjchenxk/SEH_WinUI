@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using SEH.Commons;
+using SEH.Models;
 using SEH.Services.Interfaces;
 using SEH.Views;
 using System.Collections.Generic;
@@ -154,7 +155,6 @@ namespace SEH.ViewModels
             }
 
             string categoryId = SelectedScoreItem.Id;
-            string categoryName = SelectedScoreItem.Name;
 
             _navigationService.NavigateTo(typeof(EditCategoryPage), categoryId);
 
@@ -229,13 +229,116 @@ namespace SEH.ViewModels
             string categoryId = SelectedScoreItem.Id;
             string categoryName = SelectedScoreItem.Name;
 
-            JObject data = new JObject();
-            data["CategoryId"] = categoryId;
-            data["CategoryName"] = categoryName;
+            JObject param = new(new JProperty("CategoryId", categoryId));
 
-            _navigationService.NavigateTo(typeof(EditScorePage), data);
+            _navigationService.NavigateTo(typeof(EditScorePage), param);
 
             BreadcrumbItems = ["首页", "新增简谱"];
         }
+
+        /// <summary>
+        /// 修改简谱命令
+        /// [RelayCommand] 特性会自动生成一个名为 EditScoreCommand 的公共命令属性。这个方法会在按钮被点击时执行
+        /// </summary>
+        [RelayCommand]
+        private async Task EditScore()
+        {
+            var _messageService = App.Services.GetRequiredService<IMessageService>();
+
+            if (SelectedScoreItem == null)
+            {
+                await _messageService.ShowInfoAsync("未选择简谱！");
+                return;
+            }
+            if (SelectedScoreItem.Type == ScoreItemType.Folder)
+            {
+                await _messageService.ShowInfoAsync("未选择简谱！");
+                return;
+            }
+
+            string scoreId = SelectedScoreItem.Id;
+
+            JObject param = new(new JProperty("Id", scoreId));
+
+            _navigationService.NavigateTo(typeof(EditScorePage), param);
+
+            BreadcrumbItems = ["首页", "新增简谱"];
+        }
+
+        /// <summary>
+        /// 删除简谱命令
+        /// [RelayCommand] 特性会自动生成一个名为 EditScoreCommand 的公共命令属性。这个方法会在按钮被点击时执行
+        /// </summary>
+        [RelayCommand]
+        private async Task DeleteScore()
+        {
+            var _messageService = App.Services.GetRequiredService<IMessageService>();
+
+            if (SelectedScoreItem == null)
+            {
+                await _messageService.ShowInfoAsync("未选择简谱！");
+                return;
+            }
+            if (SelectedScoreItem.Type == ScoreItemType.Folder)
+            {
+                await _messageService.ShowInfoAsync("未选择简谱！");
+                return;
+            }
+
+            string scoreId = SelectedScoreItem.Id;
+
+        }
+
+        /// <summary>
+        /// 查看简谱命令
+        /// [RelayCommand] 特性会自动生成一个名为 EditScoreCommand 的公共命令属性。这个方法会在按钮被点击时执行
+        /// </summary>
+        [RelayCommand]
+        private async Task ViewScore()
+        {
+            var _messageService = App.Services.GetRequiredService<IMessageService>();
+
+            if (SelectedScoreItem == null)
+            {
+                await _messageService.ShowInfoAsync("未选择简谱！");
+                return;
+            }
+            if (SelectedScoreItem.Type == ScoreItemType.Folder)
+            {
+                await _messageService.ShowInfoAsync("未选择简谱！");
+                return;
+            }
+
+            string scoreId = SelectedScoreItem.Id;
+
+            _navigationService.NavigateTo(typeof(ViewScorePage), scoreId);
+
+            BreadcrumbItems = ["首页", "查看简谱"];
+        }
+
+        /// <summary>
+        /// 移动简谱命令
+        /// [RelayCommand] 特性会自动生成一个名为 EditScoreCommand 的公共命令属性。这个方法会在按钮被点击时执行
+        /// </summary>
+        [RelayCommand]
+        private async Task MoveScore()
+        {
+            var _messageService = App.Services.GetRequiredService<IMessageService>();
+
+            if (SelectedScoreItem == null)
+            {
+                await _messageService.ShowInfoAsync("未选择简谱！");
+                return;
+            }
+            if (SelectedScoreItem.Type == ScoreItemType.Folder)
+            {
+                await _messageService.ShowInfoAsync("未选择简谱！");
+                return;
+            }
+
+            string scoreId = SelectedScoreItem.Id;
+
+        }
+
     }
 }

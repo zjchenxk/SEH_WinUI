@@ -155,22 +155,26 @@
                             <BitmapIcon UriSource="/Assets/Images/添加.png" ShowAsMonochrome="False"/>
                         </AppBarButton.Icon>
                     </AppBarButton>
-                    <AppBarButton Label="打开简谱" Style="{StaticResource MyAppBarButtonStyle}">
-                        <AppBarButton.Icon>
-                            <BitmapIcon UriSource="/Assets/Images/打开.png" ShowAsMonochrome="False"/>
-                        </AppBarButton.Icon>
-                    </AppBarButton>
-                    <AppBarButton Label="修改简谱" Style="{StaticResource MyAppBarButtonStyle}">
+                    <AppBarButton Label="修改简谱" Style="{StaticResource MyAppBarButtonStyle}"
+                                  Command="{x:Bind ViewModel.EditScoreCommand}">
                         <AppBarButton.Icon>
                             <BitmapIcon UriSource="/Assets/Images/修改.png" ShowAsMonochrome="False"/>
                         </AppBarButton.Icon>
                     </AppBarButton>
-                    <AppBarButton Label="删除简谱" Style="{StaticResource MyAppBarButtonStyle}">
+                    <AppBarButton Label="删除简谱" Style="{StaticResource MyAppBarButtonStyle}"
+                                  Command="{x:Bind ViewModel.DeleteScoreCommand}">
                         <AppBarButton.Icon>
                             <BitmapIcon UriSource="/Assets/Images/删除.png" ShowAsMonochrome="False"/>
                         </AppBarButton.Icon>
                     </AppBarButton>
-                    <AppBarButton Label="移动简谱" Style="{StaticResource MyAppBarButtonStyle}">
+                    <AppBarButton Label="查看简谱" Style="{StaticResource MyAppBarButtonStyle}"
+                                  Command="{x:Bind ViewModel.ViewScoreCommand}">
+                        <AppBarButton.Icon>
+                            <BitmapIcon UriSource="/Assets/Images/打开.png" ShowAsMonochrome="False"/>
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton Label="移动简谱" Style="{StaticResource MyAppBarButtonStyle}"
+                                  Command="{x:Bind ViewModel.MoveScoreCommand}">
                         <AppBarButton.Icon>
                             <BitmapIcon UriSource="/Assets/Images/移动.png" ShowAsMonochrome="False"/>
                         </AppBarButton.Icon>

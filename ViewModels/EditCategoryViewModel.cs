@@ -34,6 +34,7 @@ namespace SEH.ViewModels
         /// </summary>
         private readonly IMessageService _messageService;
 
+
         /// <summary>
         /// 类别Id
         /// [ObservableProperty] 特性会自动生成一个名为 CategoryId 的公共属性和对应的属性变更通知代码，只需要维护私有字段就够了

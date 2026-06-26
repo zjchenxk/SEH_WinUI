@@ -160,6 +160,7 @@
                                  PlaceholderText="输入速度..."
                                  Header="速度："
                                  MaxLength="5"
+                                 InputScope="Number"
                                  HorizontalAlignment="Stretch"/>
 
                         <!--红字错误提示，绑定到 ViewModel 的 TempoError 属性-->
