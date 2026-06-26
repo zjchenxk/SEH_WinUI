@@ -322,9 +322,9 @@ namespace SEH.ViewModels
                 return;
             }
 
-            string scoreId = SelectedScoreItem.Id;
+            string id = SelectedScoreItem.Id;
 
-            _navigationService.NavigateTo(typeof(ViewScorePage), scoreId);
+            _navigationService.NavigateTo(typeof(ViewScorePage), id);
 
             BreadcrumbItems = ["首页", "查看简谱"];
         }
@@ -349,8 +349,11 @@ namespace SEH.ViewModels
                 return;
             }
 
-            string scoreId = SelectedScoreItem.Id;
+            string id = SelectedScoreItem.Id;
 
+            _navigationService.NavigateTo(typeof(MoveScorePage), id);
+
+            BreadcrumbItems = ["首页", "移动简谱"];
         }
 
     }

@@ -89,6 +89,14 @@ namespace SEH.Services.Interfaces
         /// <param name="id"></param>
         /// <returns></returns>
         bool DeleteScore(string id);
+
+        /// <summary>
+        /// 修改简谱类别
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="categoryId"></param>
+        /// <returns></returns>
+        bool UpdateScoreCategory(string id, string categoryId);
         #endregion
 
         #region 行管理

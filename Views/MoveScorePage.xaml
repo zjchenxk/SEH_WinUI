@@ -8,7 +8,33 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid>
+    <Grid RowSpacing="30" VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <ComboBox x:Name="CategoryName" 
+                  Grid.Column="1"
+                  ItemsSource="{x:Bind ViewModel.Categories, Mode=OneWay}"
+                  SelectedItem="{x:Bind ViewModel.SelectedCategory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  DisplayMemberPath="Name"
+                  Header="类别：" 
+                  PlaceholderText="选择类别..." 
+                  Width="400"/>
+
+        <StackPanel Grid.Row="1" Grid.Column="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="4">
+            <Button Content="确定" Style="{StaticResource AccentButtonStyle}" Command="{x:Bind ViewModel.OkCommand}" />
+            <Button Content="取消" Command="{x:Bind ViewModel.CancelCommand}" />
+        </StackPanel>
     </Grid>
 </Page>

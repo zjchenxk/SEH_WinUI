@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SEH.Services
 {
@@ -603,6 +604,40 @@ namespace SEH.Services
                 {
                     db.Rollback();
                 }
+                Log.Error(ex, "发生致命错误");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 修改简谱类别
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="categoryId"></param>
+        /// <returns></returns>
+        public bool UpdateScoreCategory(string id, string categoryId)
+        {
+            try
+            {
+                if (db != null)
+                {
+                    var data = db.Find<Score>(id);
+                    if (data != null)
+                    {
+                        data.CategoryId = categoryId;
+
+                        if (db.Update(data) > 0)
+                        {
+                            return true;
+                        }
+
+                        Log.Error($"修改简谱记录失败！{JsonSerializer.Serialize(data)}");
+                    }
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
                 Log.Error(ex, "发生致命错误");
                 return false;
             }
