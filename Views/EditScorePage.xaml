@@ -18,7 +18,7 @@
 
         <!--工具栏-->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-            <CommandBar Background="Transparent" IsOpen="False" DefaultLabelPosition="Right">
+            <CommandBar Background="Transparent" IsOpen="False" DefaultLabelPosition="Right" Padding="0">
                 <AppBarButton Label="保存简谱" Style="{StaticResource MyAppBarButtonStyle}"
                               Command="{x:Bind ViewModel.SaveCommand}">
                     <AppBarButton.Icon>
@@ -35,7 +35,7 @@
         </StackPanel>
 
         <!--内容区-->
-        <StackPanel Grid.Row="1">
+        <StackPanel Grid.Row="1" Margin="20,5,20,20">
             <Grid ColumnSpacing="20">
                 <Grid.ColumnDefinitions>
                     <!--基本信息区-->
@@ -45,26 +45,16 @@
                 </Grid.ColumnDefinitions>
 
                 <!--基本信息-->
-                <Border Grid.Column="0" Background="{ThemeResource SystemChromeWhiteColor}" CornerRadius="10" Padding="10">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
+                <ScrollView Width="300" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top">
+                    <StackPanel Orientation="Vertical">
                         <!--标题-->
-                        <StackPanel Grid.Row="0" HorizontalAlignment="Stretch" Margin="5">
+                        <StackPanel HorizontalAlignment="Stretch">
                             <TextBox x:Name="Title"
                                      Text="{x:Bind ViewModel.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PlaceholderText="输入标题..."
                                      Header="标题："
                                      MaxLength="100"
-                                     Width="300"/>
+                                     HorizontalAlignment="Stretch"/>
 
                             <!--红字错误提示，绑定到 ViewModel 的 TitleError 属性-->
                             <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
@@ -75,13 +65,13 @@
                         </StackPanel>
 
                         <!--作曲人-->
-                        <StackPanel Grid.Row="1" HorizontalAlignment="Stretch" Margin="5">
+                        <StackPanel Grid.Row="1" HorizontalAlignment="Stretch">
                             <TextBox x:Name="Composer"
                                      Text="{x:Bind ViewModel.Composer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PlaceholderText="输入作曲人..."
                                      Header="作曲人："
                                      MaxLength="50"
-                                     Width="300"/>
+                                     HorizontalAlignment="Stretch"/>
 
                             <!--红字错误提示，绑定到 ViewModel 的 ComposerError 属性-->
                             <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
@@ -92,13 +82,13 @@
                         </StackPanel>
 
                         <!--作词人-->
-                        <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" Margin="5">
+                        <StackPanel Grid.Row="2" HorizontalAlignment="Stretch">
                             <TextBox x:Name="Lyricist"
                                      Text="{x:Bind ViewModel.Lyricist, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PlaceholderText="输入作词人..."
                                      Header="作词人："
                                      MaxLength="50"
-                                     Width="300"/>
+                                     HorizontalAlignment="Stretch"/>
 
                             <!--红字错误提示，绑定到 ViewModel 的 LyricistError 属性-->
                             <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
@@ -109,12 +99,12 @@
                         </StackPanel>
 
                         <!--调号-->
-                        <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="5">
+                        <StackPanel Grid.Row="3" HorizontalAlignment="Stretch">
                             <ComboBox x:Name="KeySignature" 
                                       SelectedItem="{x:Bind ViewModel.KeySignature, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                       Header="调号：" 
                                       PlaceholderText="选择调号..." 
-                                      Width="300">
+                                      HorizontalAlignment="Stretch">
                                 <x:String>C</x:String>
                                 <x:String>D</x:String>
                                 <x:String>E</x:String>
@@ -132,12 +122,12 @@
                         </StackPanel>
 
                         <!--拍号-->
-                        <StackPanel Grid.Row="4" HorizontalAlignment="Stretch" Margin="5">
+                        <StackPanel Grid.Row="4" HorizontalAlignment="Stretch">
                             <ComboBox x:Name="TimeSignature" 
                                       SelectedItem="{x:Bind ViewModel.TimeSignature, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                       Header="拍号：" 
                                       PlaceholderText="选择拍号..." 
-                                      Width="300">
+                                      HorizontalAlignment="Stretch">
                                 <x:String>2/2</x:String>
                                 <x:String>3/2</x:String>
                                 <x:String>2/4</x:String>
@@ -165,13 +155,13 @@
                         </StackPanel>
 
                         <!--速度-->
-                        <StackPanel Grid.Row="5" HorizontalAlignment="Stretch" Margin="5">
+                        <StackPanel Grid.Row="5" HorizontalAlignment="Stretch">
                             <TextBox x:Name="Tempo"
                                      Text="{x:Bind ViewModel.Tempo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PlaceholderText="输入速度..."
                                      Header="速度："
                                      MaxLength="5"
-                                     Width="300"/>
+                                     HorizontalAlignment="Stretch"/>
 
                             <!--红字错误提示，绑定到 ViewModel 的 TempoError 属性-->
                             <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
@@ -180,11 +170,11 @@
                                        FontSize="{StaticResource ToolTipContentThemeFontSize}" 
                                        Margin="0,4,0,0"/>
                         </StackPanel>
-                    </Grid>
-                </Border>
+                    </StackPanel>
+                </ScrollView>
 
                 <!--简谱绘制区-->
-                <Border Grid.Column="1" Background="{ThemeResource SystemChromeWhiteColor}" CornerRadius="10" Padding="10">
+                <Border Grid.Column="1" Background="{ThemeResource SystemChromeWhiteColor}" CornerRadius="10">
                     <ScrollView HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Top">
                         <!--用 Grid 包裹 Border，Grid 会根据内容自适应大小-->

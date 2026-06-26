@@ -253,7 +253,7 @@
                                        TextAlignment="Center"
                                        TextWrapping="Wrap"
                                        Margin="{ThemeResource AppBarButtonTextLabelMargin}"
-                                       AutomationProperties.AccessibilityView="Raw" />
+                                       AutomationProperties.AccessibilityView="Raw"/>
 
                             <TextBlock x:Name="OverflowTextLabel" 
                                        Text="{TemplateBinding Label}" 
