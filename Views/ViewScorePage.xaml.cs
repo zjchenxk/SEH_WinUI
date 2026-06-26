@@ -29,7 +29,7 @@ namespace SEH.Views
             if (e.Parameter != null)
             {
                 //将参数传给 ViewModel 进行初始化
-                //ViewModel.Initialize((string)e.Parameter);
+                ViewModel.Initialize((string)e.Parameter);
             }
         }
     }
