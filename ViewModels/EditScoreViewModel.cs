@@ -1,12 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.UI.Xaml.Input;
 using Newtonsoft.Json.Linq;
 using SEH.Commons;
 using SEH.Models;
 using SEH.Services.Interfaces;
 using SEH.Views;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -123,6 +125,12 @@ namespace SEH.ViewModels
         /// </summary>
         [ObservableProperty]
         private string? _tempoError = "";
+
+        /// <summary>
+        /// 简谱渲染元素集合
+        /// </summary>
+        [ObservableProperty]
+        private List<ScoreRenderElement> _renderElements = [];
 
         /// <summary>
         /// 简谱对象，用于保存当前编辑的简谱数据
@@ -269,6 +277,33 @@ namespace SEH.ViewModels
 
             //4.验证通过
             return ValidationResult.Success;
+        }
+
+        /// <summary>
+        /// 绘制简谱
+        /// </summary>
+        private void DrawScore()
+        {
+
+        }
+
+        public async Task OnNoteTappedAsync(ScoreRenderTextElement textElement)
+        {
+            if (textElement != null)
+            {
+                //获取关联的原始音符数据
+                var clickedNote = textElement.NoteSource;
+
+                if (clickedNote != null)
+                {
+                    //这里可以执行点击后的逻辑，例如播放音符、弹窗提示等
+                    string msg = $"你点击了音符: {clickedNote.Pitch} (时值:{clickedNote.Duration}, 附点数:{clickedNote.Dots}, 连音线标志:{clickedNote.Slur}，演奏方法:{clickedNote.Articulation}，延长号标志:{clickedNote.Fermata}，歌词:{clickedNote.Lyrics})";
+
+                    //实际开发中可以调用依赖注入的播放服务或弹出通知
+                    //这里为了演示，修改该音符的颜色（需要给 TextElement 加颜色属性）
+                    await _messageService.ShowInfoAsync(msg);
+                }
+            }
         }
 
         /// <summary>

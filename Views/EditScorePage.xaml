@@ -4,9 +4,65 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SEH.Views"
+    xmlns:commons="using:SEH.Commons"
+    xmlns:viewModels="using:SEH.ViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+
+    <Page.Resources>
+        <!--文本渲染模板-->
+        <DataTemplate x:Key="TextTemplate" x:DataType="commons:ScoreRenderTextElement">
+            <TextBlock Text="{x:Bind Text}" 
+                       FontSize="{x:Bind FontSize}" 
+                       Canvas.Left="{x:Bind X}" 
+                       Canvas.Top="{x:Bind Y}"
+                       Tapped="TextBlock_Tapped"
+                       IsTapEnabled="True"
+                       Foreground="Black"/>
+        </DataTemplate>
+
+        <!--圆点渲染模板-->
+        <DataTemplate x:Key="DotTemplate" x:DataType="commons:ScoreRenderDotElement">
+            <Ellipse Width="{x:Bind Radius}" 
+                     Height="{x:Bind Radius}" 
+                     Fill="Black" 
+                     Canvas.Left="{x:Bind X}" 
+                     Canvas.Top="{x:Bind Y}"/>
+        </DataTemplate>
+
+        <!--线条渲染模板-->
+        <DataTemplate x:Key="LineTemplate" x:DataType="commons:ScoreRenderLineElement">
+            <Rectangle Width="{x:Bind Width}" 
+                       Height="{x:Bind Height}" 
+                       Fill="Black" 
+                       Canvas.Left="{x:Bind X}" 
+                       Canvas.Top="{x:Bind Y}"/>
+        </DataTemplate>
+
+        <!--弧线渲染模板-->
+        <DataTemplate x:Key="ArcTemplate" x:DataType="commons:ScoreRenderArcElement">
+            <!--使用 Canvas.Left/Top 设置整个 Path 的基础位置为 (0,0)-->
+            <Path Canvas.Left="0" Canvas.Top="0"
+              Stroke="Black" StrokeThickness="1.5" Fill="Transparent">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="{x:Bind StartPoint}">
+                            <!--二次贝塞尔曲线，控制点在两点中间，向上偏移 ControlOffset-->
+                            <QuadraticBezierSegment Point1="{x:Bind ControlPoint}" Point2="{x:Bind EndPoint}" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </DataTemplate>
+
+        <!--渲染模板选择器-->
+        <commons:ScoreRenderTemplateSelector x:Key="ScoreTemplateSelector"
+                                             TextDataTemplate="{StaticResource TextTemplate}"
+                                             DotDataTemplate="{StaticResource DotTemplate}"
+                                             LineDataTemplate="{StaticResource LineTemplate}"
+                                             ArcDataTemplate="{StaticResource ArcTemplate}"/>
+    </Page.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -19,6 +75,27 @@
         <!--工具栏-->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <CommandBar Background="Transparent" IsOpen="False" DefaultLabelPosition="Right" Padding="0">
+                <AppBarButton Label="新增一行" Style="{StaticResource MyAppBarButtonStyle}">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/添加一行.png" ShowAsMonochrome="False"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton Label="新增小节" Style="{StaticResource MyAppBarButtonStyle}">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/添加小节.png" ShowAsMonochrome="False"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton Label="新增音符" Style="{StaticResource MyAppBarButtonStyle}">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/添加音符.png" ShowAsMonochrome="False"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton Label="新增组合" Style="{StaticResource MyAppBarButtonStyle}">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/添加组合.png" ShowAsMonochrome="False"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarSeparator/>
                 <AppBarButton Label="保存简谱" Style="{StaticResource MyAppBarButtonStyle}"
                               Command="{x:Bind ViewModel.SaveCommand}">
                     <AppBarButton.Icon>
@@ -182,7 +259,14 @@
                         <Border BorderBrush="{ThemeResource SystemChromeHighColor}" BorderThickness="1" Margin="40"
                                 HorizontalAlignment="Center" VerticalAlignment="Top">
                             <!--默认两张A4纸高度-->
-                            <Canvas x:Name="ScoreCanvas" Width="794" Height="3369"/>
+                            <ItemsControl ItemsSource="{x:Bind ViewModel.RenderElements, Mode=OneWay}"
+                                          ItemTemplateSelector="{StaticResource ScoreTemplateSelector}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas Width="794" Height="3369"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
                         </Border>
                     </Grid>
                 </ScrollView>

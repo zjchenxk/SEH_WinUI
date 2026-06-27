@@ -262,7 +262,7 @@ namespace SEH.ViewModels
 
             _navigationService.NavigateTo(typeof(EditScorePage), param);
 
-            BreadcrumbItems = ["首页", "新增简谱"];
+            BreadcrumbItems = ["首页", "修改简谱"];
         }
 
         /// <summary>
