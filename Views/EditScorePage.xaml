@@ -7,7 +7,7 @@
     xmlns:commons="using:SEH.Commons"
     xmlns:viewModels="using:SEH.ViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DataContext="{d:DesignInstance Type=viewModels:EditScoreViewModel}"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -258,12 +258,12 @@
                     <Grid>
                         <Border BorderBrush="{ThemeResource SystemChromeHighColor}" BorderThickness="1" Margin="40"
                                 HorizontalAlignment="Center" VerticalAlignment="Top">
-                            <!--默认两张A4纸高度-->
                             <ItemsControl ItemsSource="{x:Bind ViewModel.RenderElements, Mode=OneWay}"
                                           ItemTemplateSelector="{StaticResource ScoreTemplateSelector}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <Canvas Width="794" Height="3369"/>
+                                        <Canvas Width="{Binding CanvasWidth, Mode=OneWay}" 
+                                                Height="{Binding CanvasHeight, Mode=OneWay}"/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                             </ItemsControl>

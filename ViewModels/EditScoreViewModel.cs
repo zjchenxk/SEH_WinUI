@@ -133,6 +133,19 @@ namespace SEH.ViewModels
         private List<ScoreRenderElement> _renderElements = [];
 
         /// <summary>
+        /// 画布宽度（默认A4纸宽度）
+        /// </summary>
+        [ObservableProperty]
+        private double _canvasWidth = 794;
+
+        /// <summary>
+        /// 画布高度（默认两张A4纸高度）
+        /// </summary>
+        [ObservableProperty]
+        private double _canvasHeight = 2246;
+
+
+        /// <summary>
         /// 简谱对象，用于保存当前编辑的简谱数据
         /// </summary>
         private Score? _score = new();
@@ -287,7 +300,7 @@ namespace SEH.ViewModels
 
         }
 
-        public async Task OnNoteTappedAsync(ScoreRenderTextElement textElement)
+        public void OnNoteTappedAsync(ScoreRenderTextElement textElement)
         {
             if (textElement != null)
             {
@@ -301,7 +314,7 @@ namespace SEH.ViewModels
 
                     //实际开发中可以调用依赖注入的播放服务或弹出通知
                     //这里为了演示，修改该音符的颜色（需要给 TextElement 加颜色属性）
-                    await _messageService.ShowInfoAsync(msg);
+                    _messageService.ShowInfoAsync(msg).Wait();
                 }
             }
         }
