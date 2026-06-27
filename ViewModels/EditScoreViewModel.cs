@@ -1,14 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
 using Newtonsoft.Json.Linq;
 using SEH.Commons;
 using SEH.Models;
 using SEH.Services.Interfaces;
 using SEH.Views;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -130,7 +130,7 @@ namespace SEH.ViewModels
         /// 简谱渲染元素集合
         /// </summary>
         [ObservableProperty]
-        private List<ScoreRenderElement> _renderElements = [];
+        private ObservableCollection<ScoreRenderElement> _renderElements = [];
 
         /// <summary>
         /// 画布宽度（默认A4纸宽度）
@@ -148,7 +148,12 @@ namespace SEH.ViewModels
         /// <summary>
         /// 简谱对象，用于保存当前编辑的简谱数据
         /// </summary>
-        private Score? _score = new();
+        private Score _score = new();
+
+        /// <summary>
+        /// 定时器
+        /// </summary>
+        private DispatcherTimer? _debounceTimer;
 
 
         public EditScoreViewModel(IMessenger messenger, INavigationService navigationService, IDataService dataService, IMessageService messageService)
@@ -205,11 +210,7 @@ namespace SEH.ViewModels
         {
             if (param != null)
             {
-                if (param["CategoryId"] != null)
-                {
-                    CategoryId = param["CategoryId"].ToString();
-                }
-                else if (param["Id"] != null)
+                if (param["Id"] != null)//修改简谱
                 {
                     var score = _dataService.GetScore(param["Id"].ToString());
                     if (score == null)
@@ -229,37 +230,101 @@ namespace SEH.ViewModels
 
                     _score = score;
                 }
+                else//新增简谱
+                {
+                    if (param["CategoryId"] != null)
+                    {
+                        CategoryId = param["CategoryId"].ToString();
+                    }
+                    KeySignature = "C";
+                    TimeSignature = "4/4";
+                    Tempo = "90";
+                }
             }
         }
 
         partial void OnTitleChanged(string value)
         {
             ValidateProperty(value, nameof(Title));
+
+            if (!string.IsNullOrWhiteSpace(TitleError))
+            {
+                return;
+            }
+
+            _score.Title = value;
+
+            ScheduleRedraw();
         }
 
         partial void OnComposerChanged(string value)
         {
             ValidateProperty(value, nameof(Composer));
+
+            if (!string.IsNullOrWhiteSpace(ComposerError))
+            {
+                return;
+            }
+
+            _score.Composer = value;
+
+            ScheduleRedraw();
         }
 
         partial void OnLyricistChanged(string value)
         {
             ValidateProperty(value, nameof(Lyricist));
+
+            if (!string.IsNullOrWhiteSpace(LyricistError))
+            {
+                return;
+            }
+
+            _score.Lyricist = value;
+
+            ScheduleRedraw();
         }
 
         partial void OnKeySignatureChanged(string value)
         {
             ValidateProperty(value, nameof(KeySignature));
+
+            if (!string.IsNullOrWhiteSpace(KeySignatureError))
+            {
+                return;
+            }
+
+            _score.KeySignature = value;
+
+            ScheduleRedraw();
         }
 
         partial void OnTimeSignatureChanged(string value)
         {
             ValidateProperty(value, nameof(TimeSignature));
+
+            if (!string.IsNullOrWhiteSpace(TimeSignatureError))
+            {
+                return;
+            }
+
+            _score.TimeSignature = value;
+
+            ScheduleRedraw();
         }
 
         partial void OnTempoChanged(string value)
         {
             ValidateProperty(value, nameof(Tempo));
+
+            if (!string.IsNullOrWhiteSpace(TempoError))
+            {
+                return;
+            }
+
+            _score.Tempo = int.Parse(value);
+
+            ScheduleRedraw();
         }
 
         /// <summary>
@@ -293,10 +358,162 @@ namespace SEH.ViewModels
         }
 
         /// <summary>
+        /// 延迟1秒后绘制简谱
+        /// </summary>
+        private void ScheduleRedraw()
+        {
+            _debounceTimer?.Stop();
+            _debounceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1000) };
+            _debounceTimer.Tick += (s, e) =>
+            {
+                _debounceTimer.Stop();
+
+                DrawScore();
+            };
+            _debounceTimer.Start();
+        }
+
+        /// <summary>
         /// 绘制简谱
         /// </summary>
         private void DrawScore()
         {
+            RenderElements.Clear();
+
+            double startX = 20;
+            double startY = 20;
+            double rowHeight = 120;
+            double noteWidth = 40;
+            double noteBaseYOffset = 40;
+
+            //1.绘图区宽度，用于右对齐排版（稍后会根据实际更新）
+            double areaWidth = CanvasWidth - 40;
+
+            double currentY = startY;
+
+            //绘制标题
+            if (!string.IsNullOrEmpty(_score.Title))
+            {
+                double titleFontSize = 24;
+                double titleWidth = _score.Title.Length * titleFontSize * 0.7; //粗略估算字宽
+
+                RenderElements.Add(new ScoreRenderTextElement
+                {
+                    X = (areaWidth - titleWidth) / 2, //居中
+                    Y = currentY,
+                    Text = _score.Title,
+                    FontSize = titleFontSize,
+                    IsBold = true
+                });
+                currentY += 50;
+            }
+
+            //绘制元信息行（第一行和第二行）
+            //第一行：左侧调号+拍号，右侧作曲
+            double metaY1 = currentY;
+            double leftX1 = startX;
+            double rightX1 = areaWidth - startX;
+
+            //左侧：调号
+            if (!string.IsNullOrEmpty(_score.KeySignature))
+            {
+                RenderElements.Add(new ScoreRenderTextElement
+                {
+                    X = leftX1,
+                    Y = metaY1,
+                    Text = $"1={_score.KeySignature}",
+                    FontSize = 18
+                });
+                leftX1 += 50; //调号后留出间距
+            }
+
+            // 左侧：拍号（按分数上下显示）
+            if (!string.IsNullOrEmpty(_score.TimeSignature) && _score.TimeSignature.Contains('/'))
+            {
+                var parts = _score.TimeSignature.Split('/');
+                string numerator = parts[0];     //分子（如：4）
+                string denominator = parts[1];   //分母（如：4）
+
+                //绘制分子（往上偏移）
+                RenderElements.Add(new ScoreRenderTextElement
+                {
+                    X = leftX1,
+                    Y = metaY1 - 8,
+                    Text = numerator,
+                    FontSize = 18
+                });
+                //绘制中间的横线（X 略微右移 2px 居中，宽度 14px，Y 坐标取分子和分母中间）
+                RenderElements.Add(new ScoreRenderLineElement
+                {
+                    X = leftX1 + 2,
+                    Y = metaY1 + 11,
+                    Width = 14,
+                    Height = 2,
+                    IsVertical = false
+                });
+                //绘制分母 （往下偏移）
+                RenderElements.Add(new ScoreRenderTextElement
+                {
+                    X = leftX1,
+                    Y = metaY1 + 15,
+                    Text = denominator,
+                    FontSize = 18
+                });
+                leftX1 += 30; // 拍号占位
+            }
+
+            // 右侧：作曲
+            if (!string.IsNullOrEmpty(_score.Composer))
+            {
+                string text = $"作曲: {_score.Composer}";
+                double fontSize = 18;
+                double width = text.Length * fontSize * 0.7; //估算宽度
+
+                RenderElements.Add(new ScoreRenderTextElement
+                {
+                    X = rightX1 - width,
+                    Y = metaY1,
+                    Text = text,
+                    FontSize = fontSize
+                });
+            }
+
+            //第二行：左侧速度，右侧作词
+            double metaY2 = metaY1 + 35; //下移 35 像素作为第二行
+            double leftX2 = startX;
+            double rightX2 = areaWidth - startX;
+
+            //左侧：速度
+            if (!string.IsNullOrEmpty(_score.Tempo.ToString()))
+            {
+                RenderElements.Add(new ScoreRenderTextElement
+                {
+                    X = leftX2,
+                    Y = metaY2,
+                    Text = $"♩={_score.Tempo}",
+                    FontSize = 18
+                });
+            }
+
+            //右侧：作词
+            if (!string.IsNullOrEmpty(_score.Lyricist))
+            {
+                string text = $"作词: {_score.Lyricist}";
+                double fontSize = 18;
+                double width = text.Length * fontSize * 0.7;
+                RenderElements.Add(new ScoreRenderTextElement
+                {
+                    X = rightX2 - width,
+                    Y = metaY2,
+                    Text = text,
+                    FontSize = fontSize
+                });
+            }
+
+            //元信息结束，为乐谱音符区腾出空间
+            currentY = metaY2 + 40;
+
+
 
         }
 

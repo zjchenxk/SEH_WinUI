@@ -15,8 +15,7 @@
         <DataTemplate x:Key="TextTemplate" x:DataType="commons:ScoreRenderTextElement">
             <TextBlock Text="{x:Bind Text}" 
                        FontSize="{x:Bind FontSize}" 
-                       Canvas.Left="{x:Bind X}" 
-                       Canvas.Top="{x:Bind Y}"
+                       FontWeight="{x:Bind GetFontWeight()}"
                        Tapped="TextBlock_Tapped"
                        IsTapEnabled="True"
                        Foreground="Black"/>
@@ -26,29 +25,22 @@
         <DataTemplate x:Key="DotTemplate" x:DataType="commons:ScoreRenderDotElement">
             <Ellipse Width="{x:Bind Radius}" 
                      Height="{x:Bind Radius}" 
-                     Fill="Black" 
-                     Canvas.Left="{x:Bind X}" 
-                     Canvas.Top="{x:Bind Y}"/>
+                     Fill="Black"/>
         </DataTemplate>
 
         <!--线条渲染模板-->
         <DataTemplate x:Key="LineTemplate" x:DataType="commons:ScoreRenderLineElement">
             <Rectangle Width="{x:Bind Width}" 
                        Height="{x:Bind Height}" 
-                       Fill="Black" 
-                       Canvas.Left="{x:Bind X}" 
-                       Canvas.Top="{x:Bind Y}"/>
+                       Fill="Black"/>
         </DataTemplate>
 
         <!--弧线渲染模板-->
         <DataTemplate x:Key="ArcTemplate" x:DataType="commons:ScoreRenderArcElement">
-            <!--使用 Canvas.Left/Top 设置整个 Path 的基础位置为 (0,0)-->
-            <Path Canvas.Left="0" Canvas.Top="0"
-              Stroke="Black" StrokeThickness="1.5" Fill="Transparent">
+            <Path Stroke="Black" StrokeThickness="1.5" Fill="Transparent">
                 <Path.Data>
                     <PathGeometry>
                         <PathFigure StartPoint="{x:Bind StartPoint}">
-                            <!--二次贝塞尔曲线，控制点在两点中间，向上偏移 ControlOffset-->
                             <QuadraticBezierSegment Point1="{x:Bind ControlPoint}" Point2="{x:Bind EndPoint}" />
                         </PathFigure>
                     </PathGeometry>
@@ -56,12 +48,31 @@
             </Path>
         </DataTemplate>
 
+        <!--延长号渲染模板(半圆+圆点)-->
+        <DataTemplate x:Key="FermataTemplate" x:DataType="commons:ScoreRenderFermataElement">
+            <Grid Width="20" Height="17">
+                <!-- 
+                  Path 数据: M 0,10 A 10,10 0 0 1 20,10
+                  表示从 (0,10) 开始，画一个半径为10的顺时针弧线到 (20,10)。
+                  这会形成一个宽度为20、高度为10的半圆（开口朝下）。
+                -->
+                <Path Stroke="Black" StrokeThickness="1.5" Data="M 0,10 A 10,10 0 0 1 20,10" />
+                <!-- 
+                  圆点: 宽高3。
+                  Margin="8.5,14,0,0" 使其居中于半圆下方 (X: 10-1.5=8.5, Y: 10+4=14)
+                -->
+                <Ellipse Width="3" Height="3" Fill="Black" Margin="8.5,14,0,0" 
+                         HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            </Grid>
+        </DataTemplate>
+
         <!--渲染模板选择器-->
         <commons:ScoreRenderTemplateSelector x:Key="ScoreTemplateSelector"
                                              TextDataTemplate="{StaticResource TextTemplate}"
                                              DotDataTemplate="{StaticResource DotTemplate}"
                                              LineDataTemplate="{StaticResource LineTemplate}"
-                                             ArcDataTemplate="{StaticResource ArcTemplate}"/>
+                                             ArcDataTemplate="{StaticResource ArcTemplate}"
+                                             FermataDataTemplate="{StaticResource FermataTemplate}"/>
     </Page.Resources>
 
     <Grid>
@@ -260,6 +271,14 @@
                                 HorizontalAlignment="Center" VerticalAlignment="Top">
                             <ItemsControl ItemsSource="{x:Bind ViewModel.RenderElements, Mode=OneWay}"
                                           ItemTemplateSelector="{StaticResource ScoreTemplateSelector}">
+                                <!--使用 ItemContainerStyle 为外层容器定位-->
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style TargetType="ContentPresenter">
+                                        <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                                        <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                                
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas Width="{Binding CanvasWidth, Mode=OneWay}" 

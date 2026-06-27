@@ -1,4 +1,6 @@
-﻿using SEH.Models;
+﻿using Microsoft.UI.Text;
+using SEH.Models;
+using Windows.UI.Text;
 
 namespace SEH.Commons
 {
@@ -8,8 +10,11 @@ namespace SEH.Commons
     public class ScoreRenderTextElement : ScoreRenderElement
     {
         public string Text { get; set; } = "";
-        public double FontSize { get; set; } = 24;
+        public double FontSize { get; set; } = 18;
+        public bool IsBold { get; set; } = false;
 
         public Note? NoteSource { get; set; } = null;
+
+        public FontWeight GetFontWeight() => IsBold ? FontWeights.Bold : FontWeights.Normal;
     }
 }
