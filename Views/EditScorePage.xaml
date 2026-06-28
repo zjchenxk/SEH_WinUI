@@ -147,6 +147,12 @@
                         <BitmapIcon UriSource="/Assets/Images/添加音符.png" ShowAsMonochrome="False"/>
                     </AppBarButton.Icon>
                 </AppBarButton>
+                <AppBarButton Label="修改音符" Style="{StaticResource MyAppBarButtonStyle}"
+                              Command="{x:Bind ViewModel.EditNoteCommand}">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/修改音符.png" ShowAsMonochrome="False"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
                 <AppBarButton Label="删除音符" Style="{StaticResource MyAppBarButtonStyle}"
                               Command="{x:Bind ViewModel.DeleteNoteCommand}">
                     <AppBarButton.Icon>

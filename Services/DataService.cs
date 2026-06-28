@@ -235,19 +235,19 @@ namespace SEH.Services
                     if (score != null)
                     {
                         //读取行记录
-                        var lines = db.Table<Line>().Where(u => u.ScoreId == id).ToList();
+                        var lines = db.Table<Line>().Where(u => u.ScoreId == id).OrderBy(u => u.Number).ToList();
                         if (lines != null && lines.Count > 0)
                         {
                             foreach (var line in lines)
                             {
                                 //读取每行的小节记录
-                                var measures = db.Table<Measure>().Where(u => u.ScoreId == id && u.LineId == line.Id).ToList();
+                                var measures = db.Table<Measure>().Where(u => u.ScoreId == id && u.LineId == line.Id).OrderBy(u => u.Number).ToList();
                                 if (measures != null && measures.Count > 0)
                                 {
                                     foreach (var measure in measures)
                                     {
                                         //读取每小节的音符记录
-                                        var notes = db.Table<Note>().Where(u => u.ScoreId == id && u.LineId == line.Id && u.MeasureId == measure.Id).ToList();
+                                        var notes = db.Table<Note>().Where(u => u.ScoreId == id && u.LineId == line.Id && u.MeasureId == measure.Id).OrderBy(u => u.Number).ToList();
                                         measure.Notes = notes;
 
                                         //读取每小节的连尾组合记录

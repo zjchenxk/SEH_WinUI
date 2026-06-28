@@ -158,6 +158,10 @@ namespace SEH.ViewModels
         /// 当前小节对象
         /// </summary>
         private Measure? _measure = null;
+        /// <summary>
+        /// 当前音符对象
+        /// </summary>
+        private Note? _note = null;
 
         /// <summary>
         /// 定时器
@@ -372,10 +376,14 @@ namespace SEH.ViewModels
         [RelayCommand]
         private void NewLine()
         {
-            _line = new Line();
             _score.Lines ??= [];
+            _line = new Line
+            {
+                Number = _score.Lines.Count + 1
+            };
             _score.Lines.Add(_line);
 
+            //绘制简谱
             DrawScore();
         }
 
@@ -400,6 +408,7 @@ namespace SEH.ViewModels
                 _line = _score.Lines[^1];//[^1]代表最后一个元素
             }
 
+            //绘制简谱
             DrawScore();
         }
 
@@ -411,11 +420,45 @@ namespace SEH.ViewModels
         {
             if (_line == null)
             {
-                await _messageService.ShowErrorAsync("请先新增一行！");
+                await _messageService.ShowErrorAsync("请新增一行！");
                 return;
             }
 
+            //判断行宽度是否超出画布宽度？
+            if (_line.Measures != null && _line.Measures.Count > 0)
+            {
+                //获取当前所有小节总宽度
+                double totalMeasureWidth = 0;
+                foreach (var measure in _line.Measures)
+                {
+                    totalMeasureWidth += measure.Width;
+                }
 
+                //获取拍号中的分子（表示每小节有几拍）
+                int beats = 4;
+                if (!string.IsNullOrEmpty(_score.TimeSignature) && _score.TimeSignature.Contains('/'))
+                {
+                    var parts = _score.TimeSignature.Split('/');
+                    beats = int.Parse(parts[0]);
+                }
+
+                if (totalMeasureWidth + 10/*左边距*/ + 40 * beats/*音符总宽度*/ + 10/*右边距*/ + 2/*小节终点竖线*/ >= CanvasWidth)
+                {
+                    await _messageService.ShowErrorAsync("页面宽度不足，请新增一行！");
+                    return;
+                }
+            }
+
+            //新增小节
+            _line.Measures ??= [];
+            _measure = new Measure()
+            {
+                Number = _line.Measures.Count + 1
+            };
+            _line.Measures.Add(_measure);
+
+            //绘制简谱
+            DrawScore();
         }
 
         /// <summary>
@@ -424,15 +467,58 @@ namespace SEH.ViewModels
         [RelayCommand]
         private void DeleteMeasure()
         {
+            if (_line == null)
+            {
+                return;
+            }
+            if (_line.Measures == null || _line.Measures.Count == 0)
+            {
+                return;
+            }
+            _line.Measures.RemoveAt(_line.Measures.Count - 1);
+            if (_line.Measures.Count == 0)
+            {
+                _line.Measures = null;
+                _measure = null;
+            }
+            else
+            {
+                _measure = _line.Measures[^1];//[^1]代表最后一个元素
+            }
 
+            //绘制简谱
+            DrawScore();
         }
 
         /// <summary>
         /// 新增音符命令
         /// </summary>
         [RelayCommand]
-        private void NewNote()
+        private async Task NewNote()
         {
+            if (_line == null)
+            {
+                await _messageService.ShowErrorAsync("请新增一行！");
+                return;
+            }
+            if (_measure == null)
+            {
+                await _messageService.ShowErrorAsync("请新增小节！");
+                return;
+            }
+
+        }
+
+        /// <summary>
+        /// 修改音符命令
+        /// </summary>
+        [RelayCommand]
+        private void EditNote()
+        {
+            if (_note == null)
+            {
+                return;
+            }
 
         }
 
@@ -449,9 +535,26 @@ namespace SEH.ViewModels
         /// 新增组合命令
         /// </summary>
         [RelayCommand]
-        private void NewBeam()
+        private async Task NewBeam()
         {
+            if (_line == null)
+            {
+                await _messageService.ShowErrorAsync("请新增一行！");
+                return;
+            }
+            if (_measure == null)
+            {
+                await _messageService.ShowErrorAsync("请新增小节！");
+                return;
+            }
 
+            //新增组合
+            _measure.Beams ??= [];
+            var beam = new Beam()
+            {
+                Number = _measure.Beams.Count + 1
+            };
+            _measure.Beams.Add(beam);
         }
 
         /// <summary>
@@ -460,9 +563,27 @@ namespace SEH.ViewModels
         [RelayCommand]
         private void DeleteBeam()
         {
+            if (_line == null)
+            {
+                return;
+            }
+            if (_measure == null)
+            {
+                return;
+            }
+            if (_measure.Beams == null || _measure.Beams.Count == 0)
+            {
+                return;
+            }
+            _measure.Beams.RemoveAt(_measure.Beams.Count - 1);
+            if (_measure.Beams.Count == 0)
+            {
+                _measure.Beams = null;
+            }
 
+            //绘制简谱
+            DrawScore();
         }
-
 
         /// <summary>
         /// 延迟1秒后绘制简谱
@@ -498,7 +619,7 @@ namespace SEH.ViewModels
 
             double currentY = startY;
 
-            #region 绘制基本信息
+            #region 绘制元信息
             //绘制标题
             if (!string.IsNullOrEmpty(_score.Title))
             {
@@ -516,8 +637,7 @@ namespace SEH.ViewModels
                 currentY += 50;
             }
 
-            //绘制元信息行（第一行和第二行）
-            //第一行：左侧调号+拍号，右侧作曲
+            //绘制调号+拍号，作曲
             double metaY1 = currentY;
             double leftX1 = startX;
             double rightX1 = workspaceWidth - startX;
@@ -536,11 +656,14 @@ namespace SEH.ViewModels
             }
 
             // 左侧：拍号（按分数上下显示）
+            int beats = 4;
             if (!string.IsNullOrEmpty(_score.TimeSignature) && _score.TimeSignature.Contains('/'))
             {
                 var parts = _score.TimeSignature.Split('/');
                 string numerator = parts[0];     //分子（如：4）
                 string denominator = parts[1];   //分母（如：4）
+
+                beats = int.Parse(numerator);
 
                 //绘制分子（往上偏移）
                 RenderElements.Add(new ScoreRenderTextElement
@@ -588,7 +711,7 @@ namespace SEH.ViewModels
                 });
             }
 
-            //第二行：左侧速度，右侧作词
+            //绘制速度，作词
             double metaY2 = metaY1 + 35; //下移 35 像素作为第二行
             double leftX2 = startX;
             double rightX2 = workspaceWidth - startX;
@@ -623,7 +746,6 @@ namespace SEH.ViewModels
                 });
             }
 
-            //元信息结束，为乐谱音符区腾出空间
             currentY = metaY2 + 40;
 
             #endregion
@@ -669,6 +791,7 @@ namespace SEH.ViewModels
                             currentX += 10;//行起点竖线或小节竖线与音符的间距
 
                             #region 绘制音符
+                            double totalNoteWidth = 0;
                             if (measure.Notes != null && measure.Notes.Count > 0)
                             {
                                 foreach (var note in measure.Notes)
@@ -678,7 +801,9 @@ namespace SEH.ViewModels
                             }
                             else
                             {
-                                currentX += 160;//绘制空白小节
+                                //绘制空白小节
+                                totalNoteWidth = noteWidth * beats;
+                                currentX += totalNoteWidth;
                             }
                             #endregion
 
@@ -693,6 +818,9 @@ namespace SEH.ViewModels
                                 Height = 40,
                                 IsVertical = true
                             });
+
+                            measure.Width = 10/*左边距*/ + totalNoteWidth/*所有音符宽度*/ + 10/*右边距*/ + 2/*小节终点竖线宽度*/;
+
                             currentX += 2;
                         }
                     }

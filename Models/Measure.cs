@@ -41,6 +41,12 @@ namespace SEH.Models
         public int FinalLine { get; set; }
 
         /// <summary>
+        /// 小节宽度
+        /// </summary>
+        [Ignore]
+        public double Width { get; set; }
+
+        /// <summary>
         /// 音符集合
         /// </summary>
         [Ignore]
