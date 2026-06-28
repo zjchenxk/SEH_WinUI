@@ -424,7 +424,7 @@ namespace SEH.ViewModels
                     Text = $"1={_score.KeySignature}",
                     FontSize = 18
                 });
-                leftX1 += 50; //调号后留出间距
+                leftX1 += 40; //调号后留出间距
             }
 
             // 左侧：拍号（按分数上下显示）
@@ -438,15 +438,15 @@ namespace SEH.ViewModels
                 RenderElements.Add(new ScoreRenderTextElement
                 {
                     X = leftX1,
-                    Y = metaY1 - 8,
+                    Y = metaY1 - 10,
                     Text = numerator,
                     FontSize = 18
                 });
-                //绘制中间的横线（X 略微右移 2px 居中，宽度 14px，Y 坐标取分子和分母中间）
+                //绘制中间的横线
                 RenderElements.Add(new ScoreRenderLineElement
                 {
-                    X = leftX1 + 2,
-                    Y = metaY1 + 11,
+                    X = leftX1,
+                    Y = metaY1 + 14,
                     Width = 14,
                     Height = 2,
                     IsVertical = false
@@ -455,7 +455,7 @@ namespace SEH.ViewModels
                 RenderElements.Add(new ScoreRenderTextElement
                 {
                     X = leftX1,
-                    Y = metaY1 + 15,
+                    Y = metaY1 + 8,
                     Text = denominator,
                     FontSize = 18
                 });
@@ -465,15 +465,17 @@ namespace SEH.ViewModels
             // 右侧：作曲
             if (!string.IsNullOrEmpty(_score.Composer))
             {
-                string text = $"作曲: {_score.Composer}";
+                string composer = $"作曲: {_score.Composer}";
+                string lyricist = $"作词: {_score.Lyricist}";
+                
                 double fontSize = 18;
-                double width = text.Length * fontSize * 0.7; //估算宽度
+                double width = Math.Max(composer.Length, lyricist.Length) * fontSize * 0.7; //估算宽度
 
                 RenderElements.Add(new ScoreRenderTextElement
                 {
                     X = rightX1 - width,
                     Y = metaY1,
-                    Text = text,
+                    Text = composer,
                     FontSize = fontSize
                 });
             }
@@ -498,14 +500,17 @@ namespace SEH.ViewModels
             //右侧：作词
             if (!string.IsNullOrEmpty(_score.Lyricist))
             {
-                string text = $"作词: {_score.Lyricist}";
+                string composer = $"作曲: {_score.Composer}";
+                string lyricist = $"作词: {_score.Lyricist}";
+
                 double fontSize = 18;
-                double width = text.Length * fontSize * 0.7;
+                double width = Math.Max(composer.Length, lyricist.Length) * fontSize * 0.7;
+
                 RenderElements.Add(new ScoreRenderTextElement
                 {
                     X = rightX2 - width,
                     Y = metaY2,
-                    Text = text,
+                    Text = lyricist,
                     FontSize = fontSize
                 });
             }

@@ -18,26 +18,48 @@
                        FontWeight="{x:Bind GetFontWeight()}"
                        Tapped="TextBlock_Tapped"
                        IsTapEnabled="True"
-                       Foreground="Black"/>
+                       Foreground="Black"
+                       HorizontalAlignment="Left" 
+                       VerticalAlignment="Top">
+                <TextBlock.RenderTransform>
+                    <TranslateTransform X="{x:Bind X}" Y="{x:Bind Y}"/>
+                </TextBlock.RenderTransform>
+            </TextBlock>
         </DataTemplate>
 
         <!--圆点渲染模板-->
         <DataTemplate x:Key="DotTemplate" x:DataType="commons:ScoreRenderDotElement">
             <Ellipse Width="{x:Bind Radius}" 
                      Height="{x:Bind Radius}" 
-                     Fill="Black"/>
+                     Fill="Black"
+                     HorizontalAlignment="Left" 
+                     VerticalAlignment="Top">
+                <Ellipse.RenderTransform>
+                    <TranslateTransform X="{x:Bind X}" Y="{x:Bind Y}"/>
+                </Ellipse.RenderTransform>
+            </Ellipse>
         </DataTemplate>
 
         <!--线条渲染模板-->
         <DataTemplate x:Key="LineTemplate" x:DataType="commons:ScoreRenderLineElement">
             <Rectangle Width="{x:Bind Width}" 
                        Height="{x:Bind Height}" 
-                       Fill="Black"/>
+                       Fill="Black"
+                       HorizontalAlignment="Left" 
+                       VerticalAlignment="Top">
+                <Rectangle.RenderTransform>
+                    <TranslateTransform X="{x:Bind X}" Y="{x:Bind Y}"/>
+                </Rectangle.RenderTransform>
+            </Rectangle>
         </DataTemplate>
 
         <!--弧线渲染模板-->
         <DataTemplate x:Key="ArcTemplate" x:DataType="commons:ScoreRenderArcElement">
-            <Path Stroke="Black" StrokeThickness="1.5" Fill="Transparent">
+            <Path Stroke="Black" StrokeThickness="1.5" Fill="Transparent"
+                  HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Path.RenderTransform>
+                    <TranslateTransform X="{x:Bind X}" Y="{x:Bind Y}"/>
+                </Path.RenderTransform>
                 <Path.Data>
                     <PathGeometry>
                         <PathFigure StartPoint="{x:Bind StartPoint}">
@@ -50,7 +72,10 @@
 
         <!--延长号渲染模板(半圆+圆点)-->
         <DataTemplate x:Key="FermataTemplate" x:DataType="commons:ScoreRenderFermataElement">
-            <Grid Width="20" Height="17">
+            <Grid Width="20" Height="17" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Grid.RenderTransform>
+                    <TranslateTransform X="{x:Bind X}" Y="{x:Bind Y}"/>
+                </Grid.RenderTransform>
                 <!-- 
                   Path 数据: M 0,10 A 10,10 0 0 1 20,10
                   表示从 (0,10) 开始，画一个半径为10的顺时针弧线到 (20,10)。
@@ -271,18 +296,9 @@
                                 HorizontalAlignment="Center" VerticalAlignment="Top">
                             <ItemsControl ItemsSource="{x:Bind ViewModel.RenderElements, Mode=OneWay}"
                                           ItemTemplateSelector="{StaticResource ScoreTemplateSelector}">
-                                <!--使用 ItemContainerStyle 为外层容器定位-->
-                                <ItemsControl.ItemContainerStyle>
-                                    <Style TargetType="ContentPresenter">
-                                        <Setter Property="Canvas.Left" Value="{Binding X}"/>
-                                        <Setter Property="Canvas.Top" Value="{Binding Y}"/>
-                                    </Style>
-                                </ItemsControl.ItemContainerStyle>
-                                
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <Canvas Width="{Binding CanvasWidth, Mode=OneWay}" 
-                                                Height="{Binding CanvasHeight, Mode=OneWay}"/>
+                                        <Grid Width="{Binding CanvasWidth, Mode=OneWay}" Height="{Binding CanvasHeight, Mode=OneWay}"/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                             </ItemsControl>
