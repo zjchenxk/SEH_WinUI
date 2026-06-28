@@ -33,8 +33,8 @@ namespace SEH.Services
             if (result == ContentDialogResult.Primary)
             {
                 //验证数据
-                viewModel.ValidateAllProperties();
-                if (viewModel.HasErrors)
+                bool isValid = viewModel.ValidateProperties();
+                if (!isValid)
                 {
                     //这里简单处理，实际应提示错误并保持弹窗
                     return null;

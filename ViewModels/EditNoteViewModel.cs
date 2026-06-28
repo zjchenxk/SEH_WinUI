@@ -50,6 +50,15 @@ namespace SEH.ViewModels
         [ObservableProperty]
         private string? _lyrics = null;
 
+        /// <summary>
+        /// 验证数据
+        /// </summary>
+        public bool ValidateProperties()
+        {
+            ValidateAllProperties();
+
+            return !HasErrors;
+        }
 
         public Note GetNote()
         {
