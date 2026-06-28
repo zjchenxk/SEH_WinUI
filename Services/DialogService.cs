@@ -5,6 +5,7 @@ using SEH.Services.Interfaces;
 using SEH.ViewModels;
 using SEH.Views;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SEH.Services
@@ -16,7 +17,7 @@ namespace SEH.Services
         /// </summary>
         public XamlRoot? XamlRoot { get; set; }
 
-        public async Task<Note>? ShowEditNoteDialogAsync()
+        public async Task<Note>? ShowEditNoteDialogAsync(List<Beam>? beams = null, Note? note = null)
         {
             if (XamlRoot == null)
             {
@@ -24,9 +25,14 @@ namespace SEH.Services
             }
 
             var viewModel = new EditNoteViewModel();
+
+            //实现传参初始化
+            viewModel.Initialize(beams, note);
+
             var dialog = new EditNoteDialog(viewModel)
             {
-                XamlRoot = this.XamlRoot // 关键：设置 XamlRoot
+                XamlRoot = this.XamlRoot, //关键：设置 XamlRoot
+                Title = note == null ? "新增音符" : "修改音符" //根据传参动态修改标题
             };
 
             var result = await dialog.ShowAsync();

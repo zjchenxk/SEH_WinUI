@@ -163,6 +163,11 @@ namespace SEH.ViewModels
         /// 当前音符对象
         /// </summary>
         private Note? _note = null;
+        /// <summary>
+        /// 当前组合对象
+        /// </summary>
+        private Beam? _beam = null;
+
 
         /// <summary>
         /// 定时器
@@ -515,7 +520,7 @@ namespace SEH.ViewModels
             }
 
             // 调用服务显示弹窗并获取结果
-            var ret = await _dialogService.ShowEditNoteDialogAsync();
+            var ret = await _dialogService.ShowEditNoteDialogAsync(_measure.Beams, null);
             if (ret != null)
             {
                 //填充关联ID
@@ -575,15 +580,16 @@ namespace SEH.ViewModels
 
             //新增组合
             _measure.Beams ??= [];
-            var beam = new Beam()
+            _beam = new Beam()
             {
                 Id = Guid.NewGuid().ToString(),
                 MeasureId = _measure.Id,
                 LineId = _line.Id,
                 ScoreId = _score.Id,
-                Number = _measure.Beams.Count + 1
+                Number = _measure.Beams.Count + 1,
+                Name = $"组合{_measure.Beams.Count + 1}"
             };
-            _measure.Beams.Add(beam);
+            _measure.Beams.Add(_beam);
         }
 
         /// <summary>
@@ -604,10 +610,27 @@ namespace SEH.ViewModels
             {
                 return;
             }
+
+            if (_beam != null && _measure.Notes != null)
+            {
+                foreach (var note in _measure.Notes)
+                {
+                    if (note.BeamId == _beam.Id)
+                    {
+                        note.BeamId = null;
+                    }
+                }
+            }
+
             _measure.Beams.RemoveAt(_measure.Beams.Count - 1);
             if (_measure.Beams.Count == 0)
             {
                 _measure.Beams = null;
+                _beam = null;
+            }
+            else
+            {
+                _beam = _measure.Beams[^1];//[^1]代表最后一个元素
             }
 
             //绘制简谱

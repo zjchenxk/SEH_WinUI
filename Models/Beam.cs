@@ -1,5 +1,4 @@
 ﻿using SQLite;
-using System.Collections.Generic;
 
 namespace SEH.Models
 {
@@ -35,16 +34,22 @@ namespace SEH.Models
         public string ScoreId { get; set; }
 
         /// <summary>
+        /// 组合号
+        /// </summary>
+        [Column("number")]
+        public int Number { get; set; }
+
+        /// <summary>
+        /// 组合名称
+        /// </summary>
+        [Column("name")]
+        public string Name { get; set; }
+
+        /// <summary>
         /// 组合时值，如：0.5-八分音符，0.25-十六分音符，0.125-三十二分音符
         /// </summary>
         [Column("duration")]
         public float? Duration { get; set; }
-
-        /// <summary>
-        /// 行号
-        /// </summary>
-        [Column("number")]
-        public int Number { get; set; }
 
     }
 }

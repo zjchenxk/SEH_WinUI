@@ -93,5 +93,11 @@ namespace SEH.Models
         /// </summary>
         [Column("beam_id")]
         public string? BeamId { get; set; }
+
+        /// <summary>
+        /// 所属组合
+        /// </summary>
+        [Ignore]
+        public Beam? Beam { get; set; }
     }
 }
