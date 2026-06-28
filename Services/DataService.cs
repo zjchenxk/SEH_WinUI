@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SEH.Services
 {
@@ -28,7 +27,6 @@ namespace SEH.Services
                     db.CreateTable<Measure>();
                     db.CreateTable<Note>();
                     db.CreateTable<Beam>();
-                    db.CreateTable<BeamNote>();
                 }
             }
             catch (Exception ex)
@@ -274,16 +272,7 @@ namespace SEH.Services
                                         measure.Notes = notes;
 
                                         //读取每小节的连尾组合记录
-                                        var beams = db.Table<Beam>().Where(u => u.ScoreId == id && u.LineId == line.Id && u.MeasureId == measure.Id).ToList();
-                                        if (beams != null && beams.Count > 0)
-                                        {
-                                            foreach (var beam in beams)
-                                            {
-                                                //读取每个连尾组合的音符记录
-                                                var beamNotes = db.Table<BeamNote>().Where(u => u.BeamId == beam.Id).ToList();
-                                                beam.Notes = beamNotes;
-                                            }
-                                        }
+                                        var beams = db.Table<Beam>().Where(u => u.ScoreId == id && u.LineId == line.Id && u.MeasureId == measure.Id).OrderBy(u => u.Number).ToList();
                                         measure.Beams = beams;
                                     }
                                 }
@@ -373,20 +362,6 @@ namespace SEH.Services
                                                 Log.Error($"新增简谱小节连尾组合记录失败！{JsonSerializer.Serialize(beam)}");
                                                 return false;
                                             }
-
-                                            //新增连尾组合音符记录
-                                            if (beam.Notes != null && beam.Notes.Count > 0)
-                                            {
-                                                foreach (var beamNote in beam.Notes)
-                                                {
-                                                    if (db.Insert(beamNote) <= 0)
-                                                    {
-                                                        db.Rollback();
-                                                        Log.Error($"新增简谱小节连尾组合音符记录失败！{JsonSerializer.Serialize(beamNote)}");
-                                                        return false;
-                                                    }
-                                                }
-                                            }
                                         }
                                     }
                                 }
@@ -454,14 +429,6 @@ namespace SEH.Services
                         return false;
                     }
 
-                    //删除连尾组合音符记录
-                    if (!DeleteBeamNotesByScoreId(data.Id))
-                    {
-                        db.Rollback();
-                        Log.Error($"删除简谱连尾组合音符记录失败！Id={data.Id}");
-                        return false;
-                    }
-
                     //删除连尾组合记录
                     if (!DeleteBeamsByScoreId(data.Id))
                     {
@@ -518,20 +485,6 @@ namespace SEH.Services
                                                 db.Rollback();
                                                 Log.Error($"新增简谱小节连尾组合记录失败！{JsonSerializer.Serialize(beam)}");
                                                 return false;
-                                            }
-
-                                            //新增连尾组合音符记录
-                                            if (beam.Notes != null && beam.Notes.Count > 0)
-                                            {
-                                                foreach (var beamNote in beam.Notes)
-                                                {
-                                                    if (db.Insert(beamNote) <= 0)
-                                                    {
-                                                        db.Rollback();
-                                                        Log.Error($"新增简谱小节连尾组合音符记录失败！{JsonSerializer.Serialize(beamNote)}");
-                                                        return false;
-                                                    }
-                                                }
                                             }
                                         }
                                     }
@@ -597,14 +550,6 @@ namespace SEH.Services
                     {
                         db.Rollback();
                         Log.Error($"删除简谱音符记录失败！Id={id}");
-                        return false;
-                    }
-
-                    //删除连尾组合音符记录
-                    if (!DeleteBeamNotesByScoreId(id))
-                    {
-                        db.Rollback();
-                        Log.Error($"删除简谱连尾组合音符记录失败！Id={id}");
                         return false;
                     }
 
@@ -793,46 +738,6 @@ namespace SEH.Services
                             {
                                 Log.Error($"删除连尾组合记录失败！Id={beam.Id}");
                                 return false;
-                            }
-                        }
-                    }
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "发生致命错误");
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 删除指定简谱的连尾组合音符记录
-        /// </summary>
-        /// <param name="scoreId"></param>
-        /// <returns></returns>
-        public bool DeleteBeamNotesByScoreId(string scoreId)
-        {
-            try
-            {
-                if (db != null)
-                {
-                    var beams = db.Table<Beam>().Where(u => u.ScoreId == scoreId).ToList();
-                    if (beams.Count > 0)
-                    {
-                        foreach (var beam in beams)
-                        {
-                            var beamNotes = db.Table<BeamNote>().Where(u => u.BeamId == beam.Id).ToList();
-                            if (beamNotes.Count > 0)
-                            {
-                                foreach (var beamNote in beamNotes)
-                                {
-                                    if (db.Delete<BeamNote>(beamNote.Id) <= 0)
-                                    {
-                                        Log.Error($"删除连尾组合音符记录失败！Id={beamNote.Id}");
-                                        return false;
-                                    }
-                                }
                             }
                         }
                     }

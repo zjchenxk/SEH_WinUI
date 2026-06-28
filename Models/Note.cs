@@ -87,5 +87,11 @@ namespace SEH.Models
         /// </summary>
         [Column("lyrics")]
         public string? Lyrics { get; set; }
+
+        /// <summary>
+        /// 组合主键
+        /// </summary>
+        [Column("beam_id")]
+        public string? BeamId { get; set; }
     }
 }

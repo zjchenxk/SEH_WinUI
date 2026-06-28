@@ -1,11 +1,5 @@
 ﻿using SEH.Models;
-using Serilog;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace SEH.Services.Interfaces
 {
@@ -140,13 +134,6 @@ namespace SEH.Services.Interfaces
         /// <param name="scoreId"></param>
         /// <returns></returns>
         bool DeleteBeamsByScoreId(string scoreId);
-
-        /// <summary>
-        /// 删除指定简谱的连尾组合音符记录
-        /// </summary>
-        /// <param name="scoreId"></param>
-        /// <returns></returns>
-        bool DeleteBeamNotesByScoreId(string scoreId);
         #endregion
 
     }

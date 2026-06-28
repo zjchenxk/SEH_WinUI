@@ -46,10 +46,5 @@ namespace SEH.Models
         [Column("number")]
         public int Number { get; set; }
 
-        /// <summary>
-        /// 组合音符集合
-        /// </summary>
-        [Ignore]
-        public List<BeamNote>? Notes { get; set; }
     }
 }
