@@ -22,21 +22,22 @@ namespace SEH.ViewModels
         /// 消息服务，用于在不同的ViewModel之间传递消息
         /// </summary>
         private readonly IMessenger _messenger;
-
         /// <summary>
         /// 导航服务，用于在不同页面之间进行导航
         /// </summary>
         private readonly INavigationService _navigationService;
-
         /// <summary>
         /// 数据服务，用于访问和操作简谱数据
         /// </summary>
         private readonly IDataService _dataService;
-
         /// <summary>
         /// 消息服务，用于显示消息提示
         /// </summary>
         private readonly IMessageService _messageService;
+        /// <summary>
+        /// 对话框服务，用于弹出对话框
+        /// </summary>
+        private readonly IDialogService _dialogService;
 
 
         /// <summary>
@@ -149,7 +150,7 @@ namespace SEH.ViewModels
         /// <summary>
         /// 简谱对象，用于保存当前编辑的简谱数据
         /// </summary>
-        private Score _score = new();
+        private Score _score = new() { Id = Guid.NewGuid().ToString() };
         /// <summary>
         /// 当前行对象
         /// </summary>
@@ -169,12 +170,13 @@ namespace SEH.ViewModels
         private DispatcherTimer? _debounceTimer;
 
 
-        public EditScoreViewModel(IMessenger messenger, INavigationService navigationService, IDataService dataService, IMessageService messageService)
+        public EditScoreViewModel(IMessenger messenger, INavigationService navigationService, IDataService dataService, IMessageService messageService, IDialogService dialogService)
         {
             _messenger = messenger;
             _navigationService = navigationService;
             _dataService = dataService;
             _messageService = messageService;
+            _dialogService = dialogService;
 
             this.ErrorsChanged += EditScoreViewModel_ErrorsChanged;
         }
@@ -379,6 +381,8 @@ namespace SEH.ViewModels
             _score.Lines ??= [];
             _line = new Line
             {
+                Id = Guid.NewGuid().ToString(),
+                ScoreId = _score.Id,
                 Number = _score.Lines.Count + 1
             };
             _score.Lines.Add(_line);
@@ -453,6 +457,9 @@ namespace SEH.ViewModels
             _line.Measures ??= [];
             _measure = new Measure()
             {
+                Id = Guid.NewGuid().ToString(),
+                LineId = _line.Id,
+                ScoreId = _score.Id,
                 Number = _line.Measures.Count + 1
             };
             _line.Measures.Add(_measure);
@@ -507,6 +514,24 @@ namespace SEH.ViewModels
                 return;
             }
 
+            // 调用服务显示弹窗并获取结果
+            var ret = await _dialogService.ShowEditNoteDialogAsync();
+            if (ret != null)
+            {
+                //填充关联ID
+                ret.MeasureId = _measure.Id;
+                ret.LineId = _line.Id;
+                ret.ScoreId = _score.Id;
+
+                // 初始化 Note 集合
+                _measure.Notes ??= [];
+
+                // 添加到数据模型
+                _measure.Notes.Add(ret);
+
+                // 重新绘制简谱
+                DrawScore();
+            }
         }
 
         /// <summary>
@@ -552,6 +577,10 @@ namespace SEH.ViewModels
             _measure.Beams ??= [];
             var beam = new Beam()
             {
+                Id = Guid.NewGuid().ToString(),
+                MeasureId = _measure.Id,
+                LineId = _line.Id,
+                ScoreId = _score.Id,
                 Number = _measure.Beams.Count + 1
             };
             _measure.Beams.Add(beam);
@@ -882,20 +911,17 @@ namespace SEH.ViewModels
             _score.TimeSignature = TimeSignature.Trim();
             _score.Tempo = int.Parse(Tempo.Trim());
 
-            if (string.IsNullOrWhiteSpace(_score.Id))
+            if (_dataService.IsScoreIdExists(_score.Id))
             {
-                _score.Id = Guid.NewGuid().ToString();
-
-                if (!_dataService.AddScore(_score))
+                if (!_dataService.UpdateScore(_score))
                 {
-                    _score.Id = "";
                     await _messageService.ShowErrorAsync("保存简谱失败！");
                     return;
                 }
             }
             else
             {
-                if (!_dataService.UpdateScore(_score))
+                if (!_dataService.AddScore(_score))
                 {
                     await _messageService.ShowErrorAsync("保存简谱失败！");
                     return;

@@ -199,6 +199,29 @@ namespace SEH.Services
 
         #region 简谱管理
         /// <summary>
+        /// 判断简谱ID是否存在
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool IsScoreIdExists(string id)
+        {
+            try
+            {
+                if (db != null)
+                {
+                    var score = db.Find<Score>(id);
+                    return score != null;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "发生致命错误");
+                return false;
+            }
+        }
+
+        /// <summary>
         /// 获取指定类别的简谱列表
         /// </summary>
         /// <param name="categoryId"></param>

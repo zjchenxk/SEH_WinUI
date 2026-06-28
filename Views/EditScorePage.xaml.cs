@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json.Linq;
 using SEH.Commons;
+using SEH.Services.Interfaces;
 using SEH.ViewModels;
 
 namespace SEH.Views
@@ -23,6 +24,19 @@ namespace SEH.Views
             InitializeComponent();
 
             this.DataContext = ViewModel;
+
+            this.Loaded += EditScorePage_Loaded;
+        }
+
+        private void EditScorePage_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            //从 ViewModel 获取 DialogService 并设置 XamlRoot
+            //注意：这里可以通过 App.Services 直接获取服务实例
+            var dialogService = App.Services.GetRequiredService<IDialogService>();
+            if (dialogService is SEH.Services.DialogService ds)
+            {
+                ds.XamlRoot = this.XamlRoot;
+            }
         }
 
         protected override void OnNavigatedTo(Microsoft.UI.Xaml.Navigation.NavigationEventArgs e)

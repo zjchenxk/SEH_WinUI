@@ -42,6 +42,7 @@ namespace SEH
             //1.注册服务
             services.AddSingleton<IMessenger, WeakReferenceMessenger>();
             services.AddSingleton<INavigationService, NavigationService>();
+            services.AddSingleton<IDialogService, DialogService>();
             services.AddTransient<IDataService, DataService>();
 
             //2.注册ViewModel
@@ -50,6 +51,7 @@ namespace SEH
             services.AddTransient<EditScoreViewModel>();
             services.AddTransient<ViewScoreViewModel>();
             services.AddTransient<MoveScoreViewModel>();
+            services.AddTransient<EditNoteViewModel>();
 
             //3.注册窗口和页面
             services.AddSingleton<MainWindow>();
@@ -58,6 +60,7 @@ namespace SEH
             services.AddTransient<EditScorePage>();
             services.AddTransient<ViewScorePage>();
             services.AddTransient<MoveScorePage>();
+            services.AddTransient<EditNoteDialog>();
 
             //4.注册MessageService，并在获取实例时把 MainWindow 传给它
             services.AddSingleton<IMessageService>(sp =>

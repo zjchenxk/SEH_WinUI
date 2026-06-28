@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="SEH.Views.EditNoteDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SEH.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="录入音符"
+    PrimaryButtonText="确定"
+    SecondaryButtonText="取消"
+    DefaultButton="Primary">
+
+    <StackPanel>
+        <!-- 音高 -->
+        <ComboBox Header="音高" 
+                  SelectedItem="{x:Bind ViewModel.Pitch, Mode=TwoWay}" 
+                  HorizontalAlignment="Stretch">
+            <x:String>1</x:String>
+            <x:String>2</x:String>
+            <x:String>3</x:String>
+            <x:String>4</x:String>
+            <x:String>5</x:String>
+            <x:String>6</x:String>
+            <x:String>7</x:String>
+            <!-- 这里可以添加低音、高音等选项 -->
+        </ComboBox>
+
+        <!-- 时值 -->
+        <ComboBox Header="时值" 
+                  SelectedValuePath="Tag" 
+                  SelectedValue="{x:Bind ViewModel.Duration, Mode=TwoWay}" 
+                  HorizontalAlignment="Stretch" Margin="0,10,0,0">
+            <ComboBoxItem Content="全音符 (4)" Tag="4"/>
+            <ComboBoxItem Content="二分音符 (2)" Tag="2"/>
+            <ComboBoxItem Content="四分音符 (1)" Tag="1"/>
+            <ComboBoxItem Content="八分音符 (0.5)" Tag="0.5"/>
+            <ComboBoxItem Content="十六分音符 (0.25)" Tag="0.25"/>
+        </ComboBox>
+
+        <!-- 附点 -->
+        <NumberBox Header="附点数量" 
+                   Value="{x:Bind ViewModel.Dots, Mode=TwoWay}" 
+                   Minimum="0" Maximum="3" 
+                   Margin="0,10,0,0"/>
+
+        <!-- 歌词 -->
+        <TextBox Header="歌词" 
+                 Text="{x:Bind ViewModel.Lyrics, Mode=TwoWay}" 
+                 Margin="0,10,0,0"/>
+    </StackPanel>
+</ContentDialog>

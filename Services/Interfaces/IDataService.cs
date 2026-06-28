@@ -56,6 +56,13 @@ namespace SEH.Services.Interfaces
 
         #region 简谱管理
         /// <summary>
+        /// 判断简谱ID是否存在
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        bool IsScoreIdExists(string id);
+
+        /// <summary>
         /// 获取指定类别的简谱列表
         /// </summary>
         /// <param name="categoryId"></param>
