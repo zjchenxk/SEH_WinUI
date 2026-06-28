@@ -358,6 +358,79 @@ namespace SEH.ViewModels
         }
 
         /// <summary>
+        /// 新增一行命令
+        /// </summary>
+        [RelayCommand]
+        private void NewLine()
+        {
+
+        }
+
+        /// <summary>
+        /// 删除一行命令
+        /// </summary>
+        [RelayCommand]
+        private void DeleteLine()
+        {
+
+        }
+
+        /// <summary>
+        /// 新增小节命令
+        /// </summary>
+        [RelayCommand]
+        private void NewMeasure()
+        {
+
+        }
+
+        /// <summary>
+        /// 删除小节命令
+        /// </summary>
+        [RelayCommand]
+        private void DeleteMeasure()
+        {
+
+        }
+
+        /// <summary>
+        /// 新增音符命令
+        /// </summary>
+        [RelayCommand]
+        private void NewNote()
+        {
+
+        }
+
+        /// <summary>
+        /// 删除音符命令
+        /// </summary>
+        [RelayCommand]
+        private void DeleteNote()
+        {
+
+        }
+
+        /// <summary>
+        /// 新增组合命令
+        /// </summary>
+        [RelayCommand]
+        private void NewBeam()
+        {
+
+        }
+
+        /// <summary>
+        /// 删除组合命令
+        /// </summary>
+        [RelayCommand]
+        private void DeleteBeam()
+        {
+
+        }
+
+
+        /// <summary>
         /// 延迟1秒后绘制简谱
         /// </summary>
         private void ScheduleRedraw()
@@ -467,7 +540,7 @@ namespace SEH.ViewModels
             {
                 string composer = $"作曲: {_score.Composer}";
                 string lyricist = $"作词: {_score.Lyricist}";
-                
+
                 double fontSize = 18;
                 double width = Math.Max(composer.Length, lyricist.Length) * fontSize * 0.7; //估算宽度
 
