@@ -8,6 +8,7 @@ using SEH.Models;
 using SEH.Services.Interfaces;
 using SEH.Views;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -149,6 +150,14 @@ namespace SEH.ViewModels
         /// 简谱对象，用于保存当前编辑的简谱数据
         /// </summary>
         private Score _score = new();
+        /// <summary>
+        /// 当前行对象
+        /// </summary>
+        private Line? _line = null;
+        /// <summary>
+        /// 当前小节对象
+        /// </summary>
+        private Measure? _measure = null;
 
         /// <summary>
         /// 定时器
@@ -363,7 +372,11 @@ namespace SEH.ViewModels
         [RelayCommand]
         private void NewLine()
         {
+            _line = new Line();
+            _score.Lines ??= [];
+            _score.Lines.Add(_line);
 
+            DrawScore();
         }
 
         /// <summary>
@@ -372,15 +385,36 @@ namespace SEH.ViewModels
         [RelayCommand]
         private void DeleteLine()
         {
+            if (_score.Lines == null || _score.Lines.Count == 0)
+            {
+                return;
+            }
+            _score.Lines.RemoveAt(_score.Lines.Count - 1);
+            if (_score.Lines.Count == 0)
+            {
+                _score.Lines = null;
+                _line = null;
+            }
+            else
+            {
+                _line = _score.Lines[^1];//[^1]代表最后一个元素
+            }
 
+            DrawScore();
         }
 
         /// <summary>
         /// 新增小节命令
         /// </summary>
         [RelayCommand]
-        private void NewMeasure()
+        private async Task NewMeasure()
         {
+            if (_line == null)
+            {
+                await _messageService.ShowErrorAsync("请先新增一行！");
+                return;
+            }
+
 
         }
 
@@ -457,13 +491,14 @@ namespace SEH.ViewModels
             double startY = 20;
             double rowHeight = 120;
             double noteWidth = 40;
-            double noteBaseYOffset = 40;
+            double noteBaseYOffset = 40;//音符在每行中的相对Y位置
 
-            //1.绘图区宽度，用于右对齐排版（稍后会根据实际更新）
-            double areaWidth = CanvasWidth - 40;
+            //设置工作区宽度，页边距20
+            double workspaceWidth = CanvasWidth - 40;
 
             double currentY = startY;
 
+            #region 绘制基本信息
             //绘制标题
             if (!string.IsNullOrEmpty(_score.Title))
             {
@@ -472,7 +507,7 @@ namespace SEH.ViewModels
 
                 RenderElements.Add(new ScoreRenderTextElement
                 {
-                    X = (areaWidth - titleWidth) / 2, //居中
+                    X = (workspaceWidth - titleWidth) / 2, //居中
                     Y = currentY,
                     Text = _score.Title,
                     FontSize = titleFontSize,
@@ -485,7 +520,7 @@ namespace SEH.ViewModels
             //第一行：左侧调号+拍号，右侧作曲
             double metaY1 = currentY;
             double leftX1 = startX;
-            double rightX1 = areaWidth - startX;
+            double rightX1 = workspaceWidth - startX;
 
             //左侧：调号
             if (!string.IsNullOrEmpty(_score.KeySignature))
@@ -556,7 +591,7 @@ namespace SEH.ViewModels
             //第二行：左侧速度，右侧作词
             double metaY2 = metaY1 + 35; //下移 35 像素作为第二行
             double leftX2 = startX;
-            double rightX2 = areaWidth - startX;
+            double rightX2 = workspaceWidth - startX;
 
             //左侧：速度
             if (!string.IsNullOrEmpty(_score.Tempo.ToString()))
@@ -591,8 +626,82 @@ namespace SEH.ViewModels
             //元信息结束，为乐谱音符区腾出空间
             currentY = metaY2 + 40;
 
+            #endregion
 
+            #region 绘制行
+            if (_score.Lines != null)
+            {
+                foreach (var line in _score.Lines)
+                {
+                    double currentX = startX;
 
+                    //绘制行起点竖线
+                    //每行的高度为：rowHeight，上边距为：20，下边距为：20，中间绘制区高度为：80
+                    //-------------------------
+                    //   20
+                    //-------------------------
+                    //           20
+                    //        -----------------
+                    //
+                    //   80      40 音符绘制区
+                    //
+                    //        -----------------
+                    //           20
+                    //-------------------------
+                    //   20
+                    //-------------------------
+                    RenderElements.Add(new ScoreRenderLineElement
+                    {
+                        X = currentX,
+                        Y = currentY + 40,
+                        Width = 2,
+                        Height = 40,
+                        IsVertical = true
+                    });
+
+                    currentX += 2;
+
+                    #region 绘制小节
+                    if (line.Measures != null)
+                    {
+                        foreach (var measure in line.Measures)
+                        {
+                            currentX += 10;//行起点竖线或小节竖线与音符的间距
+
+                            #region 绘制音符
+                            if (measure.Notes != null && measure.Notes.Count > 0)
+                            {
+                                foreach (var note in measure.Notes)
+                                {
+
+                                }
+                            }
+                            else
+                            {
+                                currentX += 160;//绘制空白小节
+                            }
+                            #endregion
+
+                            currentX += 10;
+
+                            //绘制小节终点竖线
+                            RenderElements.Add(new ScoreRenderLineElement
+                            {
+                                X = currentX,
+                                Y = currentY + 40,
+                                Width = 2,
+                                Height = 40,
+                                IsVertical = true
+                            });
+                            currentX += 2;
+                        }
+                    }
+                    #endregion
+
+                    currentY += rowHeight;
+                }
+            }
+            #endregion
         }
 
         public void OnNoteTappedAsync(ScoreRenderTextElement textElement)
