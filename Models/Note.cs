@@ -102,5 +102,23 @@ namespace SEH.Models
         /// </summary>
         [Ignore]
         public Beam? Beam { get; set; }
+
+        /// <summary>
+        /// 绘制X坐标
+        /// </summary>
+        [Ignore]
+        public double? X { get; set; }
+
+        /// <summary>
+        /// 绘制Y坐标
+        /// </summary>
+        [Ignore]
+        public double? Y { get; set; }
+
+        /// <summary>
+        /// 绘制宽度
+        /// </summary>
+        [Ignore]
+        public double? Width { get; set; }
     }
 }

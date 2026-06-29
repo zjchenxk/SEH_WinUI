@@ -412,6 +412,10 @@ namespace SEH.ViewModels
             };
             _score.Lines.Add(_line);
 
+            _measure = null;
+            _note = null;
+            _beam = null;
+
             //绘制简谱
             DrawScore();
         }
@@ -494,6 +498,9 @@ namespace SEH.ViewModels
                 Number = _line.Measures.Count + 1
             };
             _line.Measures.Add(_measure);
+
+            _note = null;
+            _beam = null;
 
             //绘制简谱
             DrawScore();
@@ -591,7 +598,7 @@ namespace SEH.ViewModels
             }
             #endregion
 
-            // 调用服务显示弹窗并获取结果
+            //调用服务显示弹窗并获取结果
             var ret = await _dialogService.ShowEditNoteDialogAsync(_measure.Beams, null);
             if (ret != null)
             {
@@ -743,8 +750,9 @@ namespace SEH.ViewModels
             double startY = 20;
             double rowHeight = 120;
             double noteWidth = 40;
-            double notrBaseXOffset = 10;//音符在每行中的相对X位置
+            double noteBaseXOffset = 10;//音符在每行中的相对X位置
             double noteBaseYOffset = 40;//音符在每行中的相对Y位置
+            double beamBaseYOffset = 75;//音符组合线在每行中的相对Y位置
             int beats = 4;//每小节拍数，默认4拍
 
             //设置工作区宽度，页边距20
@@ -885,6 +893,8 @@ namespace SEH.ViewModels
             #region 绘制行
             if (_score.Lines != null)
             {
+                int measureIndex = 1;//小节序号
+
                 foreach (var line in _score.Lines)
                 {
                     double currentX = startX;
@@ -920,6 +930,15 @@ namespace SEH.ViewModels
                     {
                         foreach (var measure in line.Measures)
                         {
+                            //绘制小节序号
+                            RenderElements.Add(new ScoreRenderTextElement
+                            {
+                                FontSize = 8,
+                                X = currentX - 4,
+                                Y = currentY + 20,
+                                Text = measureIndex.ToString(),
+                            });
+
                             currentX += 10;//行起点竖线或小节竖线与音符的间距
 
                             #region 绘制音符
@@ -948,10 +967,14 @@ namespace SEH.ViewModels
                                                 RenderElements.Add(new ScoreRenderTextElement
                                                 {
                                                     FontSize = 22,
-                                                    X = currentX + notrBaseXOffset,
+                                                    X = currentX + noteBaseXOffset,
                                                     Y = currentY + noteBaseYOffset,
                                                     Text = note.Pitch
                                                 });
+
+                                                note.X = currentX + noteBaseXOffset;
+                                                note.Y = currentY + noteBaseYOffset;
+                                                note.Width = noteWidth;
                                             }
                                             break;
                                         #endregion
@@ -968,15 +991,19 @@ namespace SEH.ViewModels
                                                 RenderElements.Add(new ScoreRenderTextElement
                                                 {
                                                     FontSize = 22,
-                                                    X = currentX + notrBaseXOffset,
+                                                    X = currentX + noteBaseXOffset,
                                                     Y = currentY + noteBaseYOffset,
                                                     Text = note.Pitch.Replace("-", "")
                                                 });
 
+                                                note.X = currentX + noteBaseXOffset;
+                                                note.Y = currentY + noteBaseYOffset;
+                                                note.Width = noteWidth;
+
                                                 //绘制低音音符下方的点，如果有减时线，就在减时线的下方绘制点
                                                 RenderElements.Add(new ScoreRenderDotElement
                                                 {
-                                                    X = currentX + notrBaseXOffset + 5,
+                                                    X = currentX + noteBaseXOffset + 5,
                                                     Y = currentY + noteBaseYOffset + 20 + (note.Duration == 0.5 ? 5 : (note.Duration == 0.25 ? 10 : (note.Duration == 0.125 ? 15 : 0))),
                                                     Radius = 3
                                                 });
@@ -996,15 +1023,19 @@ namespace SEH.ViewModels
                                                 RenderElements.Add(new ScoreRenderTextElement
                                                 {
                                                     FontSize = 22,
-                                                    X = currentX + notrBaseXOffset,
+                                                    X = currentX + noteBaseXOffset,
                                                     Y = currentY + noteBaseYOffset,
                                                     Text = note.Pitch.Replace("+", "")
                                                 });
 
+                                                note.X = currentX + noteBaseXOffset;
+                                                note.Y = currentY + noteBaseYOffset;
+                                                note.Width = noteWidth;
+
                                                 //绘制高音音符上方的点
                                                 RenderElements.Add(new ScoreRenderDotElement
                                                 {
-                                                    X = currentX + notrBaseXOffset + 5,
+                                                    X = currentX + noteBaseXOffset + 5,
                                                     Y = currentY + noteBaseYOffset - 5,
                                                     Radius = 3
                                                 });
@@ -1018,10 +1049,14 @@ namespace SEH.ViewModels
                                                 RenderElements.Add(new ScoreRenderTextElement
                                                 {
                                                     FontSize = 22,
-                                                    X = currentX + notrBaseXOffset,
+                                                    X = currentX + noteBaseXOffset,
                                                     Y = currentY + noteBaseYOffset,
                                                     Text = "0"
                                                 });
+
+                                                note.X = currentX + noteBaseXOffset;
+                                                note.Y = currentY + noteBaseYOffset;
+                                                note.Width = noteWidth;
                                             }
                                             break;
                                         #endregion
@@ -1032,10 +1067,14 @@ namespace SEH.ViewModels
                                                 RenderElements.Add(new ScoreRenderTextElement
                                                 {
                                                     FontSize = 22,
-                                                    X = currentX + notrBaseXOffset,
+                                                    X = currentX + noteBaseXOffset,
                                                     Y = currentY + noteBaseYOffset,
                                                     Text = "X"
                                                 });
+
+                                                note.X = currentX + noteBaseXOffset;
+                                                note.Y = currentY + noteBaseYOffset;
+                                                note.Width = noteWidth;
                                             }
                                             break;
                                         #endregion
@@ -1046,10 +1085,14 @@ namespace SEH.ViewModels
                                                 RenderElements.Add(new ScoreRenderTextElement
                                                 {
                                                     FontSize = 22,
-                                                    X = currentX + notrBaseXOffset,
+                                                    X = currentX + noteBaseXOffset,
                                                     Y = currentY + noteBaseYOffset,
                                                     Text = "-"
                                                 });
+
+                                                note.X = currentX + noteBaseXOffset;
+                                                note.Y = currentY + noteBaseYOffset;
+                                                note.Width = noteWidth;
                                             }
                                             break;
                                         #endregion
@@ -1096,6 +1139,38 @@ namespace SEH.ViewModels
                             }
                             #endregion
 
+                            #region 绘制音符组合线
+                            if (measure.Beams != null && measure.Beams.Count > 0)
+                            {
+                                foreach (var beam in measure.Beams)
+                                {
+                                    if (measure.Notes != null)
+                                    {
+                                        var notesInBeam = measure.Notes.Where(n => n.BeamId == beam.Id).OrderBy(n => n.Number);
+                                        if (notesInBeam != null && notesInBeam.Count<Note>() > 0)
+                                        {
+                                            double beamX = notesInBeam.First<Note>().X ?? 0;
+                                            double beamWidth = (notesInBeam.Last<Note>().X ?? 0) - (notesInBeam.First<Note>().X ?? 0) + 10;
+
+                                            if (beamX > 0 && beamWidth > 0)
+                                            {
+                                                //绘制组合横线
+                                                //音符字符字体大小为22，像素高度为33，其中内边距上部为11，下部为5，实际字符高度为17
+                                                RenderElements.Add(new ScoreRenderLineElement
+                                                {
+                                                    X = beamX,
+                                                    Y = currentY + beamBaseYOffset,
+                                                    Width = beamWidth,
+                                                    Height = 1,
+                                                    IsVertical = false
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+
                             currentX += 10;
 
                             //绘制小节终点竖线
@@ -1111,6 +1186,8 @@ namespace SEH.ViewModels
                             measure.Width = 10/*左边距*/ + totalNoteWidth/*所有音符宽度*/ + 10/*右边距*/ + 2/*小节终点竖线宽度*/;
 
                             currentX += 2;
+
+                            measureIndex++;
                         }
                     }
                     #endregion
