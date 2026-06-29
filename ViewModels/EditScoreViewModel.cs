@@ -249,6 +249,26 @@ namespace SEH.ViewModels
                     Tempo = score.Tempo.ToString();
 
                     _score = score;
+                    _line = null;
+                    if (_score.Lines != null && _score.Lines.Count > 0)
+                    {
+                        _line = _score.Lines[^1];
+                    }
+                    _measure = null;
+                    if (_line != null && _line.Measures != null && _line.Measures.Count > 0)
+                    {
+                        _measure = _line.Measures[^1];
+                    }
+                    _note = null;
+                    if (_measure != null && _measure.Notes != null && _measure.Notes.Count > 0)
+                    {
+                        _note = _measure.Notes[^1];
+                    }
+                    _beam = null;
+                    if (_measure != null && _measure.Beams != null && _measure.Beams.Count > 0)
+                    {
+                        _beam = _measure.Beams[^1];
+                    }
                 }
                 else//新增简谱
                 {
@@ -530,6 +550,46 @@ namespace SEH.ViewModels
                 await _messageService.ShowErrorAsync("请新增小节！");
                 return;
             }
+
+            #region 检查当前小节内的音符总拍数是否已满
+            int beats = 4;
+            //获取拍号中的分子（表示每小节有几拍）
+            if (!string.IsNullOrEmpty(_score.TimeSignature) && _score.TimeSignature.Contains('/'))
+            {
+                var parts = _score.TimeSignature.Split('/');
+                beats = int.Parse(parts[0]);
+            }
+            int totalBeats = 0;
+            if (_measure.Notes != null)
+            {
+                foreach (var note in _measure.Notes)
+                {
+                    if (string.IsNullOrWhiteSpace(note.BeamId))
+                    {
+                        totalBeats++;
+                    }
+                }
+            }
+            if (_measure.Beams != null)
+            {
+                foreach (var beam in _measure.Beams)
+                {
+                    if (_measure.Notes != null)
+                    {
+                        var notesInBeam = _measure.Notes.Where(n => n.BeamId == beam.Id);
+                        if (notesInBeam.Any())
+                        {
+                            totalBeats++;
+                        }
+                    }
+                }
+            }
+            if (totalBeats >= beats)
+            {
+                await _messageService.ShowErrorAsync("当前小节内的音符总拍数已满，请新增小节！");
+                return;
+            }
+            #endregion
 
             // 调用服务显示弹窗并获取结果
             var ret = await _dialogService.ShowEditNoteDialogAsync(_measure.Beams, null);
