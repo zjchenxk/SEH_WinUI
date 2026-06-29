@@ -64,6 +64,18 @@ namespace SEH.Models
         public int Tempo { get; set; }
 
         /// <summary>
+        /// 每行小节数量（如：6,5,4,3,2,1，默认为4）
+        /// </summary>
+        [Column("line_measure_count")]
+        public int LineMeasureCount { get; set; }
+
+        /// <summary>
+        /// 页面方向（1-横向，2-纵向）
+        /// </summary>
+        [Column("direction")]
+        public int Direction { get; set; }
+
+        /// <summary>
         /// 行集合
         /// </summary>
         [Ignore]

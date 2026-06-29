@@ -129,17 +129,30 @@ namespace SEH.ViewModels
         private string? _tempoError = "";
 
         /// <summary>
-        /// 每行小节数
+        /// 每行小节数（默认为4）
         /// </summary>
         [Required(ErrorMessage = "每行小节数量不能为空！")]
         [ObservableProperty]
-        private string _measuresPerLine = "4";
+        private string _lineMeasureCount = "4";
 
         /// <summary>
         /// 每行小节数错误信息
         /// </summary>
         [ObservableProperty]
-        private string? _measuresPerLineError = "";
+        private string? _lineMeasureCountError = "";
+
+        /// <summary>
+        /// 页面方向（1-横向，2-纵向，默认为横向）
+        /// </summary>
+        [Required(ErrorMessage = "页面方向不能为空！")]
+        [ObservableProperty]
+        private string _direction = "1";
+
+        /// <summary>
+        /// 页面方向错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _directionError = "";
 
         /// <summary>
         /// 简谱渲染元素集合
@@ -260,6 +273,8 @@ namespace SEH.ViewModels
                     KeySignature = score.KeySignature;
                     TimeSignature = score.TimeSignature;
                     Tempo = score.Tempo.ToString();
+                    LineMeasureCount = score.LineMeasureCount.ToString();
+                    Direction = score.Direction.ToString();
 
                     _score = score;
                     _line = null;
@@ -292,6 +307,8 @@ namespace SEH.ViewModels
                     KeySignature = "C";
                     TimeSignature = "4/4";
                     Tempo = "90";
+                    LineMeasureCount = "4";
+                    Direction = "1";
                 }
             }
         }
@@ -376,6 +393,34 @@ namespace SEH.ViewModels
             }
 
             _score.Tempo = int.Parse(value);
+
+            ScheduleRedraw();
+        }
+
+        partial void OnLineMeasureCountChanged(string value)
+        {
+            ValidateProperty(value, nameof(LineMeasureCount));
+
+            if (!string.IsNullOrWhiteSpace(LineMeasureCountError))
+            {
+                return;
+            }
+
+            _score.LineMeasureCount = int.Parse(value);
+
+            ScheduleRedraw();
+        }
+
+        partial void OnDirectionChanged(string value)
+        {
+            ValidateProperty(value, nameof(Direction));
+
+            if (!string.IsNullOrWhiteSpace(DirectionError))
+            {
+                return;
+            }
+
+            _score.Direction = int.Parse(value);
 
             ScheduleRedraw();
         }
@@ -1211,6 +1256,10 @@ namespace SEH.ViewModels
             #endregion
         }
 
+        /// <summary>
+        /// 音符点击事件
+        /// </summary>
+        /// <param name="textElement"></param>
         public void OnNoteTappedAsync(ScoreRenderTextElement textElement)
         {
             if (textElement != null)
