@@ -19,47 +19,50 @@ namespace SEH.ViewModels
         private string _id = Guid.NewGuid().ToString();
 
         /// <summary>
-        /// 音高
+        /// 音符
         /// </summary>
+        [Required(ErrorMessage = "音符不能为空！")]
         [ObservableProperty]
         private string _pitch = "1"; // 默认中音1
 
         /// <summary>
         /// 时值
         /// </summary>
-        [ObservableProperty]
+        [Required(ErrorMessage = "时值不能为空！")]
         [Range(0.125, 4, ErrorMessage = "时值必须在0.125到4之间")]
-        private float _duration = 1; // 默认四分音符
+        [ObservableProperty]
+        private string _duration = "1"; // 默认四分音符
 
         /// <summary>
         /// 附点数量
         /// </summary>
+        [Required(ErrorMessage = "附点数量不能为空！")]
         [ObservableProperty]
-        private int _dots = 0;
+        private string _dots = "0";
 
         /// <summary>
         /// 连音线标记，如：1-开始，0-表示结束
         /// </summary>
         [ObservableProperty]
-        private int? _slur = null;
+        private string _slur = "";
 
         /// <summary>
         /// 演奏方法
         /// </summary>
         [ObservableProperty]
-        private string? _articulation = null;
+        private string _articulation = "";
 
         /// <summary>
         /// 延长号标记，如：1-有，0-无
         /// </summary>
         [ObservableProperty]
-        private int _fermata = 0;
+        private string _fermata = "0";
 
         /// <summary>
         /// 歌词
         /// </summary>
         [ObservableProperty]
-        private string? _lyrics = null;
+        private string _lyrics = "";
 
         /// <summary>
         /// 组合集合
@@ -102,11 +105,11 @@ namespace SEH.ViewModels
             {
                 Id = note.Id;
                 Pitch = note.Pitch;
-                Duration = note.Duration;
-                Dots = note.Dots;
-                Slur = note.Slur;
+                Duration = note.Duration.ToString();
+                Dots = note.Dots.ToString();
+                Slur = note.Slur == null ? "" : note.Slur.ToString();
                 Articulation = note.Articulation;
-                Fermata = note.Fermata;
+                Fermata = note.Fermata.ToString();
                 Lyrics = note.Lyrics;
                 SelectedBeam = note.Beam;
             }
@@ -118,11 +121,11 @@ namespace SEH.ViewModels
             {
                 Id = this.Id,
                 Pitch = this.Pitch,
-                Duration = this.Duration,
-                Dots = this.Dots,
-                Slur = this.Slur,
+                Duration = float.Parse(this.Duration),
+                Dots = int.Parse(this.Dots),
+                Slur = string.IsNullOrWhiteSpace(this.Slur) ? null : int.Parse(this.Slur),
                 Articulation = this.Articulation,
-                Fermata = this.Fermata,
+                Fermata = int.Parse(this.Fermata),
                 Lyrics = this.Lyrics,
                 BeamId = SelectedBeam?.Id,
                 Beam = SelectedBeam,

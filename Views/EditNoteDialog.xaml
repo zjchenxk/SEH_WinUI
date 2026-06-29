@@ -12,57 +12,152 @@
     SecondaryButtonText="取消"
     DefaultButton="Primary">
 
-    <StackPanel>
-        <!--音高-->
-        <ComboBox Header="音高：" 
-                  PlaceholderText="选择音高..."
-                  SelectedItem="{x:Bind ViewModel.Pitch, Mode=TwoWay}" 
-                  HorizontalAlignment="Stretch">
-            <x:String>1</x:String>
-            <x:String>2</x:String>
-            <x:String>3</x:String>
-            <x:String>4</x:String>
-            <x:String>5</x:String>
-            <x:String>6</x:String>
-            <x:String>7</x:String>
-            <!-- 这里可以添加低音、高音等选项 -->
-        </ComboBox>
+    <ScrollViewer MaxHeight="800" VerticalScrollBarVisibility="Auto">
+        <StackPanel Width="500">
+            <!--音符-->
+            <ComboBox Header="音符：" 
+                      PlaceholderText="选择音符..."
+                      SelectedValuePath="Tag"
+                      SelectedValue="{x:Bind ViewModel.Pitch, Mode=TwoWay}"
+                      HorizontalAlignment="Stretch">
+                <ComboBoxItem Content="中音音符１" Tag="1"/>
+                <ComboBoxItem Content="中音音符２" Tag="2"/>
+                <ComboBoxItem Content="中音音符３" Tag="3"/>
+                <ComboBoxItem Content="中音音符４" Tag="4"/>
+                <ComboBoxItem Content="中音音符５" Tag="5"/>
+                <ComboBoxItem Content="中音音符６" Tag="6"/>
+                <ComboBoxItem Content="中音音符７" Tag="7"/>
 
-        <!--时值-->
-        <ComboBox Header="时值：" 
-                  PlaceholderText="选择时值..."
-                  SelectedValuePath="Tag" 
-                  SelectedValue="{x:Bind ViewModel.Duration, Mode=TwoWay}" 
-                  HorizontalAlignment="Stretch" 
-                  Margin="0,10,0,0">
-            <ComboBoxItem Content="全音符 (4)" Tag="4"/>
-            <ComboBoxItem Content="二分音符 (2)" Tag="2"/>
-            <ComboBoxItem Content="四分音符 (1)" Tag="1"/>
-            <ComboBoxItem Content="八分音符 (0.5)" Tag="0.5"/>
-            <ComboBoxItem Content="十六分音符 (0.25)" Tag="0.25"/>
-            <ComboBoxItem Content="三十二分音符 (0.125)" Tag="0.125"/>
-        </ComboBox>
+                <ComboBoxItem Content="低音音符１" Tag="-1"/>
+                <ComboBoxItem Content="低音音符２" Tag="-2"/>
+                <ComboBoxItem Content="低音音符３" Tag="-3"/>
+                <ComboBoxItem Content="低音音符４" Tag="-4"/>
+                <ComboBoxItem Content="低音音符５" Tag="-5"/>
+                <ComboBoxItem Content="低音音符６" Tag="-6"/>
+                <ComboBoxItem Content="低音音符７" Tag="-7"/>
 
-        <!--附点-->
-        <NumberBox Header="附点数量："
-                   PlaceholderText="输入附点数量..."
-                   Value="{x:Bind ViewModel.Dots, Mode=TwoWay}" 
-                   Minimum="0" 
-                   Maximum="3" 
-                   Margin="0,10,0,0"/>
+                <ComboBoxItem Content="倍低音符１" Tag="--1"/>
+                <ComboBoxItem Content="倍低音符２" Tag="--2"/>
+                <ComboBoxItem Content="倍低音符３" Tag="--3"/>
+                <ComboBoxItem Content="倍低音符４" Tag="--4"/>
+                <ComboBoxItem Content="倍低音符５" Tag="--5"/>
+                <ComboBoxItem Content="倍低音符６" Tag="--6"/>
+                <ComboBoxItem Content="倍低音符７" Tag="--7"/>
 
-        <!--歌词-->
-        <TextBox Header="歌词：" 
-                 PlaceholderText="输入歌词..."
-                 Text="{x:Bind ViewModel.Lyrics, Mode=TwoWay}" 
-                 Margin="0,10,0,0"/>
+                <ComboBoxItem Content="超低音符１" Tag="---1"/>
+                <ComboBoxItem Content="超低音符２" Tag="---2"/>
+                <ComboBoxItem Content="超低音符３" Tag="---3"/>
+                <ComboBoxItem Content="超低音符４" Tag="---4"/>
+                <ComboBoxItem Content="超低音符５" Tag="---5"/>
+                <ComboBoxItem Content="超低音符６" Tag="---6"/>
+                <ComboBoxItem Content="超低音符７" Tag="---7"/>
 
-        <!--所属组合-->
-        <ComboBox Header="所属组合"
-                  PlaceholderText="选择组合..."
-                  ItemsSource="{x:Bind ViewModel.Beams, Mode=OneWay}"
-                  SelectedItem="{x:Bind ViewModel.SelectedBeam, Mode=TwoWay}"
-                  HorizontalAlignment="Stretch"
-                  Margin="0,10,0,0"/>
-    </StackPanel>
+                <ComboBoxItem Content="高音音符１" Tag="+1"/>
+                <ComboBoxItem Content="高音音符２" Tag="+2"/>
+                <ComboBoxItem Content="高音音符３" Tag="+3"/>
+                <ComboBoxItem Content="高音音符４" Tag="+4"/>
+                <ComboBoxItem Content="高音音符５" Tag="+5"/>
+                <ComboBoxItem Content="高音音符６" Tag="+6"/>
+                <ComboBoxItem Content="高音音符７" Tag="+7"/>
+
+                <ComboBoxItem Content="倍高音符１" Tag="++1"/>
+                <ComboBoxItem Content="倍高音符２" Tag="++2"/>
+                <ComboBoxItem Content="倍高音符３" Tag="++3"/>
+                <ComboBoxItem Content="倍高音符４" Tag="++4"/>
+                <ComboBoxItem Content="倍高音符５" Tag="++5"/>
+                <ComboBoxItem Content="倍高音符６" Tag="++6"/>
+                <ComboBoxItem Content="倍高音符７" Tag="++7"/>
+
+                <ComboBoxItem Content="超高音符１" Tag="+++1"/>
+                <ComboBoxItem Content="超高音符２" Tag="+++2"/>
+                <ComboBoxItem Content="超高音符３" Tag="+++3"/>
+                <ComboBoxItem Content="超高音符４" Tag="+++4"/>
+                <ComboBoxItem Content="超高音符５" Tag="+++5"/>
+                <ComboBoxItem Content="超高音符６" Tag="+++6"/>
+                <ComboBoxItem Content="超高音符７" Tag="+++7"/>
+
+                <ComboBoxItem Content="休止符０" Tag="0"/>
+
+                <ComboBoxItem Content="噪音符Ｘ" Tag="X"/>
+
+                <ComboBoxItem Content="增时符－" Tag="-"/>
+            </ComboBox>
+
+            <!--时值-->
+            <ComboBox Header="时值：" 
+                      PlaceholderText="选择音符时值..."
+                      SelectedValuePath="Tag" 
+                      SelectedValue="{x:Bind ViewModel.Duration, Mode=TwoWay}" 
+                      HorizontalAlignment="Stretch" 
+                      Margin="0,10,0,0">
+                <ComboBoxItem Content="全音符" Tag="4"/>
+                <ComboBoxItem Content="二分音符" Tag="2"/>
+                <ComboBoxItem Content="四分音符" Tag="1"/>
+                <ComboBoxItem Content="八分音符" Tag="0.5"/>
+                <ComboBoxItem Content="十六分音符" Tag="0.25"/>
+                <ComboBoxItem Content="三十二分音符" Tag="0.125"/>
+            </ComboBox>
+
+            <!--附点-->
+            <NumberBox Header="附点数量："
+                       PlaceholderText="输入附点数量..."
+                       Value="{x:Bind ViewModel.Dots, Mode=TwoWay}" 
+                       Minimum="0" 
+                       Maximum="3" 
+                       Margin="0,10,0,0"/>
+
+            <!--连音线标志-->
+            <ComboBox Header="连音线标志：" 
+                      PlaceholderText="选择连音线标志..."
+                      SelectedValuePath="Tag" 
+                      SelectedValue="{x:Bind ViewModel.Slur, Mode=TwoWay}" 
+                      HorizontalAlignment="Stretch" 
+                      Margin="0,10,0,0">
+                <ComboBoxItem Content="无连音线" Tag="" IsSelected="True"/>
+                <ComboBoxItem Content="开始连音线" Tag="1"/>
+                <ComboBoxItem Content="结束连音线" Tag="0"/>
+            </ComboBox>
+
+            <!--延长号标志-->
+            <ComboBox Header="延长号标志：" 
+                      PlaceholderText="选择延长号标志..."
+                      SelectedValuePath="Tag" 
+                      SelectedValue="{x:Bind ViewModel.Fermata, Mode=TwoWay}" 
+                      HorizontalAlignment="Stretch" 
+                      Margin="0,10,0,0">
+                <ComboBoxItem Content="有延长号" Tag="1"/>
+                <ComboBoxItem Content="无延长号" Tag="0"/>
+            </ComboBox>
+
+            <!--演奏方式-->
+            <ComboBox Header="演奏方式：" 
+                      PlaceholderText="选择演奏方式..."
+                      SelectedItem="{x:Bind ViewModel.Articulation, Mode=TwoWay}"
+                      HorizontalAlignment="Stretch" 
+                      Margin="0,10,0,0">
+                <x:String>倚音</x:String>
+                <x:String>颤音</x:String>
+                <x:String>波音</x:String>
+                <x:String>回音</x:String>
+                <x:String>滑音</x:String>
+                <x:String>琶音</x:String>
+                <x:String>震音</x:String>
+            </ComboBox>
+
+            <!--歌词-->
+            <TextBox Header="歌词：" 
+                     PlaceholderText="输入歌词..."
+                     Text="{x:Bind ViewModel.Lyrics, Mode=TwoWay}" 
+                     Margin="0,10,0,0"/>
+
+            <!--所属组合-->
+            <ComboBox Header="音符组合"
+                      PlaceholderText="选择音符组合..."
+                      ItemsSource="{x:Bind ViewModel.Beams, Mode=OneWay}"
+                      SelectedItem="{x:Bind ViewModel.SelectedBeam, Mode=TwoWay}"
+                      DisplayMemberPath="Name"
+                      HorizontalAlignment="Stretch"
+                      Margin="0,10,0,0"/>
+        </StackPanel>
+    </ScrollViewer>
 </ContentDialog>

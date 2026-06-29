@@ -8,7 +8,6 @@ using SEH.Models;
 using SEH.Services.Interfaces;
 using SEH.Views;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -406,7 +405,13 @@ namespace SEH.ViewModels
             {
                 return;
             }
-            _score.Lines.RemoveAt(_score.Lines.Count - 1);
+            if (_line == null)
+            {
+                return;
+            }
+
+            _score.Lines.Remove(_line);
+
             if (_score.Lines.Count == 0)
             {
                 _score.Lines = null;
@@ -487,7 +492,13 @@ namespace SEH.ViewModels
             {
                 return;
             }
-            _line.Measures.RemoveAt(_line.Measures.Count - 1);
+            if (_measure == null)
+            {
+                return;
+            }
+
+            _line.Measures.Remove(_measure);
+
             if (_line.Measures.Count == 0)
             {
                 _line.Measures = null;
@@ -610,8 +621,13 @@ namespace SEH.ViewModels
             {
                 return;
             }
+            if (_beam == null)
+            {
+                return;
+            }
 
-            if (_beam != null && _measure.Notes != null)
+            //清除组合中的音符
+            if (_measure.Notes != null)
             {
                 foreach (var note in _measure.Notes)
                 {
@@ -622,7 +638,8 @@ namespace SEH.ViewModels
                 }
             }
 
-            _measure.Beams.RemoveAt(_measure.Beams.Count - 1);
+            _measure.Beams.Remove(_beam);
+
             if (_measure.Beams.Count == 0)
             {
                 _measure.Beams = null;

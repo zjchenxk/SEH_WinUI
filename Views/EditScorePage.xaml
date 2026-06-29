@@ -226,7 +226,7 @@
                         <TextBox x:Name="Composer"
                                  Text="{x:Bind ViewModel.Composer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  PlaceholderText="输入作曲人..."
-                                 Header="作曲人："
+                                 Header="作曲："
                                  MaxLength="50"
                                  HorizontalAlignment="Stretch"/>
 
@@ -243,7 +243,7 @@
                         <TextBox x:Name="Lyricist"
                                  Text="{x:Bind ViewModel.Lyricist, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  PlaceholderText="输入作词人..."
-                                 Header="作词人："
+                                 Header="作词："
                                  MaxLength="50"
                                  HorizontalAlignment="Stretch"/>
 
