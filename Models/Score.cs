@@ -70,7 +70,7 @@ namespace SEH.Models
         public int LineMeasureCount { get; set; }
 
         /// <summary>
-        /// 页面方向（1-横向，2-纵向）
+        /// 页面方向（1-纵向，2-横向，默认为1）
         /// </summary>
         [Column("direction")]
         public int Direction { get; set; }

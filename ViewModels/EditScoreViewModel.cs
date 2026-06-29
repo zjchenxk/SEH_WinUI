@@ -142,7 +142,7 @@ namespace SEH.ViewModels
         private string? _lineMeasureCountError = "";
 
         /// <summary>
-        /// 页面方向（1-横向，2-纵向，默认为横向）
+        /// 页面方向（1-纵向，2-横向，默认为纵向）
         /// </summary>
         [Required(ErrorMessage = "页面方向不能为空！")]
         [ObservableProperty]
@@ -421,6 +421,14 @@ namespace SEH.ViewModels
             }
 
             _score.Direction = int.Parse(value);
+            if (_score.Direction == 1)//横向
+            {
+                CanvasWidth = 794;
+            }
+            else//纵向
+            {
+                CanvasWidth = 1123;
+            }
 
             ScheduleRedraw();
         }
