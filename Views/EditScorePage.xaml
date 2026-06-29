@@ -328,6 +328,29 @@
                                    FontSize="{StaticResource ToolTipContentThemeFontSize}" 
                                    Margin="0,4,0,0"/>
                     </StackPanel>
+
+                    <!--每行小节数-->
+                    <StackPanel Grid.Row="6" HorizontalAlignment="Stretch">
+                        <ComboBox x:Name="MeasuresPerLine" 
+                                  SelectedItem="{x:Bind ViewModel.MeasuresPerLine, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Header="每行小节数：" 
+                                  PlaceholderText="选择每行小节数量..." 
+                                  HorizontalAlignment="Stretch">
+                            <x:String>5</x:String>
+                            <x:String>4</x:String>
+                            <x:String>3</x:String>
+                            <x:String>2</x:String>
+                            <x:String>1</x:String>
+                        </ComboBox>
+
+                        <!--红字错误提示，绑定到 ViewModel 的 KeySignatureError 属性-->
+                        <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                        <TextBlock Text="{x:Bind ViewModel.KeySignatureError, Mode=OneWay}" 
+                                   Foreground="{StaticResource SystemErrorTextColor}" 
+                                   FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
                 </StackPanel>
             </ScrollView>
 

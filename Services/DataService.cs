@@ -17,7 +17,7 @@ namespace SEH.Services
         {
             try
             {
-                string databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "data.db");
+                string databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SEH.db");
                 db = new SQLiteConnection(databasePath);
                 if (db != null)
                 {

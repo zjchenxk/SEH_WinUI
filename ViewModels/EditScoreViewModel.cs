@@ -129,6 +129,19 @@ namespace SEH.ViewModels
         private string? _tempoError = "";
 
         /// <summary>
+        /// 每行小节数
+        /// </summary>
+        [Required(ErrorMessage = "每行小节数量不能为空！")]
+        [ObservableProperty]
+        private string _measuresPerLine = "4";
+
+        /// <summary>
+        /// 每行小节数错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _measuresPerLineError = "";
+
+        /// <summary>
         /// 简谱渲染元素集合
         /// </summary>
         [ObservableProperty]
