@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Documents;
 using Newtonsoft.Json.Linq;
 using SEH.Commons;
 using SEH.Models;
@@ -92,7 +91,7 @@ namespace SEH.ViewModels
         [Required(ErrorMessage = "调号不能为空！")]
         [MaxLength(1, ErrorMessage = "调号长度不能超过1个字！")]
         [ObservableProperty]
-        private string _keySignature = "";
+        private string _keySignature = "C";
 
         /// <summary>
         /// 调号错误信息
@@ -101,18 +100,30 @@ namespace SEH.ViewModels
         private string? _keySignatureError = "";
 
         /// <summary>
-        /// 拍号，如：3/4、4/4等。下面的数字表示以何种时值的音符为一拍，上面的数字表示每小节有几拍。
+        /// 每小节拍数（拍号分子，如：2、3、4、5、6、7、9、12）
         /// </summary>
-        [Required(ErrorMessage = "拍号不能为空！")]
-        [MaxLength(5, ErrorMessage = "拍号长度不能超过5个字！")]
+        [Required(ErrorMessage = "每小节拍数不能为空！")]
         [ObservableProperty]
-        private string _timeSignature = "";
+        private string _measureBeatCount = "4";
 
         /// <summary>
-        /// 拍号错误信息
+        /// 每小节拍数错误信息
         /// </summary>
         [ObservableProperty]
-        private string? _timeSignatureError = "";
+        private string? _measureBeatCountError = "";
+
+        /// <summary>
+        /// 每拍时值（拍号分母，如：2、4、8）
+        /// </summary>
+        [Required(ErrorMessage = "每拍时值不能为空！")]
+        [ObservableProperty]
+        private string _beatDuration = "4";
+
+        /// <summary>
+        /// 每小节拍数错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _beatDurationError = "";
 
         /// <summary>
         /// 速度（如：80、120）
@@ -153,6 +164,7 @@ namespace SEH.ViewModels
         /// </summary>
         [ObservableProperty]
         private string? _directionError = "";
+
 
         /// <summary>
         /// 简谱渲染元素集合
@@ -238,17 +250,35 @@ namespace SEH.ViewModels
                 var errors = GetErrors(nameof(KeySignature));
                 KeySignatureError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
             }
-            else if (e.PropertyName == nameof(TimeSignature))//当 TimeSignature 属性的验证状态发生变化时，更新错误提示文本
+            else if (e.PropertyName == nameof(MeasureBeatCount))//当 MeasureBeatCount 属性的验证状态发生变化时，更新错误提示文本
             {
                 //GetErrors 返回的是 ValidationResult 集合
-                var errors = GetErrors(nameof(TimeSignature));
-                TimeSignatureError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+                var errors = GetErrors(nameof(MeasureBeatCount));
+                MeasureBeatCountError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
+            else if (e.PropertyName == nameof(BeatDuration))//当 BeatDuration 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(BeatDuration));
+                BeatDurationError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
             }
             else if (e.PropertyName == nameof(Tempo))//当 Tempo 属性的验证状态发生变化时，更新错误提示文本
             {
                 //GetErrors 返回的是 ValidationResult 集合
                 var errors = GetErrors(nameof(Tempo));
                 TempoError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
+            else if (e.PropertyName == nameof(LineMeasureCount))//当 LineMeasureCount 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(LineMeasureCount));
+                LineMeasureCountError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
+            else if (e.PropertyName == nameof(Direction))//当 Direction 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(Direction));
+                DirectionError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
             }
         }
 
@@ -271,7 +301,8 @@ namespace SEH.ViewModels
                     Composer = score.Composer ?? "";
                     Lyricist = score.Lyricist ?? "";
                     KeySignature = score.KeySignature;
-                    TimeSignature = score.TimeSignature;
+                    MeasureBeatCount = score.MeasureBeatCount.ToString();
+                    BeatDuration = score.BeatDuration.ToString();
                     Tempo = score.Tempo.ToString();
                     LineMeasureCount = score.LineMeasureCount.ToString();
                     Direction = score.Direction.ToString();
@@ -305,7 +336,8 @@ namespace SEH.ViewModels
                         CategoryId = param["CategoryId"].ToString();
                     }
                     KeySignature = "C";
-                    TimeSignature = "4/4";
+                    MeasureBeatCount = "4";
+                    BeatDuration = "4";
                     Tempo = "90";
                     LineMeasureCount = "4";
                     Direction = "1";
@@ -369,16 +401,30 @@ namespace SEH.ViewModels
             ScheduleRedraw();
         }
 
-        partial void OnTimeSignatureChanged(string value)
+        partial void OnMeasureBeatCountChanged(string value)
         {
-            ValidateProperty(value, nameof(TimeSignature));
+            ValidateProperty(value, nameof(MeasureBeatCount));
 
-            if (!string.IsNullOrWhiteSpace(TimeSignatureError))
+            if (!string.IsNullOrWhiteSpace(MeasureBeatCountError))
             {
                 return;
             }
 
-            _score.TimeSignature = value;
+            _score.MeasureBeatCount = int.Parse(value);
+
+            ScheduleRedraw();
+        }
+
+        partial void OnBeatDurationChanged(string value)
+        {
+            ValidateProperty(value, nameof(BeatDuration));
+
+            if (!string.IsNullOrWhiteSpace(BeatDurationError))
+            {
+                return;
+            }
+
+            _score.BeatDuration = int.Parse(value);
 
             ScheduleRedraw();
         }
@@ -538,16 +584,7 @@ namespace SEH.ViewModels
                 {
                     totalMeasureWidth += measure.Width;
                 }
-
-                //获取拍号中的分子（表示每小节有几拍）
-                int beats = 4;
-                if (!string.IsNullOrEmpty(_score.TimeSignature) && _score.TimeSignature.Contains('/'))
-                {
-                    var parts = _score.TimeSignature.Split('/');
-                    beats = int.Parse(parts[0]);
-                }
-
-                if (totalMeasureWidth + 10/*左边距*/ + 40 * beats/*音符总宽度*/ + 10/*右边距*/ + 2/*小节终点竖线*/ >= CanvasWidth)
+                if (totalMeasureWidth + 10/*左边距*/ + 40 * _score.MeasureBeatCount/*音符总宽度*/ + 10/*右边距*/ + 2/*小节终点竖线*/ >= CanvasWidth)
                 {
                     await _messageService.ShowErrorAsync("页面宽度不足，请新增一行！");
                     return;
@@ -625,13 +662,6 @@ namespace SEH.ViewModels
             }
 
             #region 检查当前小节内的音符总拍数是否已满
-            int beats = 4;
-            //获取拍号中的分子（表示每小节有几拍）
-            if (!string.IsNullOrEmpty(_score.TimeSignature) && _score.TimeSignature.Contains('/'))
-            {
-                var parts = _score.TimeSignature.Split('/');
-                beats = int.Parse(parts[0]);
-            }
             int totalBeats = 0;
             if (_measure.Notes != null)
             {
@@ -657,7 +687,7 @@ namespace SEH.ViewModels
                     }
                 }
             }
-            if (totalBeats >= beats)
+            if (totalBeats >= _score.MeasureBeatCount)
             {
                 await _messageService.ShowErrorAsync("当前小节内的音符总拍数已满，请新增小节！");
                 return;
@@ -819,7 +849,7 @@ namespace SEH.ViewModels
             double noteBaseXOffset = 10;//音符在每行中的相对X位置
             double noteBaseYOffset = 40;//音符在每行中的相对Y位置
             double beamBaseYOffset = 75;//音符组合线在每行中的相对Y位置
-            int beats = 4;//每小节拍数，默认4拍
+            //int beats = 4;//每小节拍数，默认4拍
 
             //设置工作区宽度，页边距20
             double workspaceWidth = CanvasWidth - 40;
@@ -863,20 +893,13 @@ namespace SEH.ViewModels
             }
 
             // 左侧：拍号（按分数上下显示）
-            if (!string.IsNullOrEmpty(_score.TimeSignature) && _score.TimeSignature.Contains('/'))
             {
-                var parts = _score.TimeSignature.Split('/');
-                string numerator = parts[0];     //分子（如：4）
-                string denominator = parts[1];   //分母（如：4）
-
-                beats = int.Parse(numerator);
-
                 //绘制分子（往上偏移）
                 RenderElements.Add(new ScoreRenderTextElement
                 {
                     X = leftX1,
                     Y = metaY1 - 10,
-                    Text = numerator,
+                    Text = _score.MeasureBeatCount.ToString(),
                     FontSize = 18
                 });
                 //绘制中间的横线
@@ -893,7 +916,7 @@ namespace SEH.ViewModels
                 {
                     X = leftX1,
                     Y = metaY1 + 8,
-                    Text = denominator,
+                    Text = _score.BeatDuration.ToString(),
                     FontSize = 18
                 });
                 leftX1 += 30; // 拍号占位
@@ -1190,9 +1213,9 @@ namespace SEH.ViewModels
                                 }
 
                                 //填充空白音符宽度，如果小节内的音符总拍数小于拍号中的分子，则需要绘制空白音符占位
-                                if (totalBeats < beats)
+                                if (totalBeats < _score.MeasureBeatCount)
                                 {
-                                    double emptyNoteWidth = noteWidth * (beats - totalBeats);
+                                    double emptyNoteWidth = noteWidth * (_score.MeasureBeatCount - totalBeats);
                                     totalNoteWidth += emptyNoteWidth;
                                     currentX += emptyNoteWidth;
                                 }
@@ -1200,7 +1223,7 @@ namespace SEH.ViewModels
                             else
                             {
                                 //绘制空白小节
-                                totalNoteWidth = noteWidth * beats/*每小节拍数*/;
+                                totalNoteWidth = noteWidth * _score.MeasureBeatCount/*每小节拍数*/;
                                 currentX += totalNoteWidth;
                             }
                             #endregion
@@ -1315,7 +1338,8 @@ namespace SEH.ViewModels
             _score.Composer = Composer.Trim();
             _score.Lyricist = Lyricist.Trim();
             _score.KeySignature = KeySignature.Trim();
-            _score.TimeSignature = TimeSignature.Trim();
+            _score.MeasureBeatCount = int.Parse(MeasureBeatCount);
+            _score.BeatDuration = int.Parse(BeatDuration);
             _score.Tempo = int.Parse(Tempo.Trim());
 
             if (_dataService.IsScoreIdExists(_score.Id))

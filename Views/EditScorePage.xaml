@@ -278,34 +278,46 @@
                                    Margin="0,4,0,0"/>
                     </StackPanel>
 
-                    <!--拍号-->
+                    <!--每小节拍数-->
                     <StackPanel HorizontalAlignment="Stretch">
-                        <ComboBox x:Name="TimeSignature" 
-                                  SelectedItem="{x:Bind ViewModel.TimeSignature, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                  Header="拍号：" 
-                                  PlaceholderText="选择拍号..." 
+                        <ComboBox x:Name="MeasureBeatCount" 
+                                  SelectedItem="{x:Bind ViewModel.MeasureBeatCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Header="每小节拍数：" 
+                                  PlaceholderText="选择每小节拍数..." 
                                   HorizontalAlignment="Stretch">
-                            <x:String>2/2</x:String>
-                            <x:String>3/2</x:String>
-                            <x:String>2/4</x:String>
-                            <x:String>3/4</x:String>
-                            <x:String>4/4</x:String>
-                            <x:String>5/4</x:String>
-                            <x:String>6/4</x:String>
-                            <x:String>7/4</x:String>
-                            <x:String>2/8</x:String>
-                            <x:String>3/8</x:String>
-                            <x:String>4/8</x:String>
-                            <x:String>5/8</x:String>
-                            <x:String>6/8</x:String>
-                            <x:String>7/8</x:String>
-                            <x:String>9/8</x:String>
-                            <x:String>12/8</x:String>
+                            <x:String>2</x:String>
+                            <x:String>3</x:String>
+                            <x:String>4</x:String>
+                            <x:String>5</x:String>
+                            <x:String>6</x:String>
+                            <x:String>7</x:String>
+                            <x:String>9</x:String>
+                            <x:String>12</x:String>
                         </ComboBox>
 
-                        <!--红字错误提示，绑定到 ViewModel 的 TimeSignatureError 属性-->
+                        <!--红字错误提示，绑定到 ViewModel 的 MeasureBeatCountError 属性-->
                         <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
-                        <TextBlock Text="{x:Bind ViewModel.TimeSignatureError, Mode=OneWay}" 
+                        <TextBlock Text="{x:Bind ViewModel.MeasureBeatCountError, Mode=OneWay}" 
+                                   Foreground="{StaticResource SystemErrorTextColor}" 
+                                   FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <!--每拍时值-->
+                    <StackPanel HorizontalAlignment="Stretch">
+                        <ComboBox x:Name="BeatDuration" 
+                                  SelectedItem="{x:Bind ViewModel.BeatDuration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Header="每拍时值：" 
+                                  PlaceholderText="选择每拍时值..." 
+                                  HorizontalAlignment="Stretch">
+                            <x:String>2</x:String>
+                            <x:String>4</x:String>
+                            <x:String>8</x:String>
+                        </ComboBox>
+
+                        <!--红字错误提示，绑定到 ViewModel 的 BeatDurationError 属性-->
+                        <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                        <TextBlock Text="{x:Bind ViewModel.BeatDurationError, Mode=OneWay}" 
                                    Foreground="{StaticResource SystemErrorTextColor}" 
                                    FontSize="{StaticResource ToolTipContentThemeFontSize}" 
                                    Margin="0,4,0,0"/>

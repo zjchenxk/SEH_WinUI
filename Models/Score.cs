@@ -51,14 +51,19 @@ namespace SEH.Models
         public string KeySignature { get; set; }
 
         /// <summary>
-        /// 拍号，如：3/4、4/4等。下面的数字表示以何种时值的音符为一拍，上面的数字表示每小节有几拍。
+        /// 每小节拍数（拍号分子，如：2、3、4、5、6、7、9、12）
         /// </summary>
-        [MaxLength(5)]
-        [Column("time_signature")]
-        public string TimeSignature { get; set; }
+        [Column("measure_beat_count")]
+        public int MeasureBeatCount { get; set; }
 
         /// <summary>
-        /// 速度（如：80、120）
+        /// 每拍时值（拍号分母，如：2、4、8）
+        /// </summary>
+        [Column("beat_duration")]
+        public int BeatDuration { get; set; }
+
+        /// <summary>
+        /// 速度（如：80、120等）
         /// </summary>
         [Column("tempo")]
         public int Tempo { get; set; }
