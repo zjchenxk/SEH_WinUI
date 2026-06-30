@@ -333,15 +333,25 @@ namespace SEH.ViewModels
                 {
                     if (param["CategoryId"] != null)
                     {
-                        CategoryId = param["CategoryId"].ToString();
+                        _score.CategoryId = param["CategoryId"].ToString();
                     }
-                    KeySignature = "C";
-                    MeasureBeatCount = "4";
-                    BeatDuration = "4";
-                    Tempo = "90";
-                    LineMeasureCount = "4";
-                    Direction = "1";
+                    _score.KeySignature = "C";
+                    _score.MeasureBeatCount = 4;
+                    _score.BeatDuration = 4;
+                    _score.Tempo = 90;
+                    _score.LineMeasureCount = 4;
+                    _score.Direction = 1;
+
+                    CategoryId = _score.CategoryId;
+                    KeySignature = _score.KeySignature;
+                    MeasureBeatCount = _score.MeasureBeatCount.ToString();
+                    BeatDuration = _score.BeatDuration.ToString();
+                    Tempo = _score.Tempo.ToString();
+                    LineMeasureCount = _score.LineMeasureCount.ToString();
+                    Direction = _score.Direction.ToString();
                 }
+
+                ScheduleRedraw();
             }
         }
 

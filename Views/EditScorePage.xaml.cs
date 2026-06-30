@@ -14,7 +14,6 @@ namespace SEH.Views
     {
         public EditScoreViewModel ViewModel { get; }
 
-
         public EditScorePage()
         {
             //将依赖注入的 ViewModel 注入到 MainWindow 中

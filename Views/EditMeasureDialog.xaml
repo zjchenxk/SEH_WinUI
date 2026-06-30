@@ -15,10 +15,14 @@
     <StackPanel Orientation="Vertical" Width="500">
         <!--左小节线类型-->
         <StackPanel HorizontalAlignment="Stretch">
-            <RadioButtons Header="左小节线类型：">
-                <RadioButton Content="小节线" Tag="1" IsChecked="{x:Bind ViewModel.LeftLine, Mode=TwoWay}" />
-                <RadioButton Content="反复起始线" Tag="2" IsChecked="{x:Bind ViewModel.LeftLine, Mode=TwoWay}"/>
-            </RadioButtons>
+            <ComboBox Header="左小节线类型：" 
+                      PlaceholderText="选择左小节线类型..."
+                      SelectedValuePath="Tag"
+                      SelectedValue="{x:Bind ViewModel.LeftLine, Mode=TwoWay}"
+                      HorizontalAlignment="Stretch">
+                <ComboBoxItem Content="小节线" Tag="1"/>
+                <ComboBoxItem Content="反复起始线" Tag="2"/>
+            </ComboBox>
 
             <!--红字错误提示，绑定到 ViewModel 的 LeftLineError 属性-->
             <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
@@ -30,13 +34,17 @@
 
         <!--右小节线类型-->
         <StackPanel HorizontalAlignment="Stretch">
-            <RadioButtons Header="右小节线类型：">
-                <RadioButton Content="小节线" Tag="1" IsChecked="{x:Bind ViewModel.RightLine, Mode=TwoWay}" />
-                <RadioButton Content="虚小节线" Tag="2" IsChecked="{x:Bind ViewModel.RightLine, Mode=TwoWay}" />
-                <RadioButton Content="段落线" Tag="3" IsChecked="{x:Bind ViewModel.RightLine, Mode=TwoWay}"/>
-                <RadioButton Content="反复终止线" Tag="4" IsChecked="{x:Bind ViewModel.RightLine, Mode=TwoWay}"/>
-                <RadioButton Content="终止线" Tag="5" IsChecked="{x:Bind ViewModel.RightLine, Mode=TwoWay}"/>
-            </RadioButtons>
+            <ComboBox Header="右小节线类型："
+                      PlaceholderText="选择右小节线类型..."
+                      SelectedValuePath="Tag"
+                      SelectedValue="{x:Bind ViewModel.RightLine, Mode=TwoWay}"
+                      HorizontalAlignment="Stretch">
+                <ComboBoxItem Content="小节线" Tag="1"/>
+                <ComboBoxItem Content="虚小节线" Tag="2"/>
+                <ComboBoxItem Content="段落线" Tag="3"/>
+                <ComboBoxItem Content="反复终止线" Tag="4"/>
+                <ComboBoxItem Content="终止线" Tag="5"/>
+            </ComboBox>
 
             <!--红字错误提示，绑定到 ViewModel 的 RightLineError 属性-->
             <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
