@@ -23,7 +23,7 @@ namespace SEH.Models
         public string LineId { get; set; }
 
         /// <summary>
-        /// 乐谱主键
+        /// 简谱主键
         /// </summary>
         [Column("score_id")]
         public string ScoreId { get; set; }
@@ -35,34 +35,16 @@ namespace SEH.Models
         public int Number { get; set; }
 
         /// <summary>
-        /// 终止线标记，1-是，0-否
+        /// 左小节线类型（1-小节线，2-反复起始线）
         /// </summary>
-        [Column("final_line")]
-        public int FinalLine { get; set; }
+        [Column("left_line")]
+        public int LeftLine { get; set; }
 
         /// <summary>
-        /// 虚小节线标记，1-是，0-否
+        /// 右小节线类型（1-小节线，2-虚小节线，3-段落线，4-反复终止线，5-终止线）
         /// </summary>
-        [Column("dashed_line")]
-        public int DashedLine { get; set; }
-
-        /// <summary>
-        /// 段落线标记，1-是，0-否
-        /// </summary>
-        [Column("paragraph_line")]
-        public int ParagraphLine { get; set; }
-
-        /// <summary>
-        /// 反复起始线标记，1-是，0-否
-        /// </summary>
-        [Column("repeat_start_line")]
-        public int RepeatStartLine { get; set; }
-
-        /// <summary>
-        /// 反复终止线标记，1-是，0-否
-        /// </summary>
-        [Column("repeat_final_line")]
-        public int RepeatFinalLine { get; set; }
+        [Column("right_line")]
+        public int RightLine { get; set; }
 
         /// <summary>
         /// 小节宽度

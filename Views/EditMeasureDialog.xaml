@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="SEH.Views.EditMeasureDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SEH.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="新增小节"
+    PrimaryButtonText="确定"
+    SecondaryButtonText="取消"
+    DefaultButton="Primary">
+
+    <StackPanel Orientation="Vertical" Width="500">
+        <!--左小节线类型-->
+        <StackPanel HorizontalAlignment="Stretch">
+            <RadioButtons Header="左小节线类型：">
+                <RadioButton Content="小节线" Tag="1" IsChecked="{x:Bind ViewModel.LeftLine, Mode=TwoWay}" />
+                <RadioButton Content="反复起始线" Tag="2" IsChecked="{x:Bind ViewModel.LeftLine, Mode=TwoWay}"/>
+            </RadioButtons>
+
+            <!--红字错误提示，绑定到 ViewModel 的 LeftLineError 属性-->
+            <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+            <TextBlock Text="{x:Bind ViewModel.LeftLineError, Mode=OneWay}" 
+                       Foreground="{StaticResource SystemErrorTextColor}" 
+                       FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                       Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <!--右小节线类型-->
+        <StackPanel HorizontalAlignment="Stretch">
+            <RadioButtons Header="右小节线类型：">
+                <RadioButton Content="小节线" Tag="1" IsChecked="{x:Bind ViewModel.RightLine, Mode=TwoWay}" />
+                <RadioButton Content="虚小节线" Tag="2" IsChecked="{x:Bind ViewModel.RightLine, Mode=TwoWay}" />
+                <RadioButton Content="段落线" Tag="3" IsChecked="{x:Bind ViewModel.RightLine, Mode=TwoWay}"/>
+                <RadioButton Content="反复终止线" Tag="4" IsChecked="{x:Bind ViewModel.RightLine, Mode=TwoWay}"/>
+                <RadioButton Content="终止线" Tag="5" IsChecked="{x:Bind ViewModel.RightLine, Mode=TwoWay}"/>
+            </RadioButtons>
+
+            <!--红字错误提示，绑定到 ViewModel 的 RightLineError 属性-->
+            <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+            <TextBlock Text="{x:Bind ViewModel.RightLineError, Mode=OneWay}" 
+                       Foreground="{StaticResource SystemErrorTextColor}" 
+                       FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                       Margin="0,4,0,0"/>
+        </StackPanel>
+    </StackPanel>
+</ContentDialog>

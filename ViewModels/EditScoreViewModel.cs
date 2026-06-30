@@ -591,22 +591,54 @@ namespace SEH.ViewModels
                 }
             }
 
-            //新增小节
-            _line.Measures ??= [];
-            _measure = new Measure()
+            //调用服务显示弹窗并获取结果
+            var ret = await _dialogService.ShowEditMeasureDialogAsync();
+            if (ret != null)
             {
-                Id = Guid.NewGuid().ToString(),
-                LineId = _line.Id,
-                ScoreId = _score.Id,
-                Number = _line.Measures.Count + 1
-            };
-            _line.Measures.Add(_measure);
+                _line.Measures ??= [];
 
-            _note = null;
-            _beam = null;
+                //新增小节
+                _measure = new Measure()
+                {
+                    Id = ret.Id,
+                    LineId = _line.Id,
+                    ScoreId = _score.Id,
+                    Number = _line.Measures.Count + 1,
+                    LeftLine = ret.LeftLine,
+                    RightLine = ret.RightLine,
+                };
+                _line.Measures.Add(_measure);
 
-            //绘制简谱
-            DrawScore();
+                _note = null;
+                _beam = null;
+
+                //绘制简谱
+                DrawScore();
+            }
+        }
+
+        /// <summary>
+        /// 修改小节命令
+        /// </summary>
+        [RelayCommand]
+        private async Task EditMeasure()
+        {
+            if (_measure == null)
+            {
+                return;
+            }
+
+            //调用服务显示弹窗并获取结果
+            var ret = await _dialogService.ShowEditMeasureDialogAsync(_measure);
+            if (ret != null)
+            {
+                //修改小节
+                _measure.LeftLine = ret.LeftLine;
+                _measure.RightLine = ret.RightLine;
+
+                //绘制简谱
+                DrawScore();
+            }
         }
 
         /// <summary>
@@ -701,14 +733,26 @@ namespace SEH.ViewModels
                 //初始化 Note 集合
                 _measure.Notes ??= [];
 
-                //填充关联ID
-                ret.MeasureId = _measure.Id;
-                ret.LineId = _line.Id;
-                ret.ScoreId = _score.Id;
-                ret.Number = _measure.Notes.Count + 1;
+                //新增音符
+                _note = new Note
+                {
+                    Id = ret.Id,
+                    MeasureId = _measure.Id,
+                    LineId = _line.Id,
+                    ScoreId = _score.Id,
+                    Number = _measure.Notes.Count + 1,
+                    Pitch = ret.Pitch,
+                    Duration = ret.Duration,
+                    Dots = ret.Dots,
+                    Slur = ret.Slur,
+                    Articulation = ret.Articulation,
+                    Fermata = ret.Fermata,
+                    Lyrics = ret.Lyrics,
+                    BeamId = ret.BeamId
+                };
 
                 //添加到集合
-                _measure.Notes.Add(ret);
+                _measure.Notes.Add(_note);
 
                 //重新绘制简谱
                 DrawScore();

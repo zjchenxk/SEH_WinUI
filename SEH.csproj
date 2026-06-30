@@ -20,6 +20,7 @@
     <None Remove="Assets\Square44x44Logo.scale-200.png" />
     <None Remove="Assets\Themes\AppBarButtonStyle.xaml" />
     <None Remove="Assets\口琴128.png" />
+    <None Remove="Views\EditMeasureDialog.xaml" />
     <None Remove="Views\EditNoteDialog.xaml" />
     <None Remove="Views\EditScorePage.xaml" />
     <None Remove="Views\HomePage.xaml" />
@@ -81,6 +82,11 @@
     <Content Update="Assets\Images\口琴128.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\EditMeasureDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\EditNoteDialog.xaml">

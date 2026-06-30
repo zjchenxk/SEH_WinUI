@@ -132,6 +132,12 @@
                         <BitmapIcon UriSource="/Assets/Images/添加小节.png" ShowAsMonochrome="False"/>
                     </AppBarButton.Icon>
                 </AppBarButton>
+                <AppBarButton Label="修改小节" Style="{StaticResource MyAppBarButtonStyle}"
+                              Command="{x:Bind ViewModel.EditMeasureCommand}">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/修改小节.png" ShowAsMonochrome="False"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
                 <AppBarButton Label="删除小节" Style="{StaticResource MyAppBarButtonStyle}"
                               Command="{x:Bind ViewModel.DeleteMeasureCommand}">
                     <AppBarButton.Icon>
