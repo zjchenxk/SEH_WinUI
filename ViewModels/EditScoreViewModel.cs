@@ -153,6 +153,19 @@ namespace SEH.ViewModels
         private string? _lineMeasureCountError = "";
 
         /// <summary>
+        /// 页面尺寸
+        /// </summary>
+        [Required(ErrorMessage = "页面尺寸不能为空！")]
+        [ObservableProperty]
+        private string _pageSize = "A4";
+
+        /// <summary>
+        /// 页面尺寸错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _pageSizeError = "";
+
+        /// <summary>
         /// 页面方向（1-纵向，2-横向，默认为纵向）
         /// </summary>
         [Required(ErrorMessage = "页面方向不能为空！")]
@@ -326,11 +339,41 @@ namespace SEH.ViewModels
                 var errors = GetErrors(nameof(LineMeasureCount));
                 LineMeasureCountError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
             }
+            else if (e.PropertyName == nameof(PageSize))//当 PageSize 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(PageSize));
+                PageSizeError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
             else if (e.PropertyName == nameof(Direction))//当 Direction 属性的验证状态发生变化时，更新错误提示文本
             {
                 //GetErrors 返回的是 ValidationResult 集合
                 var errors = GetErrors(nameof(Direction));
                 DirectionError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
+            else if (e.PropertyName == nameof(LeftMargin))//当 LeftMargin 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(LeftMargin));
+                LeftMarginError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
+            else if (e.PropertyName == nameof(TopMargin))//当 TopMargin 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(TopMargin));
+                TopMarginError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
+            else if (e.PropertyName == nameof(RightMargin))//当 RightMargin 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(RightMargin));
+                RightMarginError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
+            else if (e.PropertyName == nameof(BottomMargin))//当 BottomMargin 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(BottomMargin));
+                BottomMarginError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
             }
         }
 
@@ -357,7 +400,12 @@ namespace SEH.ViewModels
                     BeatDuration = score.BeatDuration.ToString();
                     Tempo = score.Tempo.ToString();
                     LineMeasureCount = score.LineMeasureCount.ToString();
+                    PageSize = score.PageSize;
                     Direction = score.Direction.ToString();
+                    LeftMargin = score.LeftMargin.ToString();
+                    TopMargin = score.TopMargin.ToString();
+                    RightMargin = score.RightMargin.ToString();
+                    BottomMargin = score.BottomMargin.ToString();
 
                     _score = score;
                     _line = null;
@@ -392,7 +440,12 @@ namespace SEH.ViewModels
                     _score.BeatDuration = 4;
                     _score.Tempo = 90;
                     _score.LineMeasureCount = 4;
+                    _score.PageSize = "A4";
                     _score.Direction = 1;
+                    _score.LeftMargin = 20;
+                    _score.TopMargin = 20;
+                    _score.RightMargin = 20;
+                    _score.BottomMargin = 20;
 
                     CategoryId = _score.CategoryId;
                     KeySignature = _score.KeySignature;
@@ -400,7 +453,12 @@ namespace SEH.ViewModels
                     BeatDuration = _score.BeatDuration.ToString();
                     Tempo = _score.Tempo.ToString();
                     LineMeasureCount = _score.LineMeasureCount.ToString();
+                    PageSize = _score.PageSize;
                     Direction = _score.Direction.ToString();
+                    LeftMargin = _score.LeftMargin.ToString();
+                    TopMargin = _score.TopMargin.ToString();
+                    RightMargin = _score.RightMargin.ToString();
+                    BottomMargin = _score.BottomMargin.ToString();
                 }
 
                 ScheduleRedraw();
@@ -519,6 +577,20 @@ namespace SEH.ViewModels
             ScheduleRedraw();
         }
 
+        partial void OnPageSizeChanged(string value)
+        {
+            ValidateProperty(value, nameof(PageSize));
+
+            if (!string.IsNullOrWhiteSpace(PageSizeError))
+            {
+                return;
+            }
+
+            _score.PageSize = value;
+
+            ScheduleRedraw();
+        }
+
         partial void OnDirectionChanged(string value)
         {
             ValidateProperty(value, nameof(Direction));
@@ -529,14 +601,73 @@ namespace SEH.ViewModels
             }
 
             _score.Direction = int.Parse(value);
-            if (_score.Direction == 1)//横向
+            if (_score.PageSize == "A4")
             {
-                CanvasWidth = 794;
+                if (_score.Direction == 1)//横向
+                {
+                    CanvasWidth = 794;
+                }
+                else//纵向
+                {
+                    CanvasWidth = 1123;
+                }
             }
-            else//纵向
+
+            ScheduleRedraw();
+        }
+
+        partial void OnLeftMarginChanged(string value)
+        {
+            ValidateProperty(value, nameof(LeftMargin));
+
+            if (!string.IsNullOrWhiteSpace(LeftMarginError))
             {
-                CanvasWidth = 1123;
+                return;
             }
+
+            _score.LeftMargin = int.Parse(value);
+
+            ScheduleRedraw();
+        }
+
+        partial void OnTopMarginChanged(string value)
+        {
+            ValidateProperty(value, nameof(TopMargin));
+
+            if (!string.IsNullOrWhiteSpace(TopMarginError))
+            {
+                return;
+            }
+
+            _score.TopMargin = int.Parse(value);
+
+            ScheduleRedraw();
+        }
+
+        partial void OnRightMarginChanged(string value)
+        {
+            ValidateProperty(value, nameof(RightMargin));
+
+            if (!string.IsNullOrWhiteSpace(RightMarginError))
+            {
+                return;
+            }
+
+            _score.RightMargin = int.Parse(value);
+
+            ScheduleRedraw();
+        }
+
+        partial void OnBottomMarginChanged(string value)
+        {
+            ValidateProperty(value, nameof(BottomMargin));
+
+            if (!string.IsNullOrWhiteSpace(BottomMarginError))
+            {
+                return;
+            }
+
+            _score.BottomMargin = int.Parse(value);
 
             ScheduleRedraw();
         }
@@ -1447,6 +1578,13 @@ namespace SEH.ViewModels
             _score.MeasureBeatCount = int.Parse(MeasureBeatCount);
             _score.BeatDuration = int.Parse(BeatDuration);
             _score.Tempo = int.Parse(Tempo.Trim());
+            _score.LineMeasureCount = int.Parse(LineMeasureCount.Trim());
+            _score.PageSize = PageSize.Trim();
+            _score.Direction = int.Parse(Direction.Trim());
+            _score.LeftMargin = int.Parse(LeftMargin.Trim());
+            _score.TopMargin = int.Parse(TopMargin.Trim());
+            _score.RightMargin = int.Parse(RightMargin.Trim());
+            _score.BottomMargin = int.Parse(BottomMargin.Trim());
 
             if (_dataService.IsScoreIdExists(_score.Id))
             {

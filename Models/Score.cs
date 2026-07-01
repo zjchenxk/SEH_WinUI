@@ -75,6 +75,12 @@ namespace SEH.Models
         public int LineMeasureCount { get; set; }
 
         /// <summary>
+        /// 页面尺寸（默认A4）
+        /// </summary>
+        [Column("page_size")]
+        public string PageSize { get; set; }
+
+        /// <summary>
         /// 页面方向（1-纵向，2-横向，默认为1）
         /// </summary>
         [Column("direction")]

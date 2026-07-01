@@ -370,6 +370,24 @@
                                    Margin="0,4,0,0"/>
                     </StackPanel>
 
+                    <!--页面尺寸-->
+                    <StackPanel HorizontalAlignment="Stretch">
+                        <ComboBox x:Name="PageSize" 
+                                  SelectedItem="{x:Bind ViewModel.PageSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Header="页面尺寸：" 
+                                  PlaceholderText="选择页面尺寸..." 
+                                  HorizontalAlignment="Stretch">
+                            <x:String>A4</x:String>
+                        </ComboBox>
+
+                        <!--红字错误提示，绑定到 ViewModel 的 PageSizeError 属性-->
+                        <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                        <TextBlock Text="{x:Bind ViewModel.PageSizeError, Mode=OneWay}" 
+                                   Foreground="{StaticResource SystemErrorTextColor}" 
+                                   FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
                     <!--页面方向-->
                     <StackPanel HorizontalAlignment="Stretch">
                         <ComboBox x:Name="Direction" 
@@ -385,6 +403,78 @@
                         <!--红字错误提示，绑定到 ViewModel 的 DirectionError 属性-->
                         <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
                         <TextBlock Text="{x:Bind ViewModel.DirectionError, Mode=OneWay}" 
+                                   Foreground="{StaticResource SystemErrorTextColor}" 
+                                   FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <!--左边距-->
+                    <StackPanel HorizontalAlignment="Stretch">
+                        <TextBox x:Name="LeftMargin"
+                                 Text="{x:Bind ViewModel.LeftMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 PlaceholderText="输入左边距..."
+                                 Header="左边距："
+                                 MaxLength="3"
+                                 InputScope="Number"
+                                 HorizontalAlignment="Stretch"/>
+
+                        <!--红字错误提示，绑定到 ViewModel 的 LeftMarginError 属性-->
+                        <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                        <TextBlock Text="{x:Bind ViewModel.LeftMarginError, Mode=OneWay}" 
+                                   Foreground="{StaticResource SystemErrorTextColor}" 
+                                   FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <!--上边距-->
+                    <StackPanel HorizontalAlignment="Stretch">
+                        <TextBox x:Name="TopMargin"
+                                 Text="{x:Bind ViewModel.TopMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 PlaceholderText="输入上边距..."
+                                 Header="上边距："
+                                 MaxLength="3"
+                                 InputScope="Number"
+                                 HorizontalAlignment="Stretch"/>
+
+                        <!--红字错误提示，绑定到 ViewModel 的 TopMarginError 属性-->
+                        <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                        <TextBlock Text="{x:Bind ViewModel.TopMarginError, Mode=OneWay}" 
+                                   Foreground="{StaticResource SystemErrorTextColor}" 
+                                   FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <!--右边距-->
+                    <StackPanel HorizontalAlignment="Stretch">
+                        <TextBox x:Name="RightMargin"
+                                 Text="{x:Bind ViewModel.RightMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 PlaceholderText="输入右边距..."
+                                 Header="右边距："
+                                 MaxLength="3"
+                                 InputScope="Number"
+                                 HorizontalAlignment="Stretch"/>
+
+                        <!--红字错误提示，绑定到 ViewModel 的 RightMarginError 属性-->
+                        <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                        <TextBlock Text="{x:Bind ViewModel.RightMarginError, Mode=OneWay}" 
+                                   Foreground="{StaticResource SystemErrorTextColor}" 
+                                   FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <!--下边距-->
+                    <StackPanel HorizontalAlignment="Stretch">
+                        <TextBox x:Name="BottomMargin"
+                                 Text="{x:Bind ViewModel.BottomMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 PlaceholderText="输入下边距..."
+                                 Header="下边距："
+                                 MaxLength="3"
+                                 InputScope="Number"
+                                 HorizontalAlignment="Stretch"/>
+
+                        <!--红字错误提示，绑定到 ViewModel 的 BottomMarginError 属性-->
+                        <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                        <TextBlock Text="{x:Bind ViewModel.BottomMarginError, Mode=OneWay}" 
                                    Foreground="{StaticResource SystemErrorTextColor}" 
                                    FontSize="{StaticResource ToolTipContentThemeFontSize}" 
                                    Margin="0,4,0,0"/>
