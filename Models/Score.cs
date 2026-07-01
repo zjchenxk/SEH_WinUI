@@ -81,6 +81,30 @@ namespace SEH.Models
         public int Direction { get; set; }
 
         /// <summary>
+        /// 页面左边距（单位：像素，默认为20）
+        /// </summary>
+        [Column("left_margin")]
+        public int LeftMargin { get; set; }
+
+        /// <summary>
+        /// 页面上边距（单位：像素，默认为20）
+        /// </summary>
+        [Column("top_margin")]
+        public int TopMargin { get; set; }
+
+        /// <summary>
+        /// 页面右边距（单位：像素，默认为20）
+        /// </summary>
+        [Column("right_margin")]
+        public int RightMargin { get; set; }
+
+        /// <summary>
+        /// 页面下边距（单位：像素，默认为20）
+        /// </summary>
+        [Column("bottom_margin")]
+        public int BottomMargin { get; set; }
+
+        /// <summary>
         /// 行集合
         /// </summary>
         [Ignore]

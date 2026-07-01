@@ -165,6 +165,58 @@ namespace SEH.ViewModels
         [ObservableProperty]
         private string? _directionError = "";
 
+        /// <summary>
+        /// 页面左边距（单位：像素，默认为20）
+        /// </summary>
+        [Required(ErrorMessage = "页面左边距不能为空！")]
+        [ObservableProperty]
+        private string _leftMargin = "20";
+
+        /// <summary>
+        /// 页面左边距错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _leftMarginError = "";
+
+        /// <summary>
+        /// 页面上边距（单位：像素，默认为20）
+        /// </summary>
+        [Required(ErrorMessage = "页面上边距不能为空！")]
+        [ObservableProperty]
+        private string _topMargin = "20";
+
+        /// <summary>
+        /// 页面上边距错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _topMarginError = "";
+
+        /// <summary>
+        /// 页面右边距（单位：像素，默认为20）
+        /// </summary>
+        [Required(ErrorMessage = "页面右边距不能为空！")]
+        [ObservableProperty]
+        private string _rightMargin = "20";
+
+        /// <summary>
+        /// 页面右边距错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _rightMarginError = "";
+
+        /// <summary>
+        /// 页面下边距（单位：像素，默认为20）
+        /// </summary>
+        [Required(ErrorMessage = "页面下边距不能为空！")]
+        [ObservableProperty]
+        private string _bottomMargin = "20";
+
+        /// <summary>
+        /// 页面下边距错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _bottomMarginError = "";
+
 
         /// <summary>
         /// 简谱渲染元素集合
