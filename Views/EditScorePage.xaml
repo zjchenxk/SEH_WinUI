@@ -109,94 +109,80 @@
         </Grid.RowDefinitions>
 
         <!--工具栏-->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-            <CommandBar Background="Transparent" IsOpen="False" DefaultLabelPosition="Right" Padding="0">
-                <AppBarButton Label="新增一行" Style="{StaticResource MyAppBarButtonStyle}"
-                              Command="{x:Bind ViewModel.NewLineCommand}">
-                    <AppBarButton.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/添加一行.png" ShowAsMonochrome="False"/>
-                    </AppBarButton.Icon>
-                </AppBarButton>
-                <AppBarButton Label="删除一行" Style="{StaticResource MyAppBarButtonStyle}"
-                              Command="{x:Bind ViewModel.DeleteLineCommand}">
-                    <AppBarButton.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/删除一行.png" ShowAsMonochrome="False"/>
-                    </AppBarButton.Icon>
-                </AppBarButton>
+        <CommandBar Grid.Row="0" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right" Padding="0" HorizontalAlignment="Left">
+            <AppBarButton Label="新增一行" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.NewLineCommand}">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/Images/添加一行.png" ShowAsMonochrome="False"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton Label="删除一行" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.DeleteLineCommand}">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/Images/删除一行.png" ShowAsMonochrome="False"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
 
-                <AppBarSeparator/>
+            <AppBarSeparator/>
 
-                <AppBarButton Label="新增小节" Style="{StaticResource MyAppBarButtonStyle}"
-                              Command="{x:Bind ViewModel.NewMeasureCommand}">
-                    <AppBarButton.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/添加小节.png" ShowAsMonochrome="False"/>
-                    </AppBarButton.Icon>
-                </AppBarButton>
-                <AppBarButton Label="修改小节" Style="{StaticResource MyAppBarButtonStyle}"
-                              Command="{x:Bind ViewModel.EditMeasureCommand}">
-                    <AppBarButton.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/修改小节.png" ShowAsMonochrome="False"/>
-                    </AppBarButton.Icon>
-                </AppBarButton>
-                <AppBarButton Label="删除小节" Style="{StaticResource MyAppBarButtonStyle}"
-                              Command="{x:Bind ViewModel.DeleteMeasureCommand}">
-                    <AppBarButton.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/删除小节.png" ShowAsMonochrome="False"/>
-                    </AppBarButton.Icon>
-                </AppBarButton>
+            <AppBarButton Label="新增小节" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.NewMeasureCommand}">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/Images/添加小节.png" ShowAsMonochrome="False"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton Label="修改小节" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.EditMeasureCommand}">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/Images/修改小节.png" ShowAsMonochrome="False"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton Label="删除小节" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.DeleteMeasureCommand}">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/Images/删除小节.png" ShowAsMonochrome="False"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
 
-                <AppBarSeparator/>
+            <AppBarSeparator/>
 
-                <AppBarButton Label="新增音符" Style="{StaticResource MyAppBarButtonStyle}"
-                              Command="{x:Bind ViewModel.NewNoteCommand}">
-                    <AppBarButton.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/添加音符.png" ShowAsMonochrome="False"/>
-                    </AppBarButton.Icon>
-                </AppBarButton>
-                <AppBarButton Label="修改音符" Style="{StaticResource MyAppBarButtonStyle}"
-                              Command="{x:Bind ViewModel.EditNoteCommand}">
-                    <AppBarButton.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/修改音符.png" ShowAsMonochrome="False"/>
-                    </AppBarButton.Icon>
-                </AppBarButton>
-                <AppBarButton Label="删除音符" Style="{StaticResource MyAppBarButtonStyle}"
-                              Command="{x:Bind ViewModel.DeleteNoteCommand}">
-                    <AppBarButton.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/删除音符.png" ShowAsMonochrome="False"/>
-                    </AppBarButton.Icon>
-                </AppBarButton>
+            <AppBarButton Label="新增音符" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.NewNoteCommand}">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/Images/添加音符.png" ShowAsMonochrome="False"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton Label="修改音符" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.EditNoteCommand}">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/Images/修改音符.png" ShowAsMonochrome="False"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton Label="删除音符" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.DeleteNoteCommand}">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/Images/删除音符.png" ShowAsMonochrome="False"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
 
-                <AppBarSeparator/>
+            <AppBarSeparator/>
 
-                <AppBarButton Label="新增组合" Style="{StaticResource MyAppBarButtonStyle}"
-                              Command="{x:Bind ViewModel.NewBeamCommand}">
-                    <AppBarButton.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/添加组合.png" ShowAsMonochrome="False"/>
-                    </AppBarButton.Icon>
-                </AppBarButton>
-                <AppBarButton Label="删除组合" Style="{StaticResource MyAppBarButtonStyle}"
-                              Command="{x:Bind ViewModel.DeleteBeamCommand}">
-                    <AppBarButton.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/删除组合.png" ShowAsMonochrome="False"/>
-                    </AppBarButton.Icon>
-                </AppBarButton>
+            <AppBarButton Label="新增组合" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.NewBeamCommand}">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/Images/添加组合.png" ShowAsMonochrome="False"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton Label="删除组合" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.DeleteBeamCommand}">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/Images/删除组合.png" ShowAsMonochrome="False"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
 
-                <AppBarSeparator/>
+            <AppBarSeparator/>
 
-                <AppBarButton Label="保存简谱" Style="{StaticResource MyAppBarButtonStyle}"
-                              Command="{x:Bind ViewModel.SaveCommand}">
-                    <AppBarButton.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/保存.png" ShowAsMonochrome="False"/>
-                    </AppBarButton.Icon>
-                </AppBarButton>
-                <AppBarButton Label="关闭退出" Style="{StaticResource MyAppBarButtonStyle}"
-                              Command="{x:Bind ViewModel.CloseCommand}">
-                    <AppBarButton.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/关闭.png" ShowAsMonochrome="False"/>
-                    </AppBarButton.Icon>
-                </AppBarButton>
-            </CommandBar>
-        </StackPanel>
+            <AppBarButton Label="保存简谱" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.SaveCommand}">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/Images/保存.png" ShowAsMonochrome="False"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton Label="关闭退出" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.CloseCommand}">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/Images/关闭.png" ShowAsMonochrome="False"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+        </CommandBar>
 
         <!--内容区-->
         <Grid Grid.Row="1" Margin="20,5,20,20" ColumnSpacing="20">
@@ -413,7 +399,7 @@
                         <TextBox x:Name="LeftMargin"
                                  Text="{x:Bind ViewModel.LeftMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  PlaceholderText="输入左边距..."
-                                 Header="左边距："
+                                 Header="左边距(像素)："
                                  MaxLength="3"
                                  InputScope="Number"
                                  HorizontalAlignment="Stretch"/>
@@ -431,7 +417,7 @@
                         <TextBox x:Name="TopMargin"
                                  Text="{x:Bind ViewModel.TopMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  PlaceholderText="输入上边距..."
-                                 Header="上边距："
+                                 Header="上边距(像素)："
                                  MaxLength="3"
                                  InputScope="Number"
                                  HorizontalAlignment="Stretch"/>
@@ -449,7 +435,7 @@
                         <TextBox x:Name="RightMargin"
                                  Text="{x:Bind ViewModel.RightMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  PlaceholderText="输入右边距..."
-                                 Header="右边距："
+                                 Header="右边距(像素)："
                                  MaxLength="3"
                                  InputScope="Number"
                                  HorizontalAlignment="Stretch"/>
@@ -467,7 +453,7 @@
                         <TextBox x:Name="BottomMargin"
                                  Text="{x:Bind ViewModel.BottomMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  PlaceholderText="输入下边距..."
-                                 Header="下边距："
+                                 Header="下边距(像素)："
                                  MaxLength="3"
                                  InputScope="Number"
                                  HorizontalAlignment="Stretch"/>
