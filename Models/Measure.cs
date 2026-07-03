@@ -35,13 +35,13 @@ namespace SEH.Models
         public int Number { get; set; }
 
         /// <summary>
-        /// 左小节线类型（1-小节线，2-反复起始线）
+        /// 左小节线类型（0-无，1-小节线，2-反复起始线）
         /// </summary>
         [Column("left_line")]
         public int LeftLine { get; set; }
 
         /// <summary>
-        /// 右小节线类型（1-小节线，2-虚小节线，3-段落线，4-反复终止线，5-终止线）
+        /// 右小节线类型（0-无，1-小节线，2-虚小节线，3-段落线，4-反复终止线，5-终止线）
         /// </summary>
         [Column("right_line")]
         public int RightLine { get; set; }

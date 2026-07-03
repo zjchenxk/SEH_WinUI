@@ -19,7 +19,7 @@ namespace SEH.ViewModels
         /// </summary>
         [Required(ErrorMessage = "左小节线类型不能为空！")]
         [ObservableProperty]
-        private string _leftLine = "1"; // 默认小节线
+        private string _leftLine = "0"; // 默认无
 
         /// <summary>
         /// 左小节线类型错误信息

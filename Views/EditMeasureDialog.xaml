@@ -20,6 +20,7 @@
                       SelectedValuePath="Tag"
                       SelectedValue="{x:Bind ViewModel.LeftLine, Mode=TwoWay}"
                       HorizontalAlignment="Stretch">
+                <ComboBoxItem Content="无" Tag="0"/>
                 <ComboBoxItem Content="小节线" Tag="1"/>
                 <ComboBoxItem Content="反复起始线" Tag="2"/>
             </ComboBox>
@@ -39,6 +40,7 @@
                       SelectedValuePath="Tag"
                       SelectedValue="{x:Bind ViewModel.RightLine, Mode=TwoWay}"
                       HorizontalAlignment="Stretch">
+                <ComboBoxItem Content="无" Tag="0"/>
                 <ComboBoxItem Content="小节线" Tag="1"/>
                 <ComboBoxItem Content="虚小节线" Tag="2"/>
                 <ComboBoxItem Content="段落线" Tag="3"/>
