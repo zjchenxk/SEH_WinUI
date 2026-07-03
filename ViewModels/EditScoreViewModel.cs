@@ -153,17 +153,29 @@ namespace SEH.ViewModels
         private string? _lineMeasureCountError = "";
 
         /// <summary>
-        /// 页面尺寸
+        /// 纸张尺寸
         /// </summary>
-        [Required(ErrorMessage = "页面尺寸不能为空！")]
+        [Required(ErrorMessage = "纸张尺寸不能为空！")]
         [ObservableProperty]
-        private string _pageSize = "A4";
+        private string _paperSize = "A4";
 
         /// <summary>
-        /// 页面尺寸错误信息
+        /// 纸张尺寸错误信息
         /// </summary>
         [ObservableProperty]
-        private string? _pageSizeError = "";
+        private string? _paperSizeError = "";
+
+        /// <summary>
+        /// 页面宽度（默认A4纸宽度）
+        /// </summary>
+        [ObservableProperty]
+        private double _width = 794;
+
+        /// <summary>
+        /// 页面高度（默认A4纸高度）
+        /// </summary>
+        [ObservableProperty]
+        private double _height = 1123;
 
         /// <summary>
         /// 页面方向（1-纵向，2-横向，默认为纵向）
@@ -230,25 +242,11 @@ namespace SEH.ViewModels
         [ObservableProperty]
         private string? _bottomMarginError = "";
 
-
         /// <summary>
         /// 简谱渲染元素集合
         /// </summary>
         [ObservableProperty]
         private ObservableCollection<ScoreRenderElement> _renderElements = [];
-
-        /// <summary>
-        /// 画布宽度（默认A4纸宽度）
-        /// </summary>
-        [ObservableProperty]
-        private double _canvasWidth = 794;
-
-        /// <summary>
-        /// 画布高度（默认两张A4纸高度）
-        /// </summary>
-        [ObservableProperty]
-        private double _canvasHeight = 2246;
-
 
         /// <summary>
         /// 简谱对象，用于保存当前编辑的简谱数据
@@ -339,11 +337,11 @@ namespace SEH.ViewModels
                 var errors = GetErrors(nameof(LineMeasureCount));
                 LineMeasureCountError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
             }
-            else if (e.PropertyName == nameof(PageSize))//当 PageSize 属性的验证状态发生变化时，更新错误提示文本
+            else if (e.PropertyName == nameof(PaperSize))//当 PaperSize 属性的验证状态发生变化时，更新错误提示文本
             {
                 //GetErrors 返回的是 ValidationResult 集合
-                var errors = GetErrors(nameof(PageSize));
-                PageSizeError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+                var errors = GetErrors(nameof(PaperSize));
+                PaperSizeError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
             }
             else if (e.PropertyName == nameof(Direction))//当 Direction 属性的验证状态发生变化时，更新错误提示文本
             {
@@ -400,7 +398,7 @@ namespace SEH.ViewModels
                     BeatDuration = score.BeatDuration.ToString();
                     Tempo = score.Tempo.ToString();
                     LineMeasureCount = score.LineMeasureCount.ToString();
-                    PageSize = score.PageSize;
+                    PaperSize = score.PaperSize;
                     Direction = score.Direction.ToString();
                     LeftMargin = score.LeftMargin.ToString();
                     TopMargin = score.TopMargin.ToString();
@@ -440,7 +438,7 @@ namespace SEH.ViewModels
                     _score.BeatDuration = 4;
                     _score.Tempo = 90;
                     _score.LineMeasureCount = 4;
-                    _score.PageSize = "A4";
+                    _score.PaperSize = "A4";
                     _score.Direction = 1;
                     _score.LeftMargin = 20;
                     _score.TopMargin = 20;
@@ -453,7 +451,7 @@ namespace SEH.ViewModels
                     BeatDuration = _score.BeatDuration.ToString();
                     Tempo = _score.Tempo.ToString();
                     LineMeasureCount = _score.LineMeasureCount.ToString();
-                    PageSize = _score.PageSize;
+                    PaperSize = _score.PaperSize;
                     Direction = _score.Direction.ToString();
                     LeftMargin = _score.LeftMargin.ToString();
                     TopMargin = _score.TopMargin.ToString();
@@ -577,16 +575,16 @@ namespace SEH.ViewModels
             ScheduleRedraw();
         }
 
-        partial void OnPageSizeChanged(string value)
+        partial void OnPaperSizeChanged(string value)
         {
-            ValidateProperty(value, nameof(PageSize));
+            ValidateProperty(value, nameof(PaperSize));
 
-            if (!string.IsNullOrWhiteSpace(PageSizeError))
+            if (!string.IsNullOrWhiteSpace(PaperSizeError))
             {
                 return;
             }
 
-            _score.PageSize = value;
+            _score.PaperSize = value;
 
             ScheduleRedraw();
         }
@@ -601,15 +599,15 @@ namespace SEH.ViewModels
             }
 
             _score.Direction = int.Parse(value);
-            if (_score.PageSize == "A4")
+            if (_score.PaperSize == "A4")
             {
-                if (_score.Direction == 1)//横向
+                if (_score.Direction == 1)//纵向
                 {
-                    CanvasWidth = 794;
+                    Width = 794;
                 }
-                else//纵向
+                else//横向
                 {
-                    CanvasWidth = 1123;
+                    Width = 1123;
                 }
             }
 
@@ -777,7 +775,7 @@ namespace SEH.ViewModels
                 {
                     totalMeasureWidth += measure.Width;
                 }
-                if (totalMeasureWidth + 10/*左边距*/ + 40 * _score.MeasureBeatCount/*音符总宽度*/ + 10/*右边距*/ + 2/*小节终点竖线*/ >= CanvasWidth)
+                if (_score.LeftMargin + totalMeasureWidth + _line.Measures[^1].Width/*[^1]代表最后一个元素*/ + _score.RightMargin > Width)
                 {
                     await _messageService.ShowErrorAsync("页面宽度不足，请新增一行！");
                     return;
@@ -1081,8 +1079,9 @@ namespace SEH.ViewModels
 
             double startX = _score.LeftMargin;
             double startY = _score.TopMargin;
-            double workspaceWidth = CanvasWidth - _score.LeftMargin - _score.RightMargin;//设置工作区宽度
-            double measureWidth = workspaceWidth / _score.LineMeasureCount; //计算每小节宽度=工作区宽度/每行小节数
+            double canvasWidth = Width - _score.LeftMargin - _score.RightMargin;//设置画布宽度
+            double canvasHeight = Height - _score.TopMargin - _score.BottomMargin;//设置画布高度
+            double measureWidth = Math.Floor(canvasWidth / _score.LineMeasureCount); //计算每小节宽度=工作区宽度/每行小节数
             double rowHeight = 120;//设置每行高度
 
             //double noteWidth = 40;
@@ -1092,7 +1091,7 @@ namespace SEH.ViewModels
 
             double currentY = startY;
 
-            #region 绘制元信息
+            #region 1.绘制元信息
             //绘制标题
             if (!string.IsNullOrEmpty(_score.Title))
             {
@@ -1101,7 +1100,7 @@ namespace SEH.ViewModels
 
                 RenderElements.Add(new ScoreRenderTextElement
                 {
-                    X = (workspaceWidth - titleWidth) / 2, //居中
+                    X = (canvasWidth - titleWidth) / 2, //居中
                     Y = currentY,
                     Text = _score.Title,
                     FontSize = titleFontSize,
@@ -1113,7 +1112,7 @@ namespace SEH.ViewModels
             //绘制调号+拍号，作曲
             double metaY1 = currentY;
             double leftX1 = startX;
-            double rightX1 = workspaceWidth - startX;
+            double rightX1 = canvasWidth - startX;
 
             //左侧：调号
             if (!string.IsNullOrEmpty(_score.KeySignature))
@@ -1179,7 +1178,7 @@ namespace SEH.ViewModels
             //绘制速度，作词
             double metaY2 = metaY1 + 35; //下移 35 像素作为第二行
             double leftX2 = startX;
-            double rightX2 = workspaceWidth - startX;
+            double rightX2 = canvasWidth - startX;
 
             //左侧：速度
             if (!string.IsNullOrEmpty(_score.Tempo.ToString()))
@@ -1215,17 +1214,14 @@ namespace SEH.ViewModels
 
             #endregion
 
-            #region 绘制行
+            #region 2.绘制简谱
             if (_score.Lines != null)
             {
                 int measureIndex = 1;//小节序号
 
                 foreach (var line in _score.Lines)
                 {
-                    //double currentX = startX;
-
-                    #region 绘制行
-                    //绘制行起点竖线
+                    #region 1.绘制行起点竖线
                     //每行的高度为：rowHeight，上边距为：20，下边距为：20，中间绘制区高度为：80
                     //-------------------------
                     //   20
@@ -1240,6 +1236,8 @@ namespace SEH.ViewModels
                     //-------------------------
                     //   20
                     //-------------------------
+
+                    //绘制行起点竖线
                     RenderElements.Add(new ScoreRenderLineElement
                     {
                         X = startX + 10 - 1,
@@ -1257,17 +1255,14 @@ namespace SEH.ViewModels
                         Y = currentY + 40 + 15,
                         Text = line.Number.ToString(),
                     });
-
-                    //currentX += 10;
-
                     #endregion
 
-                    #region 绘制小节
+                    #region 2.绘制小节
                     if (line.Measures != null)
                     {
                         foreach (var measure in line.Measures)
                         {
-                            //绘制小节序号
+                            #region 1.绘制小节序号
                             RenderElements.Add(new ScoreRenderTextElement
                             {
                                 FontSize = 8,
@@ -1275,10 +1270,20 @@ namespace SEH.ViewModels
                                 Y = currentY + 20,
                                 Text = measureIndex.ToString(),
                             });
+                            #endregion
 
-                            //currentX += 10;//行起点竖线或小节竖线与音符的间距
+                            #region 2.绘制小节左边线（0-无，1-小节线，2-反复起始线）
+                            if (measure.LeftLine == 0 || measure.LeftLine == 1)
+                            {
+                                //默认不绘制
+                            }
+                            else if (measure.LeftLine == 2)
+                            {
 
-                            #region 绘制音符
+                            }
+                            #endregion
+
+                            #region 3.绘制音符
                             ////|    40    |
                             ////|  |    |  |
                             ////|10| 20 |10|
@@ -1476,7 +1481,7 @@ namespace SEH.ViewModels
                             //}
                             #endregion
 
-                            #region 绘制音符组合线
+                            #region 4.绘制音符组合线
                             //if (measure.Beams != null && measure.Beams.Count > 0)
                             //{
                             //    foreach (var beam in measure.Beams)
@@ -1508,28 +1513,80 @@ namespace SEH.ViewModels
                             //}
                             #endregion
 
-                            //currentX += 10;
-
-                            //绘制小节终点竖线
-                            RenderElements.Add(new ScoreRenderLineElement
+                            #region 5.绘制小节右边线（0-无，1-小节线，2-虚小节线，3-段落线，4-反复终止线，5-终止线）
+                            if (measure.RightLine == 0)
                             {
-                                X = startX + measureWidth * measure.Number - 1,
-                                Y = currentY + 40,
-                                Width = 1,
-                                Height = 40,
-                                IsVertical = true
-                            });
+                                //不绘制边线
+                            }
+                            else if (measure.RightLine == 1)
+                            {
+                                RenderElements.Add(new ScoreRenderLineElement
+                                {
+                                    X = startX + measureWidth * measure.Number - 1,
+                                    Y = currentY + 40,
+                                    Width = 1,
+                                    Height = 40,
+                                    IsVertical = true
+                                });
+                            }
+                            else if (measure.RightLine == 2)
+                            {
 
-                            //measure.Width = 10/*左边距*/ + totalNoteWidth/*所有音符宽度*/ + 10/*右边距*/ + 2/*小节终点竖线宽度*/;
+                            }
+                            else if (measure.RightLine == 3)
+                            {
 
-                            //currentX += 2;
+                            }
+                            else if (measure.RightLine == 4)
+                            {
+
+                            }
+                            else if (measure.RightLine == 5)
+                            {
+                                RenderElements.Add(new ScoreRenderLineElement
+                                {
+                                    X = startX + measureWidth * measure.Number - 4,
+                                    Y = currentY + 40,
+                                    Width = 1,
+                                    Height = 40,
+                                    IsVertical = true
+                                });
+
+                                RenderElements.Add(new ScoreRenderLineElement
+                                {
+                                    X = startX + measureWidth * measure.Number - 2,
+                                    Y = currentY + 40,
+                                    Width = 2,
+                                    Height = 40,
+                                    IsVertical = true
+                                });
+                            }
+                            #endregion
+
+                            #region 6.保存小节宽度
+                            measure.Width = measureWidth;
+                            #endregion
 
                             measureIndex++;
                         }
                     }
                     #endregion
 
+                    #region 3.自适应高度
                     currentY += rowHeight;
+                    if (currentY > canvasHeight)
+                    {
+                        if (_score.Direction == 1)//纵向
+                        {
+                            Height += 1123;
+                        }
+                        else//横向
+                        {
+                            Height += 794;
+                        }
+                        canvasHeight = Height - _score.TopMargin - _score.BottomMargin;//重置画布高度
+                    }
+                    #endregion
                 }
             }
             #endregion
@@ -1590,7 +1647,7 @@ namespace SEH.ViewModels
             _score.BeatDuration = int.Parse(BeatDuration);
             _score.Tempo = int.Parse(Tempo.Trim());
             _score.LineMeasureCount = int.Parse(LineMeasureCount.Trim());
-            _score.PageSize = PageSize.Trim();
+            _score.PaperSize = PaperSize.Trim();
             _score.Direction = int.Parse(Direction.Trim());
             _score.LeftMargin = int.Parse(LeftMargin.Trim());
             _score.TopMargin = int.Parse(TopMargin.Trim());

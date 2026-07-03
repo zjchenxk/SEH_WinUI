@@ -356,19 +356,19 @@
                                    Margin="0,4,0,0"/>
                     </StackPanel>
 
-                    <!--页面尺寸-->
+                    <!--纸张尺寸-->
                     <StackPanel HorizontalAlignment="Stretch">
                         <ComboBox x:Name="PageSize" 
-                                  SelectedItem="{x:Bind ViewModel.PageSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                  Header="页面尺寸：" 
-                                  PlaceholderText="选择页面尺寸..." 
+                                  SelectedItem="{x:Bind ViewModel.PaperSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Header="纸张尺寸：" 
+                                  PlaceholderText="选择纸张尺寸..." 
                                   HorizontalAlignment="Stretch">
                             <x:String>A4</x:String>
                         </ComboBox>
 
-                        <!--红字错误提示，绑定到 ViewModel 的 PageSizeError 属性-->
+                        <!--红字错误提示，绑定到 ViewModel 的 PaperSizeError 属性-->
                         <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
-                        <TextBlock Text="{x:Bind ViewModel.PageSizeError, Mode=OneWay}" 
+                        <TextBlock Text="{x:Bind ViewModel.PaperSizeError, Mode=OneWay}" 
                                    Foreground="{StaticResource SystemErrorTextColor}" 
                                    FontSize="{StaticResource ToolTipContentThemeFontSize}" 
                                    Margin="0,4,0,0"/>
@@ -480,7 +480,7 @@
                                           ItemTemplateSelector="{StaticResource ScoreTemplateSelector}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <Grid Width="{Binding CanvasWidth, Mode=OneWay}" Height="{Binding CanvasHeight, Mode=OneWay}"/>
+                                        <Grid Width="{Binding Width, Mode=OneWay}" Height="{Binding Height, Mode=OneWay}"/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                             </ItemsControl>
