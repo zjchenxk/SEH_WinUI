@@ -13,7 +13,8 @@
         <!--在这里设置字体大小-->
         <Setter Property="FontSize" Value="{StaticResource ControlContentThemeFontSize}"/>
         <Setter Property="FontWeight" Value="Normal" />
-        <Setter Property="Width" Value="68" />
+        <!--宽度原来为68，但在自动显示在“...”中时，显示不全。所以这里改成150-->
+        <Setter Property="Width" Value="150" />
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
         <Setter Property="AllowFocusOnInteraction" Value="False" />
         <Setter Property="Template">
@@ -258,7 +259,7 @@
                             <TextBlock x:Name="OverflowTextLabel" 
                                        Text="{TemplateBinding Label}" 
                                        Foreground="{TemplateBinding Foreground}"
-                                       FontSize="15"
+                                       FontSize="{TemplateBinding FontSize}"
                                        FontFamily="{TemplateBinding FontFamily}"
                                        TextAlignment="Left"
                                        TextTrimming="Clip"
