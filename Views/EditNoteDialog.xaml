@@ -15,149 +15,214 @@
     <ScrollViewer MaxHeight="800" VerticalScrollBarVisibility="Auto">
         <StackPanel Width="500">
             <!--音符-->
-            <ComboBox Header="音符：" 
-                      PlaceholderText="选择音符..."
-                      SelectedValuePath="Tag"
-                      SelectedValue="{x:Bind ViewModel.Pitch, Mode=TwoWay}"
-                      HorizontalAlignment="Stretch">
-                <ComboBoxItem Content="中音音符１" Tag="1"/>
-                <ComboBoxItem Content="中音音符２" Tag="2"/>
-                <ComboBoxItem Content="中音音符３" Tag="3"/>
-                <ComboBoxItem Content="中音音符４" Tag="4"/>
-                <ComboBoxItem Content="中音音符５" Tag="5"/>
-                <ComboBoxItem Content="中音音符６" Tag="6"/>
-                <ComboBoxItem Content="中音音符７" Tag="7"/>
+            <StackPanel HorizontalAlignment="Stretch">
+                <ComboBox Header="音符：" PlaceholderText="选择音符..."
+                          SelectedValuePath="Tag"
+                          SelectedValue="{x:Bind ViewModel.Pitch, Mode=TwoWay}"
+                          HorizontalAlignment="Stretch">
 
-                <ComboBoxItem Content="低音音符１" Tag="-1"/>
-                <ComboBoxItem Content="低音音符２" Tag="-2"/>
-                <ComboBoxItem Content="低音音符３" Tag="-3"/>
-                <ComboBoxItem Content="低音音符４" Tag="-4"/>
-                <ComboBoxItem Content="低音音符５" Tag="-5"/>
-                <ComboBoxItem Content="低音音符６" Tag="-6"/>
-                <ComboBoxItem Content="低音音符７" Tag="-7"/>
+                    <ComboBoxItem Content="中音音符１" Tag="1"/>
+                    <ComboBoxItem Content="中音音符２" Tag="2"/>
+                    <ComboBoxItem Content="中音音符３" Tag="3"/>
+                    <ComboBoxItem Content="中音音符４" Tag="4"/>
+                    <ComboBoxItem Content="中音音符５" Tag="5"/>
+                    <ComboBoxItem Content="中音音符６" Tag="6"/>
+                    <ComboBoxItem Content="中音音符７" Tag="7"/>
 
-                <ComboBoxItem Content="倍低音符１" Tag="--1"/>
-                <ComboBoxItem Content="倍低音符２" Tag="--2"/>
-                <ComboBoxItem Content="倍低音符３" Tag="--3"/>
-                <ComboBoxItem Content="倍低音符４" Tag="--4"/>
-                <ComboBoxItem Content="倍低音符５" Tag="--5"/>
-                <ComboBoxItem Content="倍低音符６" Tag="--6"/>
-                <ComboBoxItem Content="倍低音符７" Tag="--7"/>
+                    <ComboBoxItem Content="低音音符１" Tag="-1"/>
+                    <ComboBoxItem Content="低音音符２" Tag="-2"/>
+                    <ComboBoxItem Content="低音音符３" Tag="-3"/>
+                    <ComboBoxItem Content="低音音符４" Tag="-4"/>
+                    <ComboBoxItem Content="低音音符５" Tag="-5"/>
+                    <ComboBoxItem Content="低音音符６" Tag="-6"/>
+                    <ComboBoxItem Content="低音音符７" Tag="-7"/>
 
-                <ComboBoxItem Content="超低音符１" Tag="---1"/>
-                <ComboBoxItem Content="超低音符２" Tag="---2"/>
-                <ComboBoxItem Content="超低音符３" Tag="---3"/>
-                <ComboBoxItem Content="超低音符４" Tag="---4"/>
-                <ComboBoxItem Content="超低音符５" Tag="---5"/>
-                <ComboBoxItem Content="超低音符６" Tag="---6"/>
-                <ComboBoxItem Content="超低音符７" Tag="---7"/>
+                    <ComboBoxItem Content="倍低音符１" Tag="--1"/>
+                    <ComboBoxItem Content="倍低音符２" Tag="--2"/>
+                    <ComboBoxItem Content="倍低音符３" Tag="--3"/>
+                    <ComboBoxItem Content="倍低音符４" Tag="--4"/>
+                    <ComboBoxItem Content="倍低音符５" Tag="--5"/>
+                    <ComboBoxItem Content="倍低音符６" Tag="--6"/>
+                    <ComboBoxItem Content="倍低音符７" Tag="--7"/>
 
-                <ComboBoxItem Content="高音音符１" Tag="+1"/>
-                <ComboBoxItem Content="高音音符２" Tag="+2"/>
-                <ComboBoxItem Content="高音音符３" Tag="+3"/>
-                <ComboBoxItem Content="高音音符４" Tag="+4"/>
-                <ComboBoxItem Content="高音音符５" Tag="+5"/>
-                <ComboBoxItem Content="高音音符６" Tag="+6"/>
-                <ComboBoxItem Content="高音音符７" Tag="+7"/>
+                    <ComboBoxItem Content="超低音符１" Tag="---1"/>
+                    <ComboBoxItem Content="超低音符２" Tag="---2"/>
+                    <ComboBoxItem Content="超低音符３" Tag="---3"/>
+                    <ComboBoxItem Content="超低音符４" Tag="---4"/>
+                    <ComboBoxItem Content="超低音符５" Tag="---5"/>
+                    <ComboBoxItem Content="超低音符６" Tag="---6"/>
+                    <ComboBoxItem Content="超低音符７" Tag="---7"/>
 
-                <ComboBoxItem Content="倍高音符１" Tag="++1"/>
-                <ComboBoxItem Content="倍高音符２" Tag="++2"/>
-                <ComboBoxItem Content="倍高音符３" Tag="++3"/>
-                <ComboBoxItem Content="倍高音符４" Tag="++4"/>
-                <ComboBoxItem Content="倍高音符５" Tag="++5"/>
-                <ComboBoxItem Content="倍高音符６" Tag="++6"/>
-                <ComboBoxItem Content="倍高音符７" Tag="++7"/>
+                    <ComboBoxItem Content="高音音符１" Tag="+1"/>
+                    <ComboBoxItem Content="高音音符２" Tag="+2"/>
+                    <ComboBoxItem Content="高音音符３" Tag="+3"/>
+                    <ComboBoxItem Content="高音音符４" Tag="+4"/>
+                    <ComboBoxItem Content="高音音符５" Tag="+5"/>
+                    <ComboBoxItem Content="高音音符６" Tag="+6"/>
+                    <ComboBoxItem Content="高音音符７" Tag="+7"/>
 
-                <ComboBoxItem Content="超高音符１" Tag="+++1"/>
-                <ComboBoxItem Content="超高音符２" Tag="+++2"/>
-                <ComboBoxItem Content="超高音符３" Tag="+++3"/>
-                <ComboBoxItem Content="超高音符４" Tag="+++4"/>
-                <ComboBoxItem Content="超高音符５" Tag="+++5"/>
-                <ComboBoxItem Content="超高音符６" Tag="+++6"/>
-                <ComboBoxItem Content="超高音符７" Tag="+++7"/>
+                    <ComboBoxItem Content="倍高音符１" Tag="++1"/>
+                    <ComboBoxItem Content="倍高音符２" Tag="++2"/>
+                    <ComboBoxItem Content="倍高音符３" Tag="++3"/>
+                    <ComboBoxItem Content="倍高音符４" Tag="++4"/>
+                    <ComboBoxItem Content="倍高音符５" Tag="++5"/>
+                    <ComboBoxItem Content="倍高音符６" Tag="++6"/>
+                    <ComboBoxItem Content="倍高音符７" Tag="++7"/>
 
-                <ComboBoxItem Content="休止符０" Tag="0"/>
+                    <ComboBoxItem Content="超高音符１" Tag="+++1"/>
+                    <ComboBoxItem Content="超高音符２" Tag="+++2"/>
+                    <ComboBoxItem Content="超高音符３" Tag="+++3"/>
+                    <ComboBoxItem Content="超高音符４" Tag="+++4"/>
+                    <ComboBoxItem Content="超高音符５" Tag="+++5"/>
+                    <ComboBoxItem Content="超高音符６" Tag="+++6"/>
+                    <ComboBoxItem Content="超高音符７" Tag="+++7"/>
 
-                <ComboBoxItem Content="噪音符Ｘ" Tag="X"/>
+                    <ComboBoxItem Content="休止符０" Tag="0"/>
 
-                <ComboBoxItem Content="增时符－" Tag="-"/>
-            </ComboBox>
+                    <ComboBoxItem Content="噪音符Ｘ" Tag="X"/>
+
+                    <ComboBoxItem Content="增时符－" Tag="-"/>
+                </ComboBox>
+
+                <!--红字错误提示，绑定到 ViewModel 的 PitchError 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.PitchError, Mode=OneWay}" 
+                           Foreground="{StaticResource SystemErrorTextColor}" 
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                           Margin="0,4,0,0"/>
+            </StackPanel>
 
             <!--时值-->
-            <ComboBox Header="时值：" 
-                      PlaceholderText="选择音符时值..."
-                      SelectedValuePath="Tag" 
-                      SelectedValue="{x:Bind ViewModel.Duration, Mode=TwoWay}" 
-                      HorizontalAlignment="Stretch" 
-                      Margin="0,10,0,0">
-                <ComboBoxItem Content="全音符" Tag="4"/>
-                <ComboBoxItem Content="二分音符" Tag="2"/>
-                <ComboBoxItem Content="四分音符" Tag="1"/>
-                <ComboBoxItem Content="八分音符" Tag="0.5"/>
-                <ComboBoxItem Content="十六分音符" Tag="0.25"/>
-                <ComboBoxItem Content="三十二分音符" Tag="0.125"/>
-            </ComboBox>
+            <StackPanel HorizontalAlignment="Stretch">
+                <ComboBox Header="时值：" PlaceholderText="选择音符时值..."
+                          SelectedValuePath="Tag" 
+                          SelectedValue="{x:Bind ViewModel.Duration, Mode=TwoWay}" 
+                          HorizontalAlignment="Stretch" 
+                          Margin="0,10,0,0">
+                    <ComboBoxItem Content="全音符" Tag="4"/>
+                    <ComboBoxItem Content="二分音符" Tag="2"/>
+                    <ComboBoxItem Content="四分音符" Tag="1"/>
+                    <ComboBoxItem Content="八分音符" Tag="0.5"/>
+                    <ComboBoxItem Content="十六分音符" Tag="0.25"/>
+                    <ComboBoxItem Content="三十二分音符" Tag="0.125"/>
+                </ComboBox>
 
-            <!--附点-->
-            <NumberBox Header="附点数量："
-                       PlaceholderText="输入附点数量..."
-                       Value="{x:Bind ViewModel.Dots, Mode=TwoWay}" 
-                       Minimum="0" 
-                       Maximum="3" 
-                       Margin="0,10,0,0"/>
+                <!--红字错误提示，绑定到 ViewModel 的 DurationError 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.DurationError, Mode=OneWay}" 
+                           Foreground="{StaticResource SystemErrorTextColor}" 
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!--附点数量-->
+            <StackPanel HorizontalAlignment="Stretch">
+                <NumberBox Header="附点数量：" PlaceholderText="输入附点数量..."
+                           Value="{x:Bind ViewModel.Dots, Mode=TwoWay}" 
+                           Minimum="0" 
+                           Maximum="3" 
+                           Margin="0,10,0,0"/>
+
+                <!--红字错误提示，绑定到 ViewModel 的 DotsError 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.DotsError, Mode=OneWay}" 
+                           Foreground="{StaticResource SystemErrorTextColor}" 
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                           Margin="0,4,0,0"/>
+            </StackPanel>
 
             <!--连音线标志-->
-            <ComboBox Header="连音线标志：" 
-                      PlaceholderText="选择连音线标志..."
-                      SelectedValuePath="Tag" 
-                      SelectedValue="{x:Bind ViewModel.Slur, Mode=TwoWay}" 
-                      HorizontalAlignment="Stretch" 
-                      Margin="0,10,0,0">
-                <ComboBoxItem Content="无连音线" Tag="" IsSelected="True"/>
-                <ComboBoxItem Content="开始连音线" Tag="1"/>
-                <ComboBoxItem Content="结束连音线" Tag="0"/>
-            </ComboBox>
+            <StackPanel HorizontalAlignment="Stretch">
+                <ComboBox Header="连音线标志：" PlaceholderText="选择连音线标志..."
+                          SelectedValuePath="Tag" 
+                          SelectedValue="{x:Bind ViewModel.Slur, Mode=TwoWay}" 
+                          HorizontalAlignment="Stretch" 
+                          Margin="0,10,0,0">
+                    <ComboBoxItem Content="无连音线" Tag="" IsSelected="True"/>
+                    <ComboBoxItem Content="开始连音线" Tag="1"/>
+                    <ComboBoxItem Content="结束连音线" Tag="0"/>
+                </ComboBox>
+
+                <!--红字错误提示，绑定到 ViewModel 的 SlurError 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.SlurError, Mode=OneWay}" 
+                           Foreground="{StaticResource SystemErrorTextColor}" 
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                           Margin="0,4,0,0"/>
+            </StackPanel>
 
             <!--延长号标志-->
-            <ComboBox Header="延长号标志：" 
-                      PlaceholderText="选择延长号标志..."
-                      SelectedValuePath="Tag" 
-                      SelectedValue="{x:Bind ViewModel.Fermata, Mode=TwoWay}" 
-                      HorizontalAlignment="Stretch" 
-                      Margin="0,10,0,0">
-                <ComboBoxItem Content="有延长号" Tag="1"/>
-                <ComboBoxItem Content="无延长号" Tag="0"/>
-            </ComboBox>
+            <StackPanel HorizontalAlignment="Stretch">
+                <ComboBox Header="延长号标志：" PlaceholderText="选择延长号标志..."
+                          SelectedValuePath="Tag" 
+                          SelectedValue="{x:Bind ViewModel.Fermata, Mode=TwoWay}" 
+                          HorizontalAlignment="Stretch" 
+                          Margin="0,10,0,0">
+                    <ComboBoxItem Content="有延长号" Tag="1"/>
+                    <ComboBoxItem Content="无延长号" Tag="0"/>
+                </ComboBox>
+
+                <!--红字错误提示，绑定到 ViewModel 的 FermataError 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.FermataError, Mode=OneWay}" 
+                           Foreground="{StaticResource SystemErrorTextColor}" 
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                           Margin="0,4,0,0"/>
+            </StackPanel>
 
             <!--演奏方式-->
-            <ComboBox Header="演奏方式：" 
-                      PlaceholderText="选择演奏方式..."
-                      SelectedItem="{x:Bind ViewModel.Articulation, Mode=TwoWay}"
-                      HorizontalAlignment="Stretch" 
-                      Margin="0,10,0,0">
-                <x:String>倚音</x:String>
-                <x:String>颤音</x:String>
-                <x:String>波音</x:String>
-                <x:String>回音</x:String>
-                <x:String>滑音</x:String>
-                <x:String>琶音</x:String>
-                <x:String>震音</x:String>
-            </ComboBox>
+            <StackPanel HorizontalAlignment="Stretch">
+                <ComboBox Header="演奏方式：" PlaceholderText="选择演奏方式..."
+                          SelectedItem="{x:Bind ViewModel.Articulation, Mode=TwoWay}"
+                          HorizontalAlignment="Stretch" 
+                          Margin="0,10,0,0">
+                    <x:String>倚音</x:String>
+                    <x:String>颤音</x:String>
+                    <x:String>波音</x:String>
+                    <x:String>回音</x:String>
+                    <x:String>滑音</x:String>
+                    <x:String>琶音</x:String>
+                    <x:String>震音</x:String>
+                </ComboBox>
+
+                <!--红字错误提示，绑定到 ViewModel 的 ArticulationError 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.ArticulationError, Mode=OneWay}" 
+                           Foreground="{StaticResource SystemErrorTextColor}" 
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                           Margin="0,4,0,0"/>
+            </StackPanel>
 
             <!--歌词-->
-            <TextBox Header="歌词：" 
-                     PlaceholderText="输入歌词..."
-                     Text="{x:Bind ViewModel.Lyrics, Mode=TwoWay}" 
-                     Margin="0,10,0,0"/>
+            <StackPanel HorizontalAlignment="Stretch">
+                <TextBox Header="歌词：" PlaceholderText="输入歌词..."
+                         Text="{x:Bind ViewModel.Lyrics, Mode=TwoWay}" 
+                         Margin="0,10,0,0"/>
+
+                <!--红字错误提示，绑定到 ViewModel 的 LyricsError 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.LyricsError, Mode=OneWay}" 
+                           Foreground="{StaticResource SystemErrorTextColor}" 
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                           Margin="0,4,0,0"/>
+            </StackPanel>
 
             <!--所属组合-->
-            <ComboBox Header="音符组合"
-                      PlaceholderText="选择音符组合..."
-                      ItemsSource="{x:Bind ViewModel.Beams, Mode=OneWay}"
-                      SelectedItem="{x:Bind ViewModel.SelectedBeam, Mode=TwoWay}"
-                      DisplayMemberPath="Name"
-                      HorizontalAlignment="Stretch"
-                      Margin="0,10,0,0"/>
+            <StackPanel HorizontalAlignment="Stretch">
+                <ComboBox Header="音符组合" PlaceholderText="选择音符组合..."
+                          ItemsSource="{x:Bind ViewModel.Beams, Mode=OneWay}"
+                          SelectedItem="{x:Bind ViewModel.SelectedBeam, Mode=TwoWay}"
+                          DisplayMemberPath="Name"
+                          HorizontalAlignment="Stretch"
+                          Margin="0,10,0,0"/>
+
+                <!--红字错误提示，绑定到 ViewModel 的 SelectedBeamError 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.SelectedBeamError, Mode=OneWay}" 
+                           Foreground="{StaticResource SystemErrorTextColor}" 
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                           Margin="0,4,0,0"/>
+            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </ContentDialog>

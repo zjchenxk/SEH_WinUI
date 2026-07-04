@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using SEH.Models;
+using SEH.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace SEH.ViewModels
 {
@@ -26,12 +28,24 @@ namespace SEH.ViewModels
         private string _pitch = "1"; // 默认中音1
 
         /// <summary>
+        /// 音符错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _pitchError = "";
+
+        /// <summary>
         /// 时值
         /// </summary>
         [Required(ErrorMessage = "时值不能为空！")]
         [Range(0.125, 4, ErrorMessage = "时值必须在0.125到4之间")]
         [ObservableProperty]
         private string _duration = "1"; // 默认四分音符
+
+        /// <summary>
+        /// 时值错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _durationError = "";
 
         /// <summary>
         /// 附点数量
@@ -41,10 +55,22 @@ namespace SEH.ViewModels
         private string _dots = "0";
 
         /// <summary>
+        /// 附点数量错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _dotsError = "";
+
+        /// <summary>
         /// 连音线标记，如：1-开始，0-表示结束
         /// </summary>
         [ObservableProperty]
         private string _slur = "";
+
+        /// <summary>
+        /// 连音线标记错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _slurError = "";
 
         /// <summary>
         /// 演奏方法
@@ -53,10 +79,22 @@ namespace SEH.ViewModels
         private string _articulation = "";
 
         /// <summary>
+        /// 演奏方法错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _articulationError = "";
+
+        /// <summary>
         /// 延长号标记，如：1-有，0-无
         /// </summary>
         [ObservableProperty]
         private string _fermata = "0";
+
+        /// <summary>
+        /// 延长号标记错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _fermataError = "";
 
         /// <summary>
         /// 歌词
@@ -65,25 +103,87 @@ namespace SEH.ViewModels
         private string _lyrics = "";
 
         /// <summary>
+        /// 歌词错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _lyricsError = "";
+
+        /// <summary>
         /// 组合集合
         /// </summary>
         [ObservableProperty]
         private ObservableCollection<Beam> _beams = [];
+
         /// <summary>
         /// 选中组合
         /// </summary>
         [ObservableProperty]
         private Beam? _selectedBeam = null;
 
+        /// <summary>
+        /// 选中组合错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _selectedBeamError = "";
 
         /// <summary>
-        /// 验证数据
+        /// 构造方法
         /// </summary>
-        public bool ValidateProperties()
+        public EditNoteViewModel()
         {
-            ValidateAllProperties();
+            this.ErrorsChanged += EditNoteViewModel_ErrorsChanged;
+        }
 
-            return !HasErrors;
+        private void EditNoteViewModel_ErrorsChanged(object? sender, System.ComponentModel.DataErrorsChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Pitch))//当 Pitch 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(Pitch));
+                PitchError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
+            else if (e.PropertyName == nameof(Duration))//当 Duration 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(Duration));
+                DurationError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
+            else if (e.PropertyName == nameof(Dots))//当 Dots 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(Dots));
+                DotsError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
+            else if (e.PropertyName == nameof(Slur))//当 Slur 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(Slur));
+                SlurError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
+            else if (e.PropertyName == nameof(Articulation))//当 Articulation 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(Articulation));
+                ArticulationError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
+            else if (e.PropertyName == nameof(Fermata))//当 Fermata 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(Fermata));
+                FermataError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
+            else if (e.PropertyName == nameof(Lyrics))//当 Lyrics 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(Lyrics));
+                LyricsError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
+            else if (e.PropertyName == nameof(SelectedBeam))//当 SelectedBeam 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(SelectedBeam));
+                SelectedBeamError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
         }
 
         /// <summary>
@@ -113,6 +213,56 @@ namespace SEH.ViewModels
                 Lyrics = note.Lyrics ?? "";
                 SelectedBeam = note.Beam;
             }
+        }
+
+        partial void OnPitchChanged(string value)
+        {
+            ValidateProperty(value, nameof(Pitch));
+        }
+
+        partial void OnDurationChanged(string value)
+        {
+            ValidateProperty(value, nameof(Duration));
+        }
+
+        partial void OnDotsChanged(string value)
+        {
+            ValidateProperty(value, nameof(Dots));
+        }
+
+        partial void OnSlurChanged(string value)
+        {
+            ValidateProperty(value, nameof(Slur));
+        }
+
+        partial void OnArticulationChanged(string value)
+        {
+            ValidateProperty(value, nameof(Articulation));
+        }
+
+        partial void OnFermataChanged(string value)
+        {
+            ValidateProperty(value, nameof(Fermata));
+        }
+
+        partial void OnLyricsChanged(string value)
+        {
+            ValidateProperty(value, nameof(Lyrics));
+        }
+
+        partial void OnSelectedBeamChanged(Beam? value)
+        {
+            ValidateProperty(value, nameof(SelectedBeam));
+        }
+
+        /// <summary>
+        /// 验证数据
+        /// </summary>
+        public bool ValidateProperties()
+        {
+            ValidateAllProperties();
+
+            return !HasErrors;
         }
 
         public Note GetNote()
