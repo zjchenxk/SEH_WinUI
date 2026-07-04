@@ -1143,7 +1143,7 @@ namespace SEH.ViewModels
                     X = leftX1,
                     Y = metaY1 + 14,
                     Width = 14,
-                    Height = 2,
+                    Height = 1,
                     IsVertical = false
                 });
                 //绘制分母 （往下偏移）
@@ -1236,24 +1236,13 @@ namespace SEH.ViewModels
                     //-------------------------
                     //   20
                     //-------------------------
-
-                    //绘制行起点竖线
                     RenderElements.Add(new ScoreRenderLineElement
                     {
-                        X = startX + 10 - 1,
+                        X = startX,
                         Y = currentY + 40,
                         Width = 1,
                         Height = 40,
                         IsVertical = true
-                    });
-
-                    //绘制行号
-                    RenderElements.Add(new ScoreRenderTextElement
-                    {
-                        FontSize = 8,
-                        X = startX,
-                        Y = currentY + 40 + 15,
-                        Text = line.Number.ToString(),
                     });
                     #endregion
 
@@ -1266,20 +1255,54 @@ namespace SEH.ViewModels
                             RenderElements.Add(new ScoreRenderTextElement
                             {
                                 FontSize = 8,
-                                X = startX + (measure.Number - 1) * measureWidth + 8,
+                                X = startX + (measure.Number - 1) * measureWidth,
                                 Y = currentY + 20,
                                 Text = measureIndex.ToString(),
                             });
                             #endregion
 
                             #region 2.绘制小节左边线（0-无，1-小节线，2-反复起始线）
-                            if (measure.LeftLine == 0 || measure.LeftLine == 1)
+                            if (measure.LeftLine == 0)//无
                             {
                                 //默认不绘制
                             }
-                            else if (measure.LeftLine == 2)
+                            else if (measure.LeftLine == 1)//小节线
                             {
+                                //默认不绘制左小节线
+                            }
+                            else if (measure.LeftLine == 2)//反复起始线
+                            {
+                                RenderElements.Add(new ScoreRenderLineElement
+                                {
+                                    X = startX + (measure.Number - 1) * measureWidth,
+                                    Y = currentY + 40,
+                                    Width = 3,
+                                    Height = 40,
+                                    IsVertical = true
+                                });
 
+                                RenderElements.Add(new ScoreRenderLineElement
+                                {
+                                    X = startX + (measure.Number - 1) * measureWidth + 4,
+                                    Y = currentY + 40,
+                                    Width = 1,
+                                    Height = 40,
+                                    IsVertical = true
+                                });
+
+                                RenderElements.Add(new ScoreRenderDotElement
+                                {
+                                    X = startX + (measure.Number - 1) * measureWidth + 6,
+                                    Y = currentY + 40 + 10,
+                                    Radius = 2
+                                });
+
+                                RenderElements.Add(new ScoreRenderDotElement
+                                {
+                                    X = startX + (measure.Number - 1) * measureWidth + 6,
+                                    Y = currentY + 40 + 30,
+                                    Radius = 2
+                                });
                             }
                             #endregion
 
@@ -1514,11 +1537,11 @@ namespace SEH.ViewModels
                             #endregion
 
                             #region 5.绘制小节右边线（0-无，1-小节线，2-虚小节线，3-段落线，4-反复终止线，5-终止线）
-                            if (measure.RightLine == 0)
+                            if (measure.RightLine == 0)//无
                             {
                                 //不绘制边线
                             }
-                            else if (measure.RightLine == 1)
+                            else if (measure.RightLine == 1)//小节线
                             {
                                 RenderElements.Add(new ScoreRenderLineElement
                                 {
@@ -1529,19 +1552,19 @@ namespace SEH.ViewModels
                                     IsVertical = true
                                 });
                             }
-                            else if (measure.RightLine == 2)
+                            else if (measure.RightLine == 2)//虚小节线
                             {
-
+                                RenderElements.Add(new ScoreRenderLineElement
+                                {
+                                    X = startX + measureWidth * measure.Number - 1,
+                                    Y = currentY + 40,
+                                    Width = 1,
+                                    Height = 40,
+                                    IsVertical = true,
+                                    IsDashed = true
+                                });
                             }
-                            else if (measure.RightLine == 3)
-                            {
-
-                            }
-                            else if (measure.RightLine == 4)
-                            {
-
-                            }
-                            else if (measure.RightLine == 5)
+                            else if (measure.RightLine == 3)//段落线
                             {
                                 RenderElements.Add(new ScoreRenderLineElement
                                 {
@@ -1554,9 +1577,63 @@ namespace SEH.ViewModels
 
                                 RenderElements.Add(new ScoreRenderLineElement
                                 {
-                                    X = startX + measureWidth * measure.Number - 2,
+                                    X = startX + measureWidth * measure.Number - 1,
                                     Y = currentY + 40,
-                                    Width = 2,
+                                    Width = 1,
+                                    Height = 40,
+                                    IsVertical = true
+                                });
+                            }
+                            else if (measure.RightLine == 4)//反复终止线
+                            {
+                                RenderElements.Add(new ScoreRenderDotElement
+                                {
+                                    X = startX + measureWidth * measure.Number - 11,
+                                    Y = currentY + 40 + 10,
+                                    Radius = 2
+                                });
+
+                                RenderElements.Add(new ScoreRenderDotElement
+                                {
+                                    X = startX + measureWidth * measure.Number - 11,
+                                    Y = currentY + 40 + 30,
+                                    Radius = 2
+                                });
+
+                                RenderElements.Add(new ScoreRenderLineElement
+                                {
+                                    X = startX + measureWidth * measure.Number - 7,
+                                    Y = currentY + 40,
+                                    Width = 1,
+                                    Height = 40,
+                                    IsVertical = true
+                                });
+
+                                RenderElements.Add(new ScoreRenderLineElement
+                                {
+                                    X = startX + measureWidth * measure.Number - 3,
+                                    Y = currentY + 40,
+                                    Width = 3,
+                                    Height = 40,
+                                    IsVertical = true
+                                });
+                            }
+                            else if (measure.RightLine == 5)//终止线
+                            {
+                                RenderElements.Add(new ScoreRenderLineElement
+                                {
+                                    X = startX + measureWidth * measure.Number - 7,
+                                    Y = currentY + 40,
+                                    Width = 1,
+                                    Height = 40,
+                                    IsVertical = true
+                                });
+
+                                RenderElements.Add(new ScoreRenderLineElement
+                                {
+                                    X = startX + measureWidth * measure.Number - 3,
+                                    Y = currentY + 40,
+                                    Width = 3,
                                     Height = 40,
                                     IsVertical = true
                                 });

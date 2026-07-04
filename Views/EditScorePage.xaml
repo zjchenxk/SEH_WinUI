@@ -11,6 +11,9 @@
     mc:Ignorable="d">
 
     <Page.Resources>
+        <!--虚线转换器-->
+        <commons:BoolToDashArrayConverter x:Key="BoolToDashArrayConverter"/>
+
         <!--文本渲染模板-->
         <DataTemplate x:Key="TextTemplate" x:DataType="commons:ScoreRenderTextElement">
             <TextBlock Text="{x:Bind Text}" 
@@ -42,15 +45,19 @@
 
         <!--线条渲染模板-->
         <DataTemplate x:Key="LineTemplate" x:DataType="commons:ScoreRenderLineElement">
-            <Rectangle Width="{x:Bind Width}" 
-                       Height="{x:Bind Height}" 
-                       Fill="Black"
-                       HorizontalAlignment="Left" 
-                       VerticalAlignment="Top">
-                <Rectangle.RenderTransform>
+            <Canvas HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Canvas.RenderTransform>
                     <TranslateTransform X="{x:Bind X}" Y="{x:Bind Y}"/>
-                </Rectangle.RenderTransform>
-            </Rectangle>
+                </Canvas.RenderTransform>
+
+                <!--通过计算属性直接绘制横线或竖线-->
+                <Line X1="{x:Bind X1}" Y1="{x:Bind Y1}" X2="{x:Bind X2}" Y2="{x:Bind Y2}"
+                      Stroke="Black" 
+                      StrokeThickness="{x:Bind Thickness}" 
+                      StrokeStartLineCap="Square" 
+                      StrokeEndLineCap="Square"
+                      StrokeDashArray="{x:Bind IsDashed, Converter={StaticResource BoolToDashArrayConverter}, Mode=OneWay}" />
+            </Canvas>
         </DataTemplate>
 
         <!--弧线渲染模板-->
