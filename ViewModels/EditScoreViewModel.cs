@@ -243,6 +243,12 @@ namespace SEH.ViewModels
         private string? _bottomMarginError = "";
 
         /// <summary>
+        /// 字符实际宽度（默认10）
+        /// </summary>
+        [ObservableProperty]
+        private double _charWidth = 10;
+
+        /// <summary>
         /// 简谱渲染元素集合
         /// </summary>
         [ObservableProperty]
@@ -379,8 +385,9 @@ namespace SEH.ViewModels
         {
             if (param != null)
             {
-                if (param["Id"] != null)//修改简谱
+                if (param["Id"] != null)
                 {
+                    #region 修改简谱
                     var score = _dataService.GetScore(param["Id"].ToString());
                     if (score == null)
                     {
@@ -426,9 +433,11 @@ namespace SEH.ViewModels
                     {
                         _beam = _measure.Beams[^1];
                     }
+                    #endregion
                 }
-                else//新增简谱
+                else
                 {
+                    #region 新增简谱
                     if (param["CategoryId"] != null)
                     {
                         _score.CategoryId = param["CategoryId"].ToString();
@@ -457,6 +466,7 @@ namespace SEH.ViewModels
                     TopMargin = _score.TopMargin.ToString();
                     RightMargin = _score.RightMargin.ToString();
                     BottomMargin = _score.BottomMargin.ToString();
+                    #endregion
                 }
 
                 ScheduleRedraw();
@@ -1084,11 +1094,6 @@ namespace SEH.ViewModels
             double measureWidth = Math.Floor(canvasWidth / _score.LineMeasureCount); //计算每小节宽度=工作区宽度/每行小节数
             double rowHeight = 120;//设置每行高度
 
-            //double noteWidth = 40;
-            double noteBaseXOffset = 10;//音符在每行中的相对X位置
-            double noteBaseYOffset = 40;//音符在每行中的相对Y位置
-            double beamBaseYOffset = 75;//音符组合线在每行中的相对Y位置
-
             double currentY = startY;
 
             #region 1.绘制元信息
@@ -1360,204 +1365,205 @@ namespace SEH.ViewModels
                             #endregion
 
                             #region 3.绘制音符
-                            ////|    40    |
-                            ////|  |    |  |
-                            ////|10| 20 |10|
-                            ////|  |    |  |
-                            //double totalNoteWidth = 0;
-                            //if (measure.Notes != null && measure.Notes.Count > 0)
-                            //{
-                            //    int totalBeats = 0;
+                            if (measure.Notes != null && measure.Notes.Count > 0)
+                            {
+                                #region 1.计算当前小节拍数
+                                int totalBeats = 0;//当前小节累计拍数
+                                foreach (var note in measure.Notes)
+                                {
+                                    if (string.IsNullOrWhiteSpace(note.BeamId))
+                                    {
+                                        totalBeats++;
+                                    }
+                                }
+                                //计算组合拍数，一个组合为一拍
+                                if (measure.Beams != null && measure.Beams.Count > 0)
+                                {
+                                    foreach (var beam in measure.Beams)
+                                    {
+                                        if (measure.Notes != null)
+                                        {
+                                            var notesInBeam = measure.Notes.Where(n => n.BeamId == beam.Id);
+                                            if (notesInBeam.Any())
+                                            {
+                                                totalBeats++;
+                                            }
+                                        }
+                                    }
+                                }
+                                #endregion
 
-                            //    foreach (var note in measure.Notes)
-                            //    {
-                            //        switch (note.Pitch)
-                            //        {
-                            //            #region 绘制中音
-                            //            case "1":
-                            //            case "2":
-                            //            case "3":
-                            //            case "4":
-                            //            case "5":
-                            //            case "6":
-                            //            case "7":
-                            //                {
-                            //                    RenderElements.Add(new ScoreRenderTextElement
-                            //                    {
-                            //                        FontSize = 22,
-                            //                        X = currentX + noteBaseXOffset,
-                            //                        Y = currentY + noteBaseYOffset,
-                            //                        Text = note.Pitch
-                            //                    });
+                                #region 2.计算当前小节音符数
+                                //如果当前小节拍数小于小节拍数，则添加占位符
+                                int totalNotes = measure.Notes.Count + (_score.MeasureBeatCount - totalBeats > 0 ? _score.MeasureBeatCount - totalBeats : 0);
+                                #endregion
 
-                            //                    note.X = currentX + noteBaseXOffset;
-                            //                    note.Y = currentY + noteBaseYOffset;
-                            //                    note.Width = noteWidth;
-                            //                }
-                            //                break;
-                            //            #endregion
+                                #region 3.动态计算当前小节中每个音符的占用宽度
+                                double measureLeftPadding = 10;//小节左边距
+                                double measureRightPadding = 10;//小节右边距
+                                double noteWidth = (measureWidth - measureLeftPadding - measureRightPadding) / totalNotes;
+                                #endregion
 
-                            //            #region 绘制低音
-                            //            case "-1":
-                            //            case "-2":
-                            //            case "-3":
-                            //            case "-4":
-                            //            case "-5":
-                            //            case "-6":
-                            //            case "-7":
-                            //                {
-                            //                    RenderElements.Add(new ScoreRenderTextElement
-                            //                    {
-                            //                        FontSize = 22,
-                            //                        X = currentX + noteBaseXOffset,
-                            //                        Y = currentY + noteBaseYOffset,
-                            //                        Text = note.Pitch.Replace("-", "")
-                            //                    });
+                                #region 4.绘制音符
+                                double noteBaseXOffset = noteWidth - _charWidth > 0 ? (noteWidth - _charWidth) / 2 : 0;//音符在每行中的相对X位置
+                                double noteBaseYOffset = 40;//音符在每行中的相对Y位置
 
-                            //                    note.X = currentX + noteBaseXOffset;
-                            //                    note.Y = currentY + noteBaseYOffset;
-                            //                    note.Width = noteWidth;
+                                double currentX = startX + (measure.Number - 1) * measureWidth + measureLeftPadding;
 
-                            //                    //绘制低音音符下方的点，如果有减时线，就在减时线的下方绘制点
-                            //                    RenderElements.Add(new ScoreRenderDotElement
-                            //                    {
-                            //                        X = currentX + noteBaseXOffset + 5,
-                            //                        Y = currentY + noteBaseYOffset + 20 + (note.Duration == 0.5 ? 5 : (note.Duration == 0.25 ? 10 : (note.Duration == 0.125 ? 15 : 0))),
-                            //                        Radius = 3
-                            //                    });
-                            //                }
-                            //                break;
-                            //            #endregion
+                                foreach (var note in measure.Notes)
+                                {
+                                    switch (note.Pitch)
+                                    {
+                                        #region 绘制中音
+                                        case "1":
+                                        case "2":
+                                        case "3":
+                                        case "4":
+                                        case "5":
+                                        case "6":
+                                        case "7":
+                                            {
+                                                RenderElements.Add(new ScoreRenderTextElement
+                                                {
+                                                    FontSize = 22,
+                                                    X = currentX + noteBaseXOffset,
+                                                    Y = currentY + noteBaseYOffset,
+                                                    Text = note.Pitch
+                                                });
 
-                            //            #region 绘制高音
-                            //            case "+1":
-                            //            case "+2":
-                            //            case "+3":
-                            //            case "+4":
-                            //            case "+5":
-                            //            case "+6":
-                            //            case "+7":
-                            //                {
-                            //                    RenderElements.Add(new ScoreRenderTextElement
-                            //                    {
-                            //                        FontSize = 22,
-                            //                        X = currentX + noteBaseXOffset,
-                            //                        Y = currentY + noteBaseYOffset,
-                            //                        Text = note.Pitch.Replace("+", "")
-                            //                    });
+                                                note.X = currentX + noteBaseXOffset;
+                                                note.Y = currentY + noteBaseYOffset;
+                                                note.Width = noteWidth;
+                                            }
+                                            break;
+                                        #endregion
 
-                            //                    note.X = currentX + noteBaseXOffset;
-                            //                    note.Y = currentY + noteBaseYOffset;
-                            //                    note.Width = noteWidth;
+                                        #region 绘制低音
+                                        case "-1":
+                                        case "-2":
+                                        case "-3":
+                                        case "-4":
+                                        case "-5":
+                                        case "-6":
+                                        case "-7":
+                                            {
+                                                RenderElements.Add(new ScoreRenderTextElement
+                                                {
+                                                    FontSize = 22,
+                                                    X = currentX + noteBaseXOffset,
+                                                    Y = currentY + noteBaseYOffset,
+                                                    Text = note.Pitch.Replace("-", "")
+                                                });
 
-                            //                    //绘制高音音符上方的点
-                            //                    RenderElements.Add(new ScoreRenderDotElement
-                            //                    {
-                            //                        X = currentX + noteBaseXOffset + 5,
-                            //                        Y = currentY + noteBaseYOffset - 5,
-                            //                        Radius = 3
-                            //                    });
-                            //                }
-                            //                break;
-                            //            #endregion
+                                                note.X = currentX + noteBaseXOffset;
+                                                note.Y = currentY + noteBaseYOffset;
+                                                note.Width = noteWidth;
 
-                            //            #region 绘制休止符
-                            //            case "0":
-                            //                {
-                            //                    RenderElements.Add(new ScoreRenderTextElement
-                            //                    {
-                            //                        FontSize = 22,
-                            //                        X = currentX + noteBaseXOffset,
-                            //                        Y = currentY + noteBaseYOffset,
-                            //                        Text = "0"
-                            //                    });
+                                                //绘制低音音符下方的点，如果有减时线，就在减时线的下方绘制点
+                                                RenderElements.Add(new ScoreRenderDotElement
+                                                {
+                                                    X = currentX + noteBaseXOffset + 5,
+                                                    Y = currentY + noteBaseYOffset + 20 + (note.Duration == 0.5 ? 5 : (note.Duration == 0.25 ? 10 : (note.Duration == 0.125 ? 15 : 0))),
+                                                    Radius = 3
+                                                });
+                                            }
+                                            break;
+                                        #endregion
 
-                            //                    note.X = currentX + noteBaseXOffset;
-                            //                    note.Y = currentY + noteBaseYOffset;
-                            //                    note.Width = noteWidth;
-                            //                }
-                            //                break;
-                            //            #endregion
+                                        #region 绘制高音
+                                        case "+1":
+                                        case "+2":
+                                        case "+3":
+                                        case "+4":
+                                        case "+5":
+                                        case "+6":
+                                        case "+7":
+                                            {
+                                                RenderElements.Add(new ScoreRenderTextElement
+                                                {
+                                                    FontSize = 22,
+                                                    X = currentX + noteBaseXOffset,
+                                                    Y = currentY + noteBaseYOffset,
+                                                    Text = note.Pitch.Replace("+", "")
+                                                });
 
-                            //            #region 绘制噪音符
-                            //            case "X":
-                            //                {
-                            //                    RenderElements.Add(new ScoreRenderTextElement
-                            //                    {
-                            //                        FontSize = 22,
-                            //                        X = currentX + noteBaseXOffset,
-                            //                        Y = currentY + noteBaseYOffset,
-                            //                        Text = "X"
-                            //                    });
+                                                note.X = currentX + noteBaseXOffset;
+                                                note.Y = currentY + noteBaseYOffset;
+                                                note.Width = noteWidth;
 
-                            //                    note.X = currentX + noteBaseXOffset;
-                            //                    note.Y = currentY + noteBaseYOffset;
-                            //                    note.Width = noteWidth;
-                            //                }
-                            //                break;
-                            //            #endregion
+                                                //绘制高音音符上方的点
+                                                RenderElements.Add(new ScoreRenderDotElement
+                                                {
+                                                    X = currentX + noteBaseXOffset + 5,
+                                                    Y = currentY + noteBaseYOffset - 5,
+                                                    Radius = 3
+                                                });
+                                            }
+                                            break;
+                                        #endregion
 
-                            //            #region 绘制增时符
-                            //            case "-":
-                            //                {
-                            //                    RenderElements.Add(new ScoreRenderTextElement
-                            //                    {
-                            //                        FontSize = 22,
-                            //                        X = currentX + noteBaseXOffset,
-                            //                        Y = currentY + noteBaseYOffset,
-                            //                        Text = "-"
-                            //                    });
+                                        #region 绘制休止符
+                                        case "0":
+                                            {
+                                                RenderElements.Add(new ScoreRenderTextElement
+                                                {
+                                                    FontSize = 22,
+                                                    X = currentX + noteBaseXOffset,
+                                                    Y = currentY + noteBaseYOffset,
+                                                    Text = "0"
+                                                });
 
-                            //                    note.X = currentX + noteBaseXOffset;
-                            //                    note.Y = currentY + noteBaseYOffset;
-                            //                    note.Width = noteWidth;
-                            //                }
-                            //                break;
-                            //            #endregion
-                            //        }
+                                                note.X = currentX + noteBaseXOffset;
+                                                note.Y = currentY + noteBaseYOffset;
+                                                note.Width = noteWidth;
+                                            }
+                                            break;
+                                        #endregion
 
-                            //        if (string.IsNullOrWhiteSpace(note.BeamId))
-                            //        {
-                            //            totalBeats++;
-                            //        }
+                                        #region 绘制噪音符
+                                        case "X":
+                                            {
+                                                RenderElements.Add(new ScoreRenderTextElement
+                                                {
+                                                    FontSize = 22,
+                                                    X = currentX + noteBaseXOffset,
+                                                    Y = currentY + noteBaseYOffset,
+                                                    Text = "X"
+                                                });
 
-                            //        totalNoteWidth += noteWidth;
-                            //        currentX += noteWidth;
-                            //    }
+                                                note.X = currentX + noteBaseXOffset;
+                                                note.Y = currentY + noteBaseYOffset;
+                                                note.Width = noteWidth;
+                                            }
+                                            break;
+                                        #endregion
 
-                            //    //计算组合拍数，一个组合为一拍
-                            //    if (measure.Beams != null && measure.Beams.Count > 0)
-                            //    {
-                            //        foreach (var beam in measure.Beams)
-                            //        {
-                            //            if (measure.Notes != null)
-                            //            {
-                            //                var notesInBeam = measure.Notes.Where(n => n.BeamId == beam.Id);
-                            //                if (notesInBeam.Any())
-                            //                {
-                            //                    totalBeats++;
-                            //                }
-                            //            }
-                            //        }
-                            //    }
+                                        #region 绘制增时符
+                                        case "-":
+                                            {
+                                                RenderElements.Add(new ScoreRenderTextElement
+                                                {
+                                                    FontSize = 22,
+                                                    X = currentX + noteBaseXOffset,
+                                                    Y = currentY + noteBaseYOffset,
+                                                    Text = "-"
+                                                });
 
-                            //    //填充空白音符宽度，如果小节内的音符总拍数小于拍号中的分子，则需要绘制空白音符占位
-                            //    if (totalBeats < _score.MeasureBeatCount)
-                            //    {
-                            //        double emptyNoteWidth = noteWidth * (_score.MeasureBeatCount - totalBeats);
-                            //        totalNoteWidth += emptyNoteWidth;
-                            //        currentX += emptyNoteWidth;
-                            //    }
-                            //}
-                            //else
-                            //{
-                            //    //绘制空白小节
-                            //    totalNoteWidth = noteWidth * _score.MeasureBeatCount/*每小节拍数*/;
-                            //    currentX += totalNoteWidth;
-                            //}
+                                                note.X = currentX + noteBaseXOffset;
+                                                note.Y = currentY + noteBaseYOffset;
+                                                note.Width = noteWidth;
+                                            }
+                                            break;
+                                        #endregion
+                                    }
+                                    currentX += noteWidth;
+                                }
+                                #endregion
+                            }
                             #endregion
 
                             #region 4.绘制音符组合线
+                            //double beamBaseYOffset = 75;//音符组合线在每行中的相对Y位置
                             //if (measure.Beams != null && measure.Beams.Count > 0)
                             //{
                             //    foreach (var beam in measure.Beams)
@@ -1763,7 +1769,7 @@ namespace SEH.ViewModels
                     }
                     #endregion
 
-                    #region 3.自适应高度
+                    #region 3.自动换页
                     currentY += rowHeight;
                     if (currentY > canvasHeight)
                     {
