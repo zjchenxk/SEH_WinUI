@@ -324,13 +324,12 @@
 
                     <!--速度-->
                     <StackPanel HorizontalAlignment="Stretch">
-                        <TextBox x:Name="Tempo"
-                                 Text="{x:Bind ViewModel.Tempo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 PlaceholderText="输入速度..."
-                                 Header="速度："
-                                 MaxLength="5"
-                                 InputScope="Number"
-                                 HorizontalAlignment="Stretch"/>
+                        <NumberBox x:Name="Tempo"
+                                   Text="{x:Bind ViewModel.Tempo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                   PlaceholderText="输入速度..."
+                                   Header="速度："
+                                   Minimum="30" Maximum="300"
+                                   HorizontalAlignment="Stretch"/>
 
                         <!--红字错误提示，绑定到 ViewModel 的 TempoError 属性-->
                         <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
@@ -403,13 +402,12 @@
 
                     <!--左边距-->
                     <StackPanel HorizontalAlignment="Stretch">
-                        <TextBox x:Name="LeftMargin"
-                                 Text="{x:Bind ViewModel.LeftMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 PlaceholderText="输入左边距..."
-                                 Header="左边距(像素)："
-                                 MaxLength="3"
-                                 InputScope="Number"
-                                 HorizontalAlignment="Stretch"/>
+                        <NumberBox x:Name="LeftMargin"
+                                   Text="{x:Bind ViewModel.LeftMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                   PlaceholderText="输入左边距..."
+                                   Header="左边距(像素)："
+                                   Minimum="0" Maximum="100"
+                                   HorizontalAlignment="Stretch"/>
 
                         <!--红字错误提示，绑定到 ViewModel 的 LeftMarginError 属性-->
                         <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
@@ -421,13 +419,12 @@
 
                     <!--上边距-->
                     <StackPanel HorizontalAlignment="Stretch">
-                        <TextBox x:Name="TopMargin"
-                                 Text="{x:Bind ViewModel.TopMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 PlaceholderText="输入上边距..."
-                                 Header="上边距(像素)："
-                                 MaxLength="3"
-                                 InputScope="Number"
-                                 HorizontalAlignment="Stretch"/>
+                        <NumberBox x:Name="TopMargin"
+                                   Text="{x:Bind ViewModel.TopMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                   PlaceholderText="输入上边距..."
+                                   Header="上边距(像素)："
+                                   Minimum="0" Maximum="100"
+                                   HorizontalAlignment="Stretch"/>
 
                         <!--红字错误提示，绑定到 ViewModel 的 TopMarginError 属性-->
                         <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
@@ -439,13 +436,12 @@
 
                     <!--右边距-->
                     <StackPanel HorizontalAlignment="Stretch">
-                        <TextBox x:Name="RightMargin"
-                                 Text="{x:Bind ViewModel.RightMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 PlaceholderText="输入右边距..."
-                                 Header="右边距(像素)："
-                                 MaxLength="3"
-                                 InputScope="Number"
-                                 HorizontalAlignment="Stretch"/>
+                        <NumberBox x:Name="RightMargin"
+                                   Text="{x:Bind ViewModel.RightMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                   PlaceholderText="输入右边距..."
+                                   Header="右边距(像素)："
+                                   Minimum="0" Maximum="100"
+                                   HorizontalAlignment="Stretch"/>
 
                         <!--红字错误提示，绑定到 ViewModel 的 RightMarginError 属性-->
                         <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
@@ -457,13 +453,12 @@
 
                     <!--下边距-->
                     <StackPanel HorizontalAlignment="Stretch">
-                        <TextBox x:Name="BottomMargin"
-                                 Text="{x:Bind ViewModel.BottomMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 PlaceholderText="输入下边距..."
-                                 Header="下边距(像素)："
-                                 MaxLength="3"
-                                 InputScope="Number"
-                                 HorizontalAlignment="Stretch"/>
+                        <NumberBox x:Name="BottomMargin"
+                                   Text="{x:Bind ViewModel.BottomMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                   PlaceholderText="输入下边距..."
+                                   Header="下边距(像素)："
+                                   Minimum="0" Maximum="100"
+                                   HorizontalAlignment="Stretch"/>
 
                         <!--红字错误提示，绑定到 ViewModel 的 BottomMarginError 属性-->
                         <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->

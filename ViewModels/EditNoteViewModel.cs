@@ -38,6 +38,7 @@ namespace SEH.ViewModels
         /// </summary>
         [Required(ErrorMessage = "时值不能为空！")]
         [Range(0.125, 4, ErrorMessage = "时值必须在0.125到4之间")]
+        [CustomValidation(typeof(EditNoteViewModel), nameof(ValidatedurationDuration))]
         [ObservableProperty]
         private string _duration = "1"; // 默认四分音符
 
@@ -253,6 +254,31 @@ namespace SEH.ViewModels
         partial void OnSelectedBeamChanged(Beam? value)
         {
             ValidateProperty(value, nameof(SelectedBeam));
+        }
+
+        /// <summary>
+        /// 自定义验证时值
+        /// </summary>
+        /// <param name="duration"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static ValidationResult? ValidatedurationDuration(string duration, ValidationContext context)
+        {
+            //1.检查是否为空
+            if (string.IsNullOrWhiteSpace(duration))
+            {
+                return new("时值不能为空！");
+            }
+
+            //2.如果当前音符加入减时组合，则时值必须是八分音符、十六分音符和三十二分音符
+            var instance = (EditNoteViewModel)context.ObjectInstance;
+            if (instance.SelectedBeam != null && (duration == "4" || duration == "2" || duration == "1"))
+            {
+                return new("时值不能为全音符、二分音符或四分音符！");
+            }
+
+            //3.验证通过
+            return ValidationResult.Success;
         }
 
         /// <summary>

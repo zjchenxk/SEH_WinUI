@@ -3,7 +3,7 @@
 namespace SEH.Models
 {
     /// <summary>
-    /// 连尾组合类
+    /// 减时组合类
     /// </summary>
     [Table("Beam")]
     public class Beam

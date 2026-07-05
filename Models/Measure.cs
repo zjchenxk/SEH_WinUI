@@ -53,7 +53,7 @@ namespace SEH.Models
         public List<Note>? Notes { get; set; }
 
         /// <summary>
-        /// 连尾组合集合
+        /// 减时组合集合
         /// </summary>
         [Ignore]
         public List<Beam>? Beams { get; set; }

@@ -885,43 +885,57 @@ namespace SEH.ViewModels
                 return;
             }
 
-            #region 检查当前小节内的音符总拍数是否已满
-            int totalBeats = 0;
-            if (_measure.Notes != null)
-            {
-                foreach (var note in _measure.Notes)
-                {
-                    if (string.IsNullOrWhiteSpace(note.BeamId))
-                    {
-                        totalBeats++;
-                    }
-                }
-            }
-            if (_measure.Beams != null)
-            {
-                foreach (var beam in _measure.Beams)
-                {
-                    if (_measure.Notes != null)
-                    {
-                        var notesInBeam = _measure.Notes.Where(n => n.BeamId == beam.Id);
-                        if (notesInBeam.Any())
-                        {
-                            totalBeats++;
-                        }
-                    }
-                }
-            }
-            if (totalBeats >= _score.MeasureBeatCount)
-            {
-                await _messageService.ShowErrorAsync("当前小节内的音符总拍数已满，请新增小节！");
-                return;
-            }
-            #endregion
-
             //调用服务显示弹窗并获取结果
             var ret = await _dialogService.ShowEditNoteDialogAsync(_measure.Beams, null);
             if (ret != null)
             {
+                //检查当前小节总拍数是否已满
+                int currentMeasureBeats = 0;
+                if (_measure.Notes != null)
+                {
+                    foreach (var note in _measure.Notes)
+                    {
+                        if (string.IsNullOrWhiteSpace(note.BeamId))
+                        {
+                            currentMeasureBeats++;
+                        }
+                    }
+                }
+                if (_measure.Beams != null)
+                {
+                    foreach (var beam in _measure.Beams)
+                    {
+                        if (_measure.Notes != null)
+                        {
+                            var notesInBeam = _measure.Notes.Where(n => n.BeamId == beam.Id);
+                            if (notesInBeam.Any())
+                            {
+                                currentMeasureBeats++;
+                            }
+                        }
+                    }
+                }
+                if (string.IsNullOrWhiteSpace(ret.BeamId))
+                {
+                    currentMeasureBeats++;
+                }
+                else
+                {
+                    if (_measure.Notes != null)
+                    {
+                        var notesInBeam = _measure.Notes.Where(n => n.BeamId == ret.BeamId);
+                        if (!notesInBeam.Any())
+                        {
+                            currentMeasureBeats++;
+                        }
+                    }
+                }
+                if (currentMeasureBeats > _score.MeasureBeatCount)
+                {
+                    await _messageService.ShowErrorAsync("当前小节拍数已满，请新增小节！");
+                    return;
+                }
+
                 //初始化 Note 集合
                 _measure.Notes ??= [];
 
@@ -955,13 +969,38 @@ namespace SEH.ViewModels
         /// 修改音符命令
         /// </summary>
         [RelayCommand]
-        private void EditNote()
+        private async Task EditNote()
         {
+            if (_line == null)
+            {
+                return;
+            }
+            if (_measure == null)
+            {
+                return;
+            }
             if (_note == null)
             {
                 return;
             }
 
+            //调用服务显示弹窗并获取结果
+            var ret = await _dialogService.ShowEditNoteDialogAsync(_measure.Beams, _note);
+            if (ret != null)
+            {
+                //修改音符
+                _note.Pitch = ret.Pitch;
+                _note.Duration = ret.Duration;
+                _note.Dots = ret.Dots;
+                _note.Slur = ret.Slur;
+                _note.Articulation = ret.Articulation;
+                _note.Fermata = ret.Fermata;
+                _note.Lyrics = ret.Lyrics;
+                _note.BeamId = ret.BeamId;
+
+                //重新绘制简谱
+                DrawScore();
+            }
         }
 
         /// <summary>
@@ -970,7 +1009,37 @@ namespace SEH.ViewModels
         [RelayCommand]
         private void DeleteNote()
         {
+            if (_line == null)
+            {
+                return;
+            }
+            if (_measure == null)
+            {
+                return;
+            }
+            if (_measure.Notes == null || _measure.Notes.Count == 0)
+            {
+                return;
+            }
+            if (_note == null)
+            {
+                return;
+            }
 
+            _measure.Notes.Remove(_note);
+
+            if (_measure.Notes.Count == 0)
+            {
+                _measure.Notes = null;
+                _note = null;
+            }
+            else
+            {
+                _note = _measure.Notes[^1];//[^1]代表最后一个元素
+            }
+
+            //绘制简谱
+            DrawScore();
         }
 
         /// <summary>
@@ -1594,37 +1663,37 @@ namespace SEH.ViewModels
                             }
                             #endregion
 
-                            #region 4.绘制音符组合线
-                            //double beamBaseYOffset = 75;//音符组合线在每行中的相对Y位置
-                            //if (measure.Beams != null && measure.Beams.Count > 0)
-                            //{
-                            //    foreach (var beam in measure.Beams)
-                            //    {
-                            //        if (measure.Notes != null)
-                            //        {
-                            //            var notesInBeam = measure.Notes.Where(n => n.BeamId == beam.Id).OrderBy(n => n.Number);
-                            //            if (notesInBeam != null && notesInBeam.Count<Note>() > 0)
-                            //            {
-                            //                double beamX = notesInBeam.First<Note>().X ?? 0;
-                            //                double beamWidth = (notesInBeam.Last<Note>().X ?? 0) - (notesInBeam.First<Note>().X ?? 0) + 10;
+                            #region 4.绘制减时组合线
+                            double beamBaseYOffset = 75;//音符组合线在每行中的相对Y位置
+                            if (measure.Beams != null && measure.Beams.Count > 0)
+                            {
+                                foreach (var beam in measure.Beams)
+                                {
+                                    if (measure.Notes != null)
+                                    {
+                                        var notesInBeam = measure.Notes.Where(n => n.BeamId == beam.Id).OrderBy(n => n.Number);
+                                        if (notesInBeam != null && notesInBeam.Count<Note>() > 0)
+                                        {
+                                            double beamX = notesInBeam.First<Note>().X ?? 0;
+                                            double beamWidth = (notesInBeam.Last<Note>().X ?? 0) - (notesInBeam.First<Note>().X ?? 0) + CharWidth;
 
-                            //                if (beamX > 0 && beamWidth > 0)
-                            //                {
-                            //                    //绘制组合横线
-                            //                    //音符字符字体大小为22，像素高度为33，其中内边距上部为11，下部为5，实际字符高度为17
-                            //                    RenderElements.Add(new ScoreRenderLineElement
-                            //                    {
-                            //                        X = beamX,
-                            //                        Y = currentY + beamBaseYOffset,
-                            //                        Width = beamWidth,
-                            //                        Height = 1,
-                            //                        IsVertical = false
-                            //                    });
-                            //                }
-                            //            }
-                            //        }
-                            //    }
-                            //}
+                                            if (beamX > 0 && beamWidth > 0)
+                                            {
+                                                //绘制组合横线
+                                                //音符字符字体大小为22，像素高度为33，其中内边距上部为11，下部为5，实际字符高度为17
+                                                RenderElements.Add(new ScoreRenderLineElement
+                                                {
+                                                    X = beamX,
+                                                    Y = currentY + beamBaseYOffset,
+                                                    Width = beamWidth,
+                                                    Height = 1,
+                                                    IsVertical = false
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             #endregion
 
                             #region 5.绘制小节右边线（0-无，1-小节线，2-虚小节线，3-段落线，4-反复终止线，5-终止线）
