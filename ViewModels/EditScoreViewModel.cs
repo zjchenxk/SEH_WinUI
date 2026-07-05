@@ -1911,6 +1911,16 @@ namespace SEH.ViewModels
         }
 
         /// <summary>
+        /// 打印简谱命令
+        /// </summary>
+        [RelayCommand]
+        private void Print()
+        {
+            // 发送消息通知 View 触发打印
+            _messenger.Send(new PrintScoreMessage());
+        }
+
+        /// <summary>
         /// 保存简谱命令
         /// </summary>
         [RelayCommand]

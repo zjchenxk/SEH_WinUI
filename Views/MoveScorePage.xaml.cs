@@ -9,13 +9,13 @@ namespace SEH.Views
     /// </summary>
     public sealed partial class MoveScorePage : Page
     {
-        public MoveScoreViewModel ViewModel { get; }
+        public MoveScoreViewModel? ViewModel { get; }
 
 
         public MoveScorePage()
         {
             //将依赖注入的 ViewModel 注入到 MainWindow 中
-            ViewModel = App.Services.GetRequiredService<MoveScoreViewModel>();
+            ViewModel = App.Services?.GetRequiredService<MoveScoreViewModel>();
 
             //初始化组件（XAML UI 元素）
             InitializeComponent();
@@ -30,7 +30,7 @@ namespace SEH.Views
             if (e.Parameter != null)
             {
                 //将参数传给 ViewModel 进行初始化
-                ViewModel.Initialize((string)e.Parameter);
+                ViewModel?.Initialize((string)e.Parameter);
             }
         }
 

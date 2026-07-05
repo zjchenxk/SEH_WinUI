@@ -9,13 +9,13 @@ namespace SEH.Views
     /// </summary>
     public sealed partial class EditCategoryPage : Page
     {
-        public EditCategoryViewModel ViewModel { get; }
+        public EditCategoryViewModel? ViewModel { get; }
 
 
         public EditCategoryPage()
         {
             //将依赖注入的 ViewModel 注入到 MainWindow 中
-            ViewModel = App.Services.GetRequiredService<EditCategoryViewModel>();
+            ViewModel = App.Services?.GetRequiredService<EditCategoryViewModel>();
 
             //初始化组件（XAML UI 元素）
             InitializeComponent();
@@ -30,7 +30,7 @@ namespace SEH.Views
             if (e != null && e.Parameter != null)
             {
                 //将参数传给 ViewModel 进行初始化
-                ViewModel.Initialize(e.Parameter?.ToString());
+                ViewModel?.Initialize(e.Parameter?.ToString());
             }
         }
 

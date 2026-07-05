@@ -184,6 +184,11 @@
                     <BitmapIcon UriSource="/Assets/Images/保存.png" ShowAsMonochrome="False"/>
                 </AppBarButton.Icon>
             </AppBarButton>
+            <AppBarButton Label="打印简谱" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.PrintCommand}">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/Images/打印.png" ShowAsMonochrome="False"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
             <AppBarButton Label="关闭退出" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.CloseCommand}">
                 <AppBarButton.Icon>
                     <BitmapIcon UriSource="/Assets/Images/关闭.png" ShowAsMonochrome="False"/>
@@ -476,7 +481,7 @@
                             HorizontalContentAlignment="Center" VerticalContentAlignment="Top">
                     <!--用 Grid 包裹 Border，Grid 会根据内容自适应大小-->
                     <Grid>
-                        <Border BorderBrush="{ThemeResource SystemChromeHighColor}" BorderThickness="1" Margin="40"
+                        <Border x:Name="ScoreCanvas" BorderBrush="{ThemeResource SystemChromeHighColor}" BorderThickness="1" Margin="40"
                                 HorizontalAlignment="Center" VerticalAlignment="Top">
                             <ItemsControl ItemsSource="{x:Bind ViewModel.RenderElements, Mode=OneWay}"
                                           ItemTemplateSelector="{StaticResource ScoreTemplateSelector}">

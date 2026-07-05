@@ -19,8 +19,8 @@ namespace SEH.Views
             base.OnNavigatedTo(e);
 
             //在页面导航到时，调用 MainViewModel 的 ResetBreadcrumbItems 方法重置面包屑导航项为首页
-            var mainViewModel = App.Services.GetRequiredService<MainViewModel>();
-            mainViewModel.ResetBreadcrumbItems();
+            var viewModel = App.Services?.GetRequiredService<MainViewModel>();
+            viewModel?.ResetBreadcrumbItems();
         }
     }
 }
