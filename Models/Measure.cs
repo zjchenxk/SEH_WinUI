@@ -14,19 +14,19 @@ namespace SEH.Models
         /// </summary>
         [PrimaryKey]
         [Column("id")]
-        public string Id { get; set; }
+        public string Id { get; set; } = "";
 
         /// <summary>
         /// 行主键
         /// </summary>
         [Column("line_id")]
-        public string LineId { get; set; }
+        public string LineId { get; set; } = "";
 
         /// <summary>
         /// 简谱主键
         /// </summary>
         [Column("score_id")]
-        public string ScoreId { get; set; }
+        public string ScoreId { get; set; } = "";
 
         /// <summary>
         /// 节号
@@ -45,12 +45,6 @@ namespace SEH.Models
         /// </summary>
         [Column("right_line")]
         public int RightLine { get; set; }
-
-        /// <summary>
-        /// 小节宽度
-        /// </summary>
-        [Ignore]
-        public double Width { get; set; }
 
         /// <summary>
         /// 音符集合

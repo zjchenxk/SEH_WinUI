@@ -19,6 +19,6 @@ namespace SEH.Services.Interfaces
         /// </summary>
         /// <param name="pageType"></param>
         /// <param name="parameter"></param>
-        void NavigateTo(Type pageType, object parameter = null);
+        void NavigateTo(Type pageType, object? parameter = null);
     }
 }

@@ -27,10 +27,10 @@ namespace SEH.Views
         {
             base.OnNavigatedTo(e);
 
-            if (e.Parameter != null)
+            if (e != null && e.Parameter != null)
             {
                 //将参数传给 ViewModel 进行初始化
-                ViewModel.Initialize(e.Parameter.ToString().Trim());
+                ViewModel.Initialize(e.Parameter?.ToString());
             }
         }
 

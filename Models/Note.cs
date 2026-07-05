@@ -13,25 +13,25 @@ namespace SEH.Models
         /// </summary>
         [PrimaryKey]
         [Column("id")]
-        public string Id { get; set; }
+        public string Id { get; set; } = "";
 
         /// <summary>
         /// 节主键
         /// </summary>
         [Column("measure_id")]
-        public string MeasureId { get; set; }
+        public string MeasureId { get; set; } = "";
 
         /// <summary>
         /// 行主键
         /// </summary>
         [Column("line_id")]
-        public string LineId { get; set; }
+        public string LineId { get; set; } = "";
 
         /// <summary>
         /// 乐谱主键
         /// </summary>
         [Column("score_id")]
-        public string ScoreId { get; set; }
+        public string ScoreId { get; set; } = "";
 
         /// <summary>
         /// 音符号
@@ -53,7 +53,7 @@ namespace SEH.Models
         /// 增时符：-
         /// </summary>
         [Column("pitch")]
-        public string Pitch { get; set; }
+        public string Pitch { get; set; } = "";
 
         /// <summary>
         /// 时值，如：4-全音符，3-附点二分音符，2-二分音符，1-四分音符，0.5-八分音符，0.25-十六分音符，0.125-三十二分音符

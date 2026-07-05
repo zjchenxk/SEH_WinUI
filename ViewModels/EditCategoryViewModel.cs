@@ -84,7 +84,7 @@ namespace SEH.ViewModels
         /// 初始化 ViewModel，加载类别数据
         /// </summary>
         /// <param name="categoryId"></param>
-        public void Initialize(string categoryId)
+        public void Initialize(string? categoryId)
         {
             if (!string.IsNullOrEmpty(categoryId))
             {

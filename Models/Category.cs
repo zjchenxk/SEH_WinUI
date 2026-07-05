@@ -13,13 +13,13 @@ namespace SEH.Models
         /// </summary>
         [PrimaryKey]
         [Column("id")]
-        public string Id { get; set; }
+        public string Id { get; set; } = "";
 
         /// <summary>
         /// 类别名称
         /// </summary>
         [MaxLength(50), Unique]
         [Column("name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
     }
 }

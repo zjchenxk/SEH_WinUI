@@ -56,7 +56,7 @@
                       StrokeThickness="{x:Bind Thickness}" 
                       StrokeStartLineCap="Square" 
                       StrokeEndLineCap="Square"
-                      StrokeDashArray="{x:Bind IsDashed, Converter={StaticResource BoolToDashArrayConverter}, Mode=OneWay}" />
+                      StrokeDashArray="{x:Bind IsDashed, Converter={StaticResource BoolToDashArrayConverter}}" />
             </Canvas>
         </DataTemplate>
 

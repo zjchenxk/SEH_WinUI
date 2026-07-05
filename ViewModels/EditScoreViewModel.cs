@@ -243,10 +243,10 @@ namespace SEH.ViewModels
         private string? _bottomMarginError = "";
 
         /// <summary>
-        /// 字符实际宽度（默认10）
+        /// 字符实际宽度（默认12）
         /// </summary>
         [ObservableProperty]
-        private double _charWidth = 10;
+        private double _charWidth = 12;
 
         /// <summary>
         /// 简谱渲染元素集合
@@ -388,7 +388,7 @@ namespace SEH.ViewModels
                 if (param["Id"] != null)
                 {
                     #region 修改简谱
-                    var score = _dataService.GetScore(param["Id"].ToString());
+                    var score = _dataService.GetScore((param["Id"]?.ToString()) ?? "");
                     if (score == null)
                     {
                         _messageService.ShowErrorAsync("未找到指定的简谱数据！").Wait();
@@ -440,7 +440,7 @@ namespace SEH.ViewModels
                     #region 新增简谱
                     if (param["CategoryId"] != null)
                     {
-                        _score.CategoryId = param["CategoryId"].ToString();
+                        _score.CategoryId = (param["CategoryId"]?.ToString()) ?? "";
                     }
                     _score.KeySignature = "C";
                     _score.MeasureBeatCount = 4;
@@ -776,20 +776,11 @@ namespace SEH.ViewModels
                 return;
             }
 
-            //判断行宽度是否超出画布宽度？
-            if (_line.Measures != null && _line.Measures.Count > 0)
+            //判断当前行小节数是否超出排版设置？
+            if (_line.Measures != null && _line.Measures.Count + 1 > _score.LineMeasureCount)
             {
-                //获取当前所有小节总宽度
-                double totalMeasureWidth = 0;
-                foreach (var measure in _line.Measures)
-                {
-                    totalMeasureWidth += measure.Width;
-                }
-                if (_score.LeftMargin + totalMeasureWidth + _line.Measures[^1].Width/*[^1]代表最后一个元素*/ + _score.RightMargin > Width)
-                {
-                    await _messageService.ShowErrorAsync("页面宽度不足，请新增一行！");
-                    return;
-                }
+                await _messageService.ShowErrorAsync("小节数超出每行最大小节数，请新增一行！");
+                return;
             }
 
             //调用服务显示弹窗并获取结果
@@ -1091,8 +1082,9 @@ namespace SEH.ViewModels
             double startY = _score.TopMargin;
             double canvasWidth = Width - _score.LeftMargin - _score.RightMargin;//设置画布宽度
             double canvasHeight = Height - _score.TopMargin - _score.BottomMargin;//设置画布高度
-            double measureWidth = Math.Floor(canvasWidth / _score.LineMeasureCount); //计算每小节宽度=工作区宽度/每行小节数
             double rowHeight = 120;//设置每行高度
+            double measureLeftPadding = 10;//小节左边距
+            double measureRightPadding = 10;//小节右边距
 
             double currentY = startY;
 
@@ -1220,13 +1212,58 @@ namespace SEH.ViewModels
             #endregion
 
             #region 2.绘制简谱
-            if (_score.Lines != null)
+            if (_score.Lines != null && _score.Lines.Count > 0)
             {
                 int measureIndex = 1;//小节序号
 
                 foreach (var line in _score.Lines)
                 {
-                    #region 1.绘制行起点竖线
+                    #region 1.计算当前行音符占位宽度
+                    int currentLineBeats = 0;//当前行累计拍数
+                    int currentLineNotes = 0;//当前行累计音符数
+                    if (line.Measures != null && line.Measures.Count > 0)
+                    {
+                        foreach (var measure in line.Measures)
+                        {
+                            if (measure.Notes != null && measure.Notes.Count > 0)
+                            {
+                                //一个占位音符为一拍
+                                foreach (var note in measure.Notes)
+                                {
+                                    if (string.IsNullOrWhiteSpace(note.BeamId))
+                                    {
+                                        currentLineBeats++;
+                                    }
+                                }
+                                //计算组合拍数，一个组合为一拍
+                                if (measure.Beams != null && measure.Beams.Count > 0)
+                                {
+                                    foreach (var beam in measure.Beams)
+                                    {
+                                        if (measure.Notes != null)
+                                        {
+                                            var notesInBeam = measure.Notes.Where(n => n.BeamId == beam.Id);
+                                            if (notesInBeam.Any())
+                                            {
+                                                currentLineBeats++;
+                                            }
+                                        }
+                                    }
+                                }
+                                currentLineNotes += (measure.Notes?.Count) ?? 0;
+                            }
+                        }
+                    }
+                    //如果当前累计拍数小于规定拍数，则添加音符占位
+                    if (_score.LineMeasureCount * _score.MeasureBeatCount > currentLineBeats)
+                    {
+                        currentLineNotes += (_score.LineMeasureCount * _score.MeasureBeatCount - currentLineBeats);
+                    }
+                    //计算当前行每个音符占位宽度
+                    line.NoteWidth = (canvasWidth - _score.LineMeasureCount * (measureLeftPadding + measureRightPadding)) / currentLineNotes;
+                    #endregion
+
+                    #region 2.绘制行起点竖线
                     //每行的高度为：rowHeight，上边距为：20，下边距为：20，中间绘制区高度为：80
                     //-------------------------
                     //   20
@@ -1251,16 +1288,18 @@ namespace SEH.ViewModels
                     });
                     #endregion
 
-                    #region 2.绘制小节
-                    if (line.Measures != null)
+                    #region 3.绘制小节
+                    if (line.Measures != null && line.Measures.Count > 0)
                     {
+                        double currentX = startX;
+
                         foreach (var measure in line.Measures)
                         {
                             #region 1.绘制小节序号
                             RenderElements.Add(new ScoreRenderTextElement
                             {
                                 FontSize = 8,
-                                X = startX + (measure.Number - 1) * measureWidth,
+                                X = currentX,
                                 Y = currentY + 20,
                                 Text = measureIndex.ToString(),
                             });
@@ -1293,7 +1332,7 @@ namespace SEH.ViewModels
                                     #region 合并反复起始线和反复终止线
                                     RenderElements.Add(new ScoreRenderLineElement
                                     {
-                                        X = startX + (measure.Number - 1) * measureWidth,
+                                        X = currentX,
                                         Y = currentY + 40,
                                         Width = 2,
                                         Height = 40,
@@ -1302,7 +1341,7 @@ namespace SEH.ViewModels
 
                                     RenderElements.Add(new ScoreRenderLineElement
                                     {
-                                        X = startX + (measure.Number - 1) * measureWidth + 3,
+                                        X = currentX + 3,
                                         Y = currentY + 40,
                                         Width = 1,
                                         Height = 40,
@@ -1311,14 +1350,14 @@ namespace SEH.ViewModels
 
                                     RenderElements.Add(new ScoreRenderDotElement
                                     {
-                                        X = startX + (measure.Number - 1) * measureWidth + 5,
+                                        X = currentX + 5,
                                         Y = currentY + 40 + 10,
                                         Radius = 2
                                     });
 
                                     RenderElements.Add(new ScoreRenderDotElement
                                     {
-                                        X = startX + (measure.Number - 1) * measureWidth + 5,
+                                        X = currentX + 5,
                                         Y = currentY + 40 + 30,
                                         Radius = 2
                                     });
@@ -1329,7 +1368,7 @@ namespace SEH.ViewModels
                                     #region 绘制独立反复起始线
                                     RenderElements.Add(new ScoreRenderLineElement
                                     {
-                                        X = startX + (measure.Number - 1) * measureWidth,
+                                        X = currentX,
                                         Y = currentY + 40,
                                         Width = 3,
                                         Height = 40,
@@ -1338,7 +1377,7 @@ namespace SEH.ViewModels
 
                                     RenderElements.Add(new ScoreRenderLineElement
                                     {
-                                        X = startX + (measure.Number - 1) * measureWidth + 4,
+                                        X = currentX + 4,
                                         Y = currentY + 40,
                                         Width = 1,
                                         Height = 40,
@@ -1347,14 +1386,14 @@ namespace SEH.ViewModels
 
                                     RenderElements.Add(new ScoreRenderDotElement
                                     {
-                                        X = startX + (measure.Number - 1) * measureWidth + 6,
+                                        X = currentX + 6,
                                         Y = currentY + 40 + 10,
                                         Radius = 2
                                     });
 
                                     RenderElements.Add(new ScoreRenderDotElement
                                     {
-                                        X = startX + (measure.Number - 1) * measureWidth + 6,
+                                        X = currentX + 6,
                                         Y = currentY + 40 + 30,
                                         Radius = 2
                                     });
@@ -1362,53 +1401,16 @@ namespace SEH.ViewModels
                                 }
                                 #endregion
                             }
+                            currentX += measureLeftPadding;
                             #endregion
 
                             #region 3.绘制音符
                             if (measure.Notes != null && measure.Notes.Count > 0)
                             {
-                                #region 1.计算当前小节拍数
-                                int totalBeats = 0;//当前小节累计拍数
-                                foreach (var note in measure.Notes)
-                                {
-                                    if (string.IsNullOrWhiteSpace(note.BeamId))
-                                    {
-                                        totalBeats++;
-                                    }
-                                }
-                                //计算组合拍数，一个组合为一拍
-                                if (measure.Beams != null && measure.Beams.Count > 0)
-                                {
-                                    foreach (var beam in measure.Beams)
-                                    {
-                                        if (measure.Notes != null)
-                                        {
-                                            var notesInBeam = measure.Notes.Where(n => n.BeamId == beam.Id);
-                                            if (notesInBeam.Any())
-                                            {
-                                                totalBeats++;
-                                            }
-                                        }
-                                    }
-                                }
-                                #endregion
-
-                                #region 2.计算当前小节音符数
-                                //如果当前小节拍数小于小节拍数，则添加占位符
-                                int totalNotes = measure.Notes.Count + (_score.MeasureBeatCount - totalBeats > 0 ? _score.MeasureBeatCount - totalBeats : 0);
-                                #endregion
-
-                                #region 3.动态计算当前小节中每个音符的占用宽度
-                                double measureLeftPadding = 10;//小节左边距
-                                double measureRightPadding = 10;//小节右边距
-                                double noteWidth = (measureWidth - measureLeftPadding - measureRightPadding) / totalNotes;
-                                #endregion
-
-                                #region 4.绘制音符
-                                double noteBaseXOffset = noteWidth - _charWidth > 0 ? (noteWidth - _charWidth) / 2 : 0;//音符在每行中的相对X位置
+                                double noteBaseXOffset = line.NoteWidth - CharWidth > 0 ? (line.NoteWidth - CharWidth) / 2 : 0;//音符在每行中的相对X位置
                                 double noteBaseYOffset = 40;//音符在每行中的相对Y位置
 
-                                double currentX = startX + (measure.Number - 1) * measureWidth + measureLeftPadding;
+                                int currentMeasureBeats = 0;
 
                                 foreach (var note in measure.Notes)
                                 {
@@ -1433,7 +1435,7 @@ namespace SEH.ViewModels
 
                                                 note.X = currentX + noteBaseXOffset;
                                                 note.Y = currentY + noteBaseYOffset;
-                                                note.Width = noteWidth;
+                                                note.Width = line.NoteWidth;
                                             }
                                             break;
                                         #endregion
@@ -1457,7 +1459,7 @@ namespace SEH.ViewModels
 
                                                 note.X = currentX + noteBaseXOffset;
                                                 note.Y = currentY + noteBaseYOffset;
-                                                note.Width = noteWidth;
+                                                note.Width = line.NoteWidth;
 
                                                 //绘制低音音符下方的点，如果有减时线，就在减时线的下方绘制点
                                                 RenderElements.Add(new ScoreRenderDotElement
@@ -1489,7 +1491,7 @@ namespace SEH.ViewModels
 
                                                 note.X = currentX + noteBaseXOffset;
                                                 note.Y = currentY + noteBaseYOffset;
-                                                note.Width = noteWidth;
+                                                note.Width = line.NoteWidth;
 
                                                 //绘制高音音符上方的点
                                                 RenderElements.Add(new ScoreRenderDotElement
@@ -1515,7 +1517,7 @@ namespace SEH.ViewModels
 
                                                 note.X = currentX + noteBaseXOffset;
                                                 note.Y = currentY + noteBaseYOffset;
-                                                note.Width = noteWidth;
+                                                note.Width = line.NoteWidth;
                                             }
                                             break;
                                         #endregion
@@ -1533,7 +1535,7 @@ namespace SEH.ViewModels
 
                                                 note.X = currentX + noteBaseXOffset;
                                                 note.Y = currentY + noteBaseYOffset;
-                                                note.Width = noteWidth;
+                                                note.Width = line.NoteWidth;
                                             }
                                             break;
                                         #endregion
@@ -1551,14 +1553,44 @@ namespace SEH.ViewModels
 
                                                 note.X = currentX + noteBaseXOffset;
                                                 note.Y = currentY + noteBaseYOffset;
-                                                note.Width = noteWidth;
+                                                note.Width = line.NoteWidth;
                                             }
                                             break;
                                         #endregion
                                     }
-                                    currentX += noteWidth;
+                                    currentX += line.NoteWidth;
+
+                                    if (string.IsNullOrWhiteSpace(note.BeamId))
+                                    {
+                                        currentMeasureBeats++;
+                                    }
                                 }
-                                #endregion
+
+                                //计算组合拍数，一个组合为一拍
+                                if (measure.Beams != null && measure.Beams.Count > 0)
+                                {
+                                    foreach (var beam in measure.Beams)
+                                    {
+                                        if (measure.Notes != null)
+                                        {
+                                            var notesInBeam = measure.Notes.Where(n => n.BeamId == beam.Id);
+                                            if (notesInBeam.Any())
+                                            {
+                                                currentMeasureBeats++;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                //填充占位音符宽度，如果当前小节拍数小于拍号中的小节拍数，则需要绘制空白音符占位
+                                if (currentMeasureBeats < _score.MeasureBeatCount)
+                                {
+                                    currentX += line.NoteWidth * (_score.MeasureBeatCount - currentMeasureBeats);
+                                }
+                            }
+                            else
+                            {
+                                currentX += line.NoteWidth * _score.MeasureBeatCount;
                             }
                             #endregion
 
@@ -1605,7 +1637,7 @@ namespace SEH.ViewModels
                                 #region 绘制小节线
                                 RenderElements.Add(new ScoreRenderLineElement
                                 {
-                                    X = startX + measureWidth * measure.Number - 1,
+                                    X = currentX + measureRightPadding - 1,
                                     Y = currentY + 40,
                                     Width = 1,
                                     Height = 40,
@@ -1618,7 +1650,7 @@ namespace SEH.ViewModels
                                 #region 绘制虚小节线
                                 RenderElements.Add(new ScoreRenderLineElement
                                 {
-                                    X = startX + measureWidth * measure.Number - 1,
+                                    X = currentX + measureRightPadding - 1,
                                     Y = currentY + 40,
                                     Width = 1,
                                     Height = 40,
@@ -1632,7 +1664,7 @@ namespace SEH.ViewModels
                                 #region 绘制段落线
                                 RenderElements.Add(new ScoreRenderLineElement
                                 {
-                                    X = startX + measureWidth * measure.Number - 4,
+                                    X = currentX + measureRightPadding - 4,
                                     Y = currentY + 40,
                                     Width = 1,
                                     Height = 40,
@@ -1641,7 +1673,7 @@ namespace SEH.ViewModels
 
                                 RenderElements.Add(new ScoreRenderLineElement
                                 {
-                                    X = startX + measureWidth * measure.Number - 1,
+                                    X = currentX + measureRightPadding - 1,
                                     Y = currentY + 40,
                                     Width = 1,
                                     Height = 40,
@@ -1667,21 +1699,21 @@ namespace SEH.ViewModels
                                     #region 合并反复终止线和反复起始线
                                     RenderElements.Add(new ScoreRenderDotElement
                                     {
-                                        X = startX + measureWidth * measure.Number - 10,
+                                        X = currentX + measureRightPadding - 10,
                                         Y = currentY + 40 + 10,
                                         Radius = 2
                                     });
 
                                     RenderElements.Add(new ScoreRenderDotElement
                                     {
-                                        X = startX + measureWidth * measure.Number - 10,
+                                        X = currentX + measureRightPadding - 10,
                                         Y = currentY + 40 + 30,
                                         Radius = 2
                                     });
 
                                     RenderElements.Add(new ScoreRenderLineElement
                                     {
-                                        X = startX + measureWidth * measure.Number - 6,
+                                        X = currentX + measureRightPadding - 6,
                                         Y = currentY + 40,
                                         Width = 1,
                                         Height = 40,
@@ -1690,7 +1722,7 @@ namespace SEH.ViewModels
 
                                     RenderElements.Add(new ScoreRenderLineElement
                                     {
-                                        X = startX + measureWidth * measure.Number - 2,
+                                        X = currentX + measureRightPadding - 2,
                                         Y = currentY + 40,
                                         Width = 2,
                                         Height = 40,
@@ -1703,21 +1735,21 @@ namespace SEH.ViewModels
                                     #region 绘制独立反复终止线
                                     RenderElements.Add(new ScoreRenderDotElement
                                     {
-                                        X = startX + measureWidth * measure.Number - 11,
+                                        X = currentX + measureRightPadding - 11,
                                         Y = currentY + 40 + 10,
                                         Radius = 2
                                     });
 
                                     RenderElements.Add(new ScoreRenderDotElement
                                     {
-                                        X = startX + measureWidth * measure.Number - 11,
+                                        X = currentX + measureRightPadding - 11,
                                         Y = currentY + 40 + 30,
                                         Radius = 2
                                     });
 
                                     RenderElements.Add(new ScoreRenderLineElement
                                     {
-                                        X = startX + measureWidth * measure.Number - 7,
+                                        X = currentX + measureRightPadding - 7,
                                         Y = currentY + 40,
                                         Width = 1,
                                         Height = 40,
@@ -1726,7 +1758,7 @@ namespace SEH.ViewModels
 
                                     RenderElements.Add(new ScoreRenderLineElement
                                     {
-                                        X = startX + measureWidth * measure.Number - 3,
+                                        X = currentX + measureRightPadding - 3,
                                         Y = currentY + 40,
                                         Width = 3,
                                         Height = 40,
@@ -1741,7 +1773,7 @@ namespace SEH.ViewModels
                                 #region 绘制乐谱终止线
                                 RenderElements.Add(new ScoreRenderLineElement
                                 {
-                                    X = startX + measureWidth * measure.Number - 7,
+                                    X = currentX + measureRightPadding - 7,
                                     Y = currentY + 40,
                                     Width = 1,
                                     Height = 40,
@@ -1750,7 +1782,7 @@ namespace SEH.ViewModels
 
                                 RenderElements.Add(new ScoreRenderLineElement
                                 {
-                                    X = startX + measureWidth * measure.Number - 3,
+                                    X = currentX + measureRightPadding - 3,
                                     Y = currentY + 40,
                                     Width = 3,
                                     Height = 40,
@@ -1758,10 +1790,7 @@ namespace SEH.ViewModels
                                 });
                                 #endregion
                             }
-                            #endregion
-
-                            #region 6.保存小节宽度
-                            measure.Width = measureWidth;
+                            currentX += measureRightPadding;
                             #endregion
 
                             measureIndex++;
@@ -1769,7 +1798,7 @@ namespace SEH.ViewModels
                     }
                     #endregion
 
-                    #region 3.自动换页
+                    #region 4.自动换页
                     currentY += rowHeight;
                     if (currentY > canvasHeight)
                     {

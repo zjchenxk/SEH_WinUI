@@ -207,7 +207,7 @@ namespace SEH.ViewModels
                 Pitch = note.Pitch;
                 Duration = note.Duration.ToString();
                 Dots = note.Dots.ToString();
-                Slur = note.Slur != null ? note.Slur.ToString() : "";
+                Slur = (note.Slur?.ToString()) ?? "";
                 Articulation = note.Articulation ?? "";
                 Fermata = note.Fermata.ToString();
                 Lyrics = note.Lyrics ?? "";

@@ -16,7 +16,7 @@ namespace SEH
     public partial class App : Application
     {
         //全局服务提供者
-        public static IServiceProvider Services { get; private set; }
+        public static IServiceProvider? Services { get; private set; }
 
         private Window? _window;
 
@@ -95,8 +95,8 @@ namespace SEH
             try
             {
                 //从容器中获取主窗口实例（此时会自动注入它所需的依赖）
-                _window = Services.GetRequiredService<MainWindow>();
-                _window.Activate();
+                _window = Services?.GetRequiredService<MainWindow>();
+                _window?.Activate();
             }
             catch (Exception ex)
             {

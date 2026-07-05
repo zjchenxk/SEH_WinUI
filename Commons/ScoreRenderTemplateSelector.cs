@@ -5,11 +5,11 @@ namespace SEH.Commons
 {
     public partial class ScoreRenderTemplateSelector : DataTemplateSelector
     {
-        public DataTemplate TextDataTemplate { get; set; }
-        public DataTemplate DotDataTemplate { get; set; }
-        public DataTemplate LineDataTemplate { get; set; }
-        public DataTemplate ArcDataTemplate { get; set; }
-        public DataTemplate FermataDataTemplate { get; set; }
+        public DataTemplate? TextDataTemplate { get; set; }
+        public DataTemplate? DotDataTemplate { get; set; }
+        public DataTemplate? LineDataTemplate { get; set; }
+        public DataTemplate? ArcDataTemplate { get; set; }
+        public DataTemplate? FermataDataTemplate { get; set; }
 
 
         protected override DataTemplate SelectTemplateCore(object item)
@@ -17,7 +17,7 @@ namespace SEH.Commons
             return base.SelectTemplateCore(item);
         }
 
-        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+        protected override DataTemplate? SelectTemplateCore(object item, DependencyObject container)
         {
             if (item == null) return null;
 

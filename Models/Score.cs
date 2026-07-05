@@ -14,20 +14,20 @@ namespace SEH.Models
         /// </summary>
         [PrimaryKey]
         [Column("id")]
-        public string Id { get; set; }
+        public string Id { get; set; } = "";
 
         /// <summary>
         /// 类别主键
         /// </summary>
         [Column("category_id")]
-        public string CategoryId { get; set; }
+        public string CategoryId { get; set; } = "";
 
         /// <summary>
         /// 标题
         /// </summary>
         [MaxLength(100)]
         [Column("title")]
-        public string Title { get; set; }
+        public string Title { get; set; } = "";
 
         /// <summary>
         /// 作曲人
@@ -48,7 +48,7 @@ namespace SEH.Models
         /// </summary>
         [MaxLength(1)]
         [Column("key_signature")]
-        public string KeySignature { get; set; }
+        public string KeySignature { get; set; } = "";
 
         /// <summary>
         /// 每小节拍数（拍号分子，如：2、3、4、5、6、7、9、12）
@@ -78,7 +78,7 @@ namespace SEH.Models
         /// 纸张尺寸（默认A4）
         /// </summary>
         [Column("paper_size")]
-        public string PaperSize { get; set; }
+        public string PaperSize { get; set; } = "";
 
         /// <summary>
         /// 页面方向（1-纵向，2-横向，默认为1）

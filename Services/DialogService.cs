@@ -23,7 +23,7 @@ namespace SEH.Services
         /// <param name="beams"></param>
         /// <param name="note"></param>
         /// <returns></returns>
-        public async Task<Note>? ShowEditNoteDialogAsync(List<Beam>? beams = null, Note? note = null)
+        public async Task<Note?> ShowEditNoteDialogAsync(List<Beam>? beams = null, Note? note = null)
         {
             if (XamlRoot == null)
             {
@@ -63,7 +63,7 @@ namespace SEH.Services
         /// <param name="measure"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<Measure>? ShowEditMeasureDialogAsync(Measure? measure = null)
+        public async Task<Measure?> ShowEditMeasureDialogAsync(Measure? measure = null)
         {
             if (XamlRoot == null)
             {

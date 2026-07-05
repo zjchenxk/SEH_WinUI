@@ -14,19 +14,25 @@ namespace SEH.Models
         /// </summary>
         [PrimaryKey]
         [Column("id")]
-        public string Id { get; set; }
+        public string Id { get; set; } = "";
 
         /// <summary>
         /// 乐谱主键
         /// </summary>
         [Column("score_id")]
-        public string ScoreId { get; set; }
+        public string ScoreId { get; set; } = "";
 
         /// <summary>
         /// 行号
         /// </summary>
         [Column("number")]
         public int Number { get; set; }
+
+        /// <summary>
+        /// 音符占位宽度
+        /// </summary>
+        [Ignore]
+        public double NoteWidth { get; set; }
 
         /// <summary>
         /// 小节集合

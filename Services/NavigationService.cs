@@ -9,7 +9,7 @@ namespace SEH.Services
     /// </summary>
     public class NavigationService : INavigationService
     {
-        private Frame _frame;
+        private Frame? _frame;
 
         /// <summary>
         /// 用于在应用启动时注入实际的 Frame 控件
@@ -25,12 +25,9 @@ namespace SEH.Services
         /// </summary>
         /// <param name="pageType"></param>
         /// <param name="parameter"></param>
-        public void NavigateTo(Type pageType, object parameter = null)
+        public void NavigateTo(Type pageType, object? parameter = null)
         {
-            if (_frame != null)
-            {
-                _frame.Navigate(pageType, parameter);
-            }
+            _frame?.Navigate(pageType, parameter);
         }
     }
 }
