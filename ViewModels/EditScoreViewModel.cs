@@ -191,11 +191,11 @@ namespace SEH.ViewModels
         private string? _directionError = "";
 
         /// <summary>
-        /// 页面左边距（单位：像素，默认为20）
+        /// 页面左边距（单位：像素，默认为40）
         /// </summary>
         [Required(ErrorMessage = "页面左边距不能为空！")]
         [ObservableProperty]
-        private string _leftMargin = "20";
+        private string _leftMargin = "40";
 
         /// <summary>
         /// 页面左边距错误信息
@@ -204,11 +204,11 @@ namespace SEH.ViewModels
         private string? _leftMarginError = "";
 
         /// <summary>
-        /// 页面上边距（单位：像素，默认为20）
+        /// 页面上边距（单位：像素，默认为40）
         /// </summary>
         [Required(ErrorMessage = "页面上边距不能为空！")]
         [ObservableProperty]
-        private string _topMargin = "20";
+        private string _topMargin = "40";
 
         /// <summary>
         /// 页面上边距错误信息
@@ -217,11 +217,11 @@ namespace SEH.ViewModels
         private string? _topMarginError = "";
 
         /// <summary>
-        /// 页面右边距（单位：像素，默认为20）
+        /// 页面右边距（单位：像素，默认为40）
         /// </summary>
         [Required(ErrorMessage = "页面右边距不能为空！")]
         [ObservableProperty]
-        private string _rightMargin = "20";
+        private string _rightMargin = "40";
 
         /// <summary>
         /// 页面右边距错误信息
@@ -230,11 +230,11 @@ namespace SEH.ViewModels
         private string? _rightMarginError = "";
 
         /// <summary>
-        /// 页面下边距（单位：像素，默认为20）
+        /// 页面下边距（单位：像素，默认为40）
         /// </summary>
         [Required(ErrorMessage = "页面下边距不能为空！")]
         [ObservableProperty]
-        private string _bottomMargin = "20";
+        private string _bottomMargin = "40";
 
         /// <summary>
         /// 页面下边距错误信息
@@ -1500,7 +1500,7 @@ namespace SEH.ViewModels
                                                     X = currentX + noteBaseXOffset,
                                                     Y = currentY + noteBaseYOffset,
                                                     Text = note.Pitch,
-                                                    NoteSource = note
+                                                    Note = note
                                                 });
 
                                                 note.X = currentX + noteBaseXOffset;
@@ -1525,7 +1525,7 @@ namespace SEH.ViewModels
                                                     X = currentX + noteBaseXOffset,
                                                     Y = currentY + noteBaseYOffset,
                                                     Text = note.Pitch.Replace("-", ""),
-                                                    NoteSource = note
+                                                    Note = note
                                                 });
 
                                                 note.X = currentX + noteBaseXOffset;
@@ -1558,7 +1558,7 @@ namespace SEH.ViewModels
                                                     X = currentX + noteBaseXOffset,
                                                     Y = currentY + noteBaseYOffset,
                                                     Text = note.Pitch.Replace("+", ""),
-                                                    NoteSource = note
+                                                    Note = note
                                                 });
 
                                                 note.X = currentX + noteBaseXOffset;
@@ -1585,7 +1585,7 @@ namespace SEH.ViewModels
                                                     X = currentX + noteBaseXOffset,
                                                     Y = currentY + noteBaseYOffset,
                                                     Text = "0",
-                                                    NoteSource = note
+                                                    Note = note
                                                 });
 
                                                 note.X = currentX + noteBaseXOffset;
@@ -1604,7 +1604,7 @@ namespace SEH.ViewModels
                                                     X = currentX + noteBaseXOffset,
                                                     Y = currentY + noteBaseYOffset,
                                                     Text = "X",
-                                                    NoteSource = note
+                                                    Note = note
                                                 });
 
                                                 note.X = currentX + noteBaseXOffset;
@@ -1617,13 +1617,14 @@ namespace SEH.ViewModels
                                         #region 绘制增时符
                                         case "-":
                                             {
-                                                RenderElements.Add(new ScoreRenderTextElement
+                                                RenderElements.Add(new ScoreRenderLineElement
                                                 {
-                                                    FontSize = 22,
                                                     X = currentX + noteBaseXOffset,
-                                                    Y = currentY + noteBaseYOffset,
-                                                    Text = "-",
-                                                    NoteSource = note
+                                                    Y = currentY + noteBaseYOffset + 18,
+                                                    Width = 10,
+                                                    Height = 1,
+                                                    IsVertical = false,
+                                                    Note = note
                                                 });
 
                                                 note.X = currentX + noteBaseXOffset;
@@ -1897,22 +1898,16 @@ namespace SEH.ViewModels
         /// 音符点击事件
         /// </summary>
         /// <param name="textElement"></param>
-        public async Task OnNoteTappedAsync(ScoreRenderTextElement textElement)
+        public async Task OnNoteTappedAsync(Note? clickedNote)
         {
-            if (textElement != null)
+            if (clickedNote != null)
             {
-                //获取关联的原始音符数据
-                var clickedNote = textElement.NoteSource;
+                //这里可以执行点击后的逻辑，例如播放音符、弹窗提示等
+                string msg = $"你点击了音符: {clickedNote.Pitch} (时值:{clickedNote.Duration}, 附点数:{clickedNote.Dots}, 连音线标志:{clickedNote.Slur}，演奏方法:{clickedNote.Articulation}，延长号标志:{clickedNote.Fermata}，歌词:{clickedNote.Lyrics})";
 
-                if (clickedNote != null)
-                {
-                    //这里可以执行点击后的逻辑，例如播放音符、弹窗提示等
-                    string msg = $"你点击了音符: {clickedNote.Pitch} (时值:{clickedNote.Duration}, 附点数:{clickedNote.Dots}, 连音线标志:{clickedNote.Slur}，演奏方法:{clickedNote.Articulation}，延长号标志:{clickedNote.Fermata}，歌词:{clickedNote.Lyrics})";
-
-                    //实际开发中可以调用依赖注入的播放服务或弹出通知
-                    //这里为了演示，修改该音符的颜色（需要给 TextElement 加颜色属性）
-                    await _messageService.ShowInfoAsync(msg);
-                }
+                //实际开发中可以调用依赖注入的播放服务或弹出通知
+                //这里为了演示，修改该音符的颜色（需要给 TextElement 加颜色属性）
+                await _messageService.ShowInfoAsync(msg);
             }
         }
 

@@ -1,4 +1,6 @@
-﻿namespace SEH.Commons
+﻿using SEH.Models;
+
+namespace SEH.Commons
 {
     /// <summary>
     /// 线条渲染元素类
@@ -15,5 +17,7 @@
         public double X2 => IsVertical ? 0 : Width;
         public double Y2 => IsVertical ? Height : 0;
         public double Thickness => IsVertical ? Width : Height;
+
+        public Note? Note { get; set; } = null;
     }
 }

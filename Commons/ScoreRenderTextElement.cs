@@ -13,7 +13,7 @@ namespace SEH.Commons
         public double FontSize { get; set; } = 22;
         public bool IsBold { get; set; } = false;
 
-        public Note? NoteSource { get; set; } = null;
+        public Note? Note { get; set; } = null;
 
         public FontWeight GetFontWeight() => IsBold ? FontWeights.Bold : FontWeights.Normal;
     }

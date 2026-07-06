@@ -202,13 +202,24 @@ namespace SEH.Views
 
         private async void TextBlock_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            //sender 是触发事件的 UI 控件 (即 TextBlock)
             if (sender is Microsoft.UI.Xaml.FrameworkElement element && element.DataContext is ScoreRenderTextElement textElement)
             {
                 //调用 ViewModel 中的方法
-                if (ViewModel != null)
+                if (ViewModel != null && textElement != null && textElement.Note != null)
                 {
-                    await ViewModel.OnNoteTappedAsync(textElement);
+                    await ViewModel.OnNoteTappedAsync(textElement.Note);
+                }
+            }
+        }
+
+        private async void Line_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            if (sender is Microsoft.UI.Xaml.FrameworkElement element && element.DataContext is ScoreRenderLineElement lineElement)
+            {
+                //调用 ViewModel 中的方法
+                if (ViewModel != null && lineElement != null && lineElement.Note != null)
+                {
+                    await ViewModel.OnNoteTappedAsync(lineElement.Note);
                 }
             }
         }
