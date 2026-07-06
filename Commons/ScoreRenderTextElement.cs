@@ -10,7 +10,7 @@ namespace SEH.Commons
     public class ScoreRenderTextElement : ScoreRenderElement
     {
         public string Text { get; set; } = "";
-        public double FontSize { get; set; } = 18;
+        public double FontSize { get; set; } = 22;
         public bool IsBold { get; set; } = false;
 
         public Note? NoteSource { get; set; } = null;

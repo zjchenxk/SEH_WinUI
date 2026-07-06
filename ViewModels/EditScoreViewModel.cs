@@ -1499,7 +1499,8 @@ namespace SEH.ViewModels
                                                     FontSize = 22,
                                                     X = currentX + noteBaseXOffset,
                                                     Y = currentY + noteBaseYOffset,
-                                                    Text = note.Pitch
+                                                    Text = note.Pitch,
+                                                    NoteSource = note
                                                 });
 
                                                 note.X = currentX + noteBaseXOffset;
@@ -1523,7 +1524,8 @@ namespace SEH.ViewModels
                                                     FontSize = 22,
                                                     X = currentX + noteBaseXOffset,
                                                     Y = currentY + noteBaseYOffset,
-                                                    Text = note.Pitch.Replace("-", "")
+                                                    Text = note.Pitch.Replace("-", ""),
+                                                    NoteSource = note
                                                 });
 
                                                 note.X = currentX + noteBaseXOffset;
@@ -1555,7 +1557,8 @@ namespace SEH.ViewModels
                                                     FontSize = 22,
                                                     X = currentX + noteBaseXOffset,
                                                     Y = currentY + noteBaseYOffset,
-                                                    Text = note.Pitch.Replace("+", "")
+                                                    Text = note.Pitch.Replace("+", ""),
+                                                    NoteSource = note
                                                 });
 
                                                 note.X = currentX + noteBaseXOffset;
@@ -1581,7 +1584,8 @@ namespace SEH.ViewModels
                                                     FontSize = 22,
                                                     X = currentX + noteBaseXOffset,
                                                     Y = currentY + noteBaseYOffset,
-                                                    Text = "0"
+                                                    Text = "0",
+                                                    NoteSource = note
                                                 });
 
                                                 note.X = currentX + noteBaseXOffset;
@@ -1599,7 +1603,8 @@ namespace SEH.ViewModels
                                                     FontSize = 22,
                                                     X = currentX + noteBaseXOffset,
                                                     Y = currentY + noteBaseYOffset,
-                                                    Text = "X"
+                                                    Text = "X",
+                                                    NoteSource = note
                                                 });
 
                                                 note.X = currentX + noteBaseXOffset;
@@ -1617,7 +1622,8 @@ namespace SEH.ViewModels
                                                     FontSize = 22,
                                                     X = currentX + noteBaseXOffset,
                                                     Y = currentY + noteBaseYOffset,
-                                                    Text = "-"
+                                                    Text = "-",
+                                                    NoteSource = note
                                                 });
 
                                                 note.X = currentX + noteBaseXOffset;
@@ -1891,7 +1897,7 @@ namespace SEH.ViewModels
         /// 音符点击事件
         /// </summary>
         /// <param name="textElement"></param>
-        public void OnNoteTappedAsync(ScoreRenderTextElement textElement)
+        public async Task OnNoteTappedAsync(ScoreRenderTextElement textElement)
         {
             if (textElement != null)
             {
@@ -1905,7 +1911,7 @@ namespace SEH.ViewModels
 
                     //实际开发中可以调用依赖注入的播放服务或弹出通知
                     //这里为了演示，修改该音符的颜色（需要给 TextElement 加颜色属性）
-                    _messageService.ShowInfoAsync(msg).Wait();
+                    await _messageService.ShowInfoAsync(msg);
                 }
             }
         }
