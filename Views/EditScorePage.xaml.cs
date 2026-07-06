@@ -44,20 +44,6 @@ namespace SEH.Views
             //初始化组件（XAML UI 元素）
             InitializeComponent();
 
-            #region 动态测量字符实际宽度
-            TextBlock charBlock = new()
-            {
-                Text = "8",
-                FontFamily = new FontFamily("Segoe UI"),
-                FontSize = 22
-            };
-            charBlock.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            if (ViewModel != null)
-            {
-                ViewModel.CharWidth = charBlock.ActualWidth;
-            }
-            #endregion
-
             this.DataContext = ViewModel;
 
             this.Loaded += EditScorePage_Loaded;

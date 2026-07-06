@@ -4,7 +4,6 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using SEH.Commons;
-using SEH.Models;
 using SEH.Services.Interfaces;
 using SEH.Views;
 using System.Collections.Generic;
@@ -141,16 +140,22 @@ namespace SEH.ViewModels
         [RelayCommand]
         private async Task EditCategory()
         {
-            var _messageService = App.Services.GetRequiredService<IMessageService>();
+            var _messageService = App.Services?.GetRequiredService<IMessageService>();
 
             if (SelectedScoreItem == null)
             {
-                await _messageService.ShowInfoAsync("未选择类别！");
+                if (_messageService != null)
+                {
+                    await _messageService.ShowInfoAsync("未选择类别！");
+                }
                 return;
             }
             if (SelectedScoreItem.Type == ScoreItemType.File)
             {
-                await _messageService.ShowInfoAsync("未选择类别！");
+                if (_messageService != null)
+                {
+                    await _messageService.ShowInfoAsync("未选择类别！");
+                }
                 return;
             }
 
@@ -168,16 +173,22 @@ namespace SEH.ViewModels
         [RelayCommand]
         private async Task DeleteCategory()
         {
-            var _messageService = App.Services.GetRequiredService<IMessageService>();
+            var _messageService = App.Services?.GetRequiredService<IMessageService>();
 
             if (SelectedScoreItem == null)
             {
-                await _messageService.ShowInfoAsync("未选择类别！");
+                if (_messageService != null)
+                {
+                    await _messageService.ShowInfoAsync("未选择类别！");
+                }
                 return;
             }
             if (SelectedScoreItem.Type == ScoreItemType.File)
             {
-                await _messageService.ShowInfoAsync("未选择类别！");
+                if (_messageService != null)
+                {
+                    await _messageService.ShowInfoAsync("未选择类别！");
+                }
                 return;
             }
 
@@ -188,18 +199,27 @@ namespace SEH.ViewModels
             var scores = _dataService.GetScoresByCategoryId(categoryId);
             if (scores != null && scores.Count > 0)
             {
-                await _messageService.ShowErrorAsync("该类别下面存在简谱，不能删除！");
+                if (_messageService != null)
+                {
+                    await _messageService.ShowErrorAsync("该类别下面存在简谱，不能删除！");
+                }
                 return;
             }
 
-            if (await _messageService.ShowConfirmAsync($"确定要删除类别【{categoryName}】吗？") != true)
+            if (_messageService != null)
             {
-                return;
+                if (await _messageService.ShowConfirmAsync($"确定要删除类别【{categoryName}】吗？") != true)
+                {
+                    return;
+                }
             }
 
             if (!_dataService.DeleteCategory(categoryId))
             {
-                await _messageService.ShowErrorAsync("删除类别失败！");
+                if (_messageService != null)
+                {
+                    await _messageService.ShowErrorAsync("删除类别失败！");
+                }
                 return;
             }
 
@@ -213,16 +233,22 @@ namespace SEH.ViewModels
         [RelayCommand]
         private async Task NewScore()
         {
-            var _messageService = App.Services.GetRequiredService<IMessageService>();
+            var _messageService = App.Services?.GetRequiredService<IMessageService>();
 
             if (SelectedScoreItem == null)
             {
-                await _messageService.ShowInfoAsync("未选择类别！");
+                if (_messageService != null)
+                {
+                    await _messageService.ShowInfoAsync("未选择类别！");
+                }
                 return;
             }
             if (SelectedScoreItem.Type == ScoreItemType.File)
             {
-                await _messageService.ShowInfoAsync("未选择类别！");
+                if (_messageService != null)
+                {
+                    await _messageService.ShowInfoAsync("未选择类别！");
+                }
                 return;
             }
 
@@ -243,16 +269,22 @@ namespace SEH.ViewModels
         [RelayCommand]
         private async Task EditScore()
         {
-            var _messageService = App.Services.GetRequiredService<IMessageService>();
+            var _messageService = App.Services?.GetRequiredService<IMessageService>();
 
             if (SelectedScoreItem == null)
             {
-                await _messageService.ShowInfoAsync("未选择简谱！");
+                if (_messageService != null)
+                {
+                    await _messageService.ShowInfoAsync("未选择简谱！");
+                }
                 return;
             }
             if (SelectedScoreItem.Type == ScoreItemType.Folder)
             {
-                await _messageService.ShowInfoAsync("未选择简谱！");
+                if (_messageService != null)
+                {
+                    await _messageService.ShowInfoAsync("未选择简谱！");
+                }
                 return;
             }
 
@@ -272,30 +304,42 @@ namespace SEH.ViewModels
         [RelayCommand]
         private async Task DeleteScore()
         {
-            var _messageService = App.Services.GetRequiredService<IMessageService>();
+            var _messageService = App.Services?.GetRequiredService<IMessageService>();
 
             if (SelectedScoreItem == null)
             {
-                await _messageService.ShowInfoAsync("未选择简谱！");
+                if (_messageService != null)
+                {
+                    await _messageService.ShowInfoAsync("未选择简谱！");
+                }
                 return;
             }
             if (SelectedScoreItem.Type == ScoreItemType.Folder)
             {
-                await _messageService.ShowInfoAsync("未选择简谱！");
+                if (_messageService != null)
+                {
+                    await _messageService.ShowInfoAsync("未选择简谱！");
+                }
                 return;
             }
 
             string id = SelectedScoreItem.Id;
             string title = SelectedScoreItem.Name;
 
-            if (await _messageService.ShowConfirmAsync($"确定要删除简谱【{title}】吗？") != true)
+            if (_messageService != null)
             {
-                return;
+                if (await _messageService.ShowConfirmAsync($"确定要删除简谱【{title}】吗？") != true)
+                {
+                    return;
+                }
             }
 
             if (!_dataService.DeleteScore(id))
             {
-                await _messageService.ShowErrorAsync("删除简谱失败！");
+                if (_messageService != null)
+                {
+                    await _messageService.ShowErrorAsync("删除简谱失败！");
+                }
                 return;
             }
 
@@ -309,16 +353,22 @@ namespace SEH.ViewModels
         [RelayCommand]
         private async Task ViewScore()
         {
-            var _messageService = App.Services.GetRequiredService<IMessageService>();
+            var _messageService = App.Services?.GetRequiredService<IMessageService>();
 
             if (SelectedScoreItem == null)
             {
-                await _messageService.ShowInfoAsync("未选择简谱！");
+                if (_messageService != null)
+                {
+                    await _messageService.ShowInfoAsync("未选择简谱！");
+                }
                 return;
             }
             if (SelectedScoreItem.Type == ScoreItemType.Folder)
             {
-                await _messageService.ShowInfoAsync("未选择简谱！");
+                if (_messageService != null)
+                {
+                    await _messageService.ShowInfoAsync("未选择简谱！");
+                }
                 return;
             }
 
@@ -336,16 +386,22 @@ namespace SEH.ViewModels
         [RelayCommand]
         private async Task MoveScore()
         {
-            var _messageService = App.Services.GetRequiredService<IMessageService>();
+            var _messageService = App.Services?.GetRequiredService<IMessageService>();
 
             if (SelectedScoreItem == null)
             {
-                await _messageService.ShowInfoAsync("未选择简谱！");
+                if (_messageService != null)
+                {
+                    await _messageService.ShowInfoAsync("未选择简谱！");
+                }
                 return;
             }
             if (SelectedScoreItem.Type == ScoreItemType.Folder)
             {
-                await _messageService.ShowInfoAsync("未选择简谱！");
+                if (_messageService != null)
+                {
+                    await _messageService.ShowInfoAsync("未选择简谱！");
+                }
                 return;
             }
 
@@ -355,6 +411,5 @@ namespace SEH.ViewModels
 
             BreadcrumbItems = ["首页", "移动简谱"];
         }
-
     }
 }
