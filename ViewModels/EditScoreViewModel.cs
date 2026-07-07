@@ -1569,8 +1569,8 @@ namespace SEH.ViewModels
                                                 //绘制高音音符上方的点
                                                 RenderElements.Add(new ScoreRenderDotElement
                                                 {
-                                                    X = (double)note.X + 5,
-                                                    Y = (double)note.Y - 5,
+                                                    X = note.Pitch.Replace("+", "") == "1" ? (double)(note.X + 3) : (double)(note.X + note.Width / 2),
+                                                    Y = (double)note.Y,
                                                     Radius = 3
                                                 });
                                             }
@@ -1635,6 +1635,11 @@ namespace SEH.ViewModels
                                                     Note = note
                                                 });
                                             }
+                                            break;
+                                        #endregion
+
+                                        #region 绘制空白符
+                                        case "_":
                                             break;
                                         #endregion
                                     }

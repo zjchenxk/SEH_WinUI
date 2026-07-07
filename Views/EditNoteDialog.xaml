@@ -78,10 +78,9 @@
                     <ComboBoxItem Content="超高音符７" Tag="+++7"/>
 
                     <ComboBoxItem Content="休止符０" Tag="0"/>
-
                     <ComboBoxItem Content="噪音符Ｘ" Tag="X"/>
-
                     <ComboBoxItem Content="增时符－" Tag="-"/>
+                    <ComboBoxItem Content="空白符[ ]" Tag="_"/>
                 </ComboBox>
 
                 <!--红字错误提示，绑定到 ViewModel 的 PitchError 属性-->
