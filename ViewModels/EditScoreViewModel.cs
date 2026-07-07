@@ -447,10 +447,10 @@ namespace SEH.ViewModels
                     _score.LineMeasureCount = 4;
                     _score.PaperSize = "A4";
                     _score.Direction = 1;
-                    _score.LeftMargin = 20;
-                    _score.TopMargin = 20;
-                    _score.RightMargin = 20;
-                    _score.BottomMargin = 20;
+                    _score.LeftMargin = 40;
+                    _score.TopMargin = 40;
+                    _score.RightMargin = 40;
+                    _score.BottomMargin = 40;
 
                     CategoryId = _score.CategoryId;
                     KeySignature = _score.KeySignature;

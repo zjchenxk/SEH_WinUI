@@ -84,6 +84,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Update="Assets\Images\口琴256.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="Views\EditMeasureDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -145,5 +151,25 @@
     <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
     <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
     <ApplicationIcon>Assets\Images\App.ico</ApplicationIcon>
+    <AssemblyName>So Easy 口琴</AssemblyName>
+    <AssemblyTitle>So Easy 口琴</AssemblyTitle>
+    <StartupObject>SEH.Program</StartupObject>
+    <Title>So Easy 口琴</Title>
+    <Authors>chenxk</Authors>
+    <Company>Chenxk Software Studio</Company>
+    <Product>So Easy 口琴</Product>
+    <Copyright>© 2026 Chenxk Software Studio. All rights reserved.</Copyright>
+    <PackageIcon>口琴256.png</PackageIcon>
+    <AssemblyVersion>1.0</AssemblyVersion>
+    <FileVersion>1.0</FileVersion>
+    <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <PackageCertificateThumbprint>2C3AACD0C46AB25028A2DBC84BB4B5033EC65F67</PackageCertificateThumbprint>
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <GenerateTestArtifacts>False</GenerateTestArtifacts>
+    <AppxBundle>Never</AppxBundle>
+    <AppInstallerUri>http://chenxk.com.cn</AppInstallerUri>
+    <HoursBetweenUpdateChecks>168</HoursBetweenUpdateChecks>
   </PropertyGroup>
 </Project>
