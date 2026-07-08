@@ -29,6 +29,12 @@ namespace SEH.Models
         public int Number { get; set; }
 
         /// <summary>
+        /// 小节数量（如：6,5,4,3,2,1，默认为4）
+        /// </summary>
+        [Column("measure_count")]
+        public int MeasureCount { get; set; }
+
+        /// <summary>
         /// 音符占位宽度
         /// </summary>
         [Ignore]

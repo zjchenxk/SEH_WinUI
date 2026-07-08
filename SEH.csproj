@@ -19,6 +19,7 @@
     <None Remove="Assets\Square44x44Logo.scale-200.png" />
     <None Remove="Assets\Themes\AppBarButtonStyle.xaml" />
     <None Remove="Assets\口琴128.png" />
+    <None Remove="Views\EditLineDialog.xaml" />
     <None Remove="Views\EditMeasureDialog.xaml" />
     <None Remove="Views\EditNoteDialog.xaml" />
     <None Remove="Views\EditScorePage.xaml" />
@@ -87,6 +88,9 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+    <Page Update="Views\EditLineDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\EditMeasureDialog.xaml">
@@ -150,7 +154,7 @@
     <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
     <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
     <ApplicationIcon>Assets\Images\App.ico</ApplicationIcon>
-    <AssemblyName>So Easy 口琴</AssemblyName>
+    <AssemblyName>SEH</AssemblyName>
     <AssemblyTitle>So Easy 口琴</AssemblyTitle>
     <StartupObject>SEH.Program</StartupObject>
     <Title>So Easy 口琴</Title>

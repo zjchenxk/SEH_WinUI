@@ -69,12 +69,6 @@ namespace SEH.Models
         public int Tempo { get; set; }
 
         /// <summary>
-        /// 每行小节数量（如：6,5,4,3,2,1，默认为4）
-        /// </summary>
-        [Column("line_measure_count")]
-        public int LineMeasureCount { get; set; }
-
-        /// <summary>
         /// 纸张尺寸（默认A4）
         /// </summary>
         [Column("paper_size")]

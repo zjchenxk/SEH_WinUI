@@ -18,11 +18,53 @@ namespace SEH.Services
         public XamlRoot? XamlRoot { get; set; }
 
         /// <summary>
+        /// 显示行编辑对话框
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public async Task<Line?> ShowEditLineDialogAsync(Line? line = null)
+        {
+            if (XamlRoot == null)
+            {
+                return null;
+            }
+
+            var viewModel = new EditLineViewModel();
+
+            //实现传参初始化
+            viewModel.Initialize(line);
+
+            var dialog = new EditLineDialog(viewModel)
+            {
+                XamlRoot = this.XamlRoot, //关键：设置 XamlRoot
+                Title = line == null ? "新增行" : "修改行" //根据传参动态修改标题
+            };
+
+            dialog.PrimaryButtonClick += (sender, e) =>
+            {
+                //验证数据
+                bool isValid = viewModel.ValidateProperties();
+                if (!isValid)
+                {
+                    //阻止对话框关闭
+                    e.Cancel = true;
+                }
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                return viewModel.GetLine();
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// 显示小节编辑对话框
         /// </summary>
         /// <param name="measure"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         public async Task<Measure?> ShowEditMeasureDialogAsync(Measure? measure = null)
         {
             if (XamlRoot == null)

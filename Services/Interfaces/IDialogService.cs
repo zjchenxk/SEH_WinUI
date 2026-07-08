@@ -7,6 +7,13 @@ namespace SEH.Services.Interfaces
     public interface IDialogService
     {
         /// <summary>
+        /// 显示行编辑对话框
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        Task<Line?> ShowEditLineDialogAsync(Line? line = null);
+
+        /// <summary>
         /// 显示小节编辑对话框
         /// </summary>
         /// <param name="measure"></param>
@@ -20,6 +27,5 @@ namespace SEH.Services.Interfaces
         /// <param name="note"></param>
         /// <returns></returns>
         Task<Note?> ShowEditNoteDialogAsync(List<Beam>? beams = null, Note? note = null);
-
     }
 }

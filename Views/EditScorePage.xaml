@@ -118,12 +118,17 @@
 
         <!--工具栏-->
         <CommandBar Grid.Row="0" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right" Padding="0" HorizontalAlignment="Left">
-            <AppBarButton Label="新增一行" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.NewLineCommand}">
+            <AppBarButton Label="新增行" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.NewLineCommand}">
                 <AppBarButton.Icon>
                     <BitmapIcon UriSource="/Assets/Images/添加一行.png" ShowAsMonochrome="False"/>
                 </AppBarButton.Icon>
             </AppBarButton>
-            <AppBarButton Label="删除一行" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.DeleteLineCommand}">
+            <AppBarButton Label="修改行" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.EditLineCommand}">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/Images/修改一行.png" ShowAsMonochrome="False"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton Label="删除行" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.DeleteLineCommand}">
                 <AppBarButton.Icon>
                     <BitmapIcon UriSource="/Assets/Images/删除一行.png" ShowAsMonochrome="False"/>
                 </AppBarButton.Icon>
@@ -340,29 +345,6 @@
                         <!--红字错误提示，绑定到 ViewModel 的 TempoError 属性-->
                         <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
                         <TextBlock Text="{x:Bind ViewModel.TempoError, Mode=OneWay}" 
-                                   Foreground="{StaticResource SystemErrorTextColor}" 
-                                   FontSize="{StaticResource ToolTipContentThemeFontSize}" 
-                                   Margin="0,4,0,0"/>
-                    </StackPanel>
-
-                    <!--每行小节数-->
-                    <StackPanel HorizontalAlignment="Stretch">
-                        <ComboBox x:Name="MeasuresPerLine" 
-                                  SelectedItem="{x:Bind ViewModel.LineMeasureCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                  Header="每行小节数：" 
-                                  PlaceholderText="选择每行小节数量..." 
-                                  HorizontalAlignment="Stretch">
-                            <x:String>6</x:String>
-                            <x:String>5</x:String>
-                            <x:String>4</x:String>
-                            <x:String>3</x:String>
-                            <x:String>2</x:String>
-                            <x:String>1</x:String>
-                        </ComboBox>
-
-                        <!--红字错误提示，绑定到 ViewModel 的 LineMeasureCountError 属性-->
-                        <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
-                        <TextBlock Text="{x:Bind ViewModel.LineMeasureCountError, Mode=OneWay}" 
                                    Foreground="{StaticResource SystemErrorTextColor}" 
                                    FontSize="{StaticResource ToolTipContentThemeFontSize}" 
                                    Margin="0,4,0,0"/>

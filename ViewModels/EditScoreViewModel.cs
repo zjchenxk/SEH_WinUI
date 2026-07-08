@@ -9,6 +9,7 @@ using SEH.Commons;
 using SEH.Models;
 using SEH.Services.Interfaces;
 using SEH.Views;
+using Serilog;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
@@ -141,19 +142,6 @@ namespace SEH.ViewModels
         /// </summary>
         [ObservableProperty]
         private string? _tempoError = "";
-
-        /// <summary>
-        /// 每行小节数（默认为4）
-        /// </summary>
-        [Required(ErrorMessage = "每行小节数量不能为空！")]
-        [ObservableProperty]
-        private string _lineMeasureCount = "4";
-
-        /// <summary>
-        /// 每行小节数错误信息
-        /// </summary>
-        [ObservableProperty]
-        private string? _lineMeasureCountError = "";
 
         /// <summary>
         /// 纸张尺寸
@@ -335,12 +323,6 @@ namespace SEH.ViewModels
                 var errors = GetErrors(nameof(Tempo));
                 TempoError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
             }
-            else if (e.PropertyName == nameof(LineMeasureCount))//当 LineMeasureCount 属性的验证状态发生变化时，更新错误提示文本
-            {
-                //GetErrors 返回的是 ValidationResult 集合
-                var errors = GetErrors(nameof(LineMeasureCount));
-                LineMeasureCountError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
-            }
             else if (e.PropertyName == nameof(PaperSize))//当 PaperSize 属性的验证状态发生变化时，更新错误提示文本
             {
                 //GetErrors 返回的是 ValidationResult 集合
@@ -402,7 +384,6 @@ namespace SEH.ViewModels
                     MeasureBeatCount = score.MeasureBeatCount.ToString();
                     BeatDuration = score.BeatDuration.ToString();
                     Tempo = score.Tempo.ToString();
-                    LineMeasureCount = score.LineMeasureCount.ToString();
                     PaperSize = score.PaperSize;
                     Direction = score.Direction.ToString();
                     LeftMargin = score.LeftMargin.ToString();
@@ -444,7 +425,6 @@ namespace SEH.ViewModels
                     _score.MeasureBeatCount = 4;
                     _score.BeatDuration = 4;
                     _score.Tempo = 90;
-                    _score.LineMeasureCount = 4;
                     _score.PaperSize = "A4";
                     _score.Direction = 1;
                     _score.LeftMargin = 40;
@@ -457,7 +437,6 @@ namespace SEH.ViewModels
                     MeasureBeatCount = _score.MeasureBeatCount.ToString();
                     BeatDuration = _score.BeatDuration.ToString();
                     Tempo = _score.Tempo.ToString();
-                    LineMeasureCount = _score.LineMeasureCount.ToString();
                     PaperSize = _score.PaperSize;
                     Direction = _score.Direction.ToString();
                     LeftMargin = _score.LeftMargin.ToString();
@@ -565,20 +544,6 @@ namespace SEH.ViewModels
             }
 
             _score.Tempo = int.Parse(value);
-
-            ScheduleRedraw();
-        }
-
-        partial void OnLineMeasureCountChanged(string value)
-        {
-            ValidateProperty(value, nameof(LineMeasureCount));
-
-            if (!string.IsNullOrWhiteSpace(LineMeasureCountError))
-            {
-                return;
-            }
-
-            _score.LineMeasureCount = int.Parse(value);
 
             ScheduleRedraw();
         }
@@ -709,30 +674,59 @@ namespace SEH.ViewModels
         }
 
         /// <summary>
-        /// 新增一行命令
+        /// 新增行命令
         /// </summary>
         [RelayCommand]
-        private void NewLine()
+        private async Task NewLine()
         {
-            _score.Lines ??= [];
-            _line = new Line
+            //调用服务显示弹窗并获取结果
+            var ret = await _dialogService.ShowEditLineDialogAsync();
+            if (ret != null)
             {
-                Id = Guid.NewGuid().ToString(),
-                ScoreId = _score.Id,
-                Number = _score.Lines.Count + 1
-            };
-            _score.Lines.Add(_line);
+                _score.Lines ??= [];
+                _line = new Line
+                {
+                    Id = ret.Id,
+                    ScoreId = _score.Id,
+                    Number = _score.Lines.Count + 1,
+                    MeasureCount = ret.MeasureCount
+                };
+                _score.Lines.Add(_line);
 
-            _measure = null;
-            _note = null;
-            _beam = null;
+                _measure = null;
+                _note = null;
+                _beam = null;
 
-            //绘制简谱
-            DrawScore();
+                //绘制简谱
+                DrawScore();
+            }
         }
 
         /// <summary>
-        /// 删除一行命令
+        /// 修改行命令
+        /// </summary>
+        [RelayCommand]
+        private async Task EditLine()
+        {
+            if (_line == null)
+            {
+                return;
+            }
+
+            //调用服务显示弹窗并获取结果
+            var ret = await _dialogService.ShowEditLineDialogAsync(_line);
+            if (ret != null)
+            {
+                //修改行
+                _line.MeasureCount = ret.MeasureCount;
+
+                //绘制简谱
+                DrawScore();
+            }
+        }
+
+        /// <summary>
+        /// 删除行命令
         /// </summary>
         [RelayCommand]
         private void DeleteLine()
@@ -775,7 +769,7 @@ namespace SEH.ViewModels
             }
 
             //判断当前行小节数是否超出排版设置？
-            if (_line.Measures != null && _line.Measures.Count + 1 > _score.LineMeasureCount)
+            if (_line.Measures != null && _line.Measures.Count + 1 > _line.MeasureCount)
             {
                 await _messageService.ShowErrorAsync("小节数超出每行最大小节数，请新增一行！");
                 return;
@@ -1322,12 +1316,12 @@ namespace SEH.ViewModels
                         }
                     }
                     //如果当前累计拍数小于规定拍数，则添加音符占位
-                    if (_score.LineMeasureCount * _score.MeasureBeatCount > currentLineBeats)
+                    if (line.MeasureCount * _score.MeasureBeatCount > currentLineBeats)
                     {
-                        currentLineNotes += (_score.LineMeasureCount * _score.MeasureBeatCount - currentLineBeats);
+                        currentLineNotes += (line.MeasureCount * _score.MeasureBeatCount - currentLineBeats);
                     }
                     //计算当前行每个音符占位宽度
-                    line.NoteWidth = (canvasWidth - _score.LineMeasureCount * (measureLeftPadding + measureRightPadding)) / currentLineNotes;
+                    line.NoteWidth = (canvasWidth - line.MeasureCount * (measureLeftPadding + measureRightPadding)) / currentLineNotes;
                     #endregion
 
                     #region 2.绘制行起点竖线
@@ -1491,7 +1485,7 @@ namespace SEH.ViewModels
                                         case "6":
                                         case "7":
                                             {
-                                                note.Width = CalcStrWidth(note.Pitch, 22);//动态计算音符字符宽度
+                                                note.Width = CalcTextWidth(note.Pitch, 22);//动态计算音符字符宽度
                                                 double noteBaseXOffset = (double)(line.NoteWidth - note.Width > 0 ? (line.NoteWidth - note.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
                                                 note.X = currentX + noteBaseXOffset;
                                                 note.Y = currentY + noteBaseYOffset;
@@ -1518,7 +1512,7 @@ namespace SEH.ViewModels
                                         case "-6":
                                         case "-7":
                                             {
-                                                note.Width = CalcStrWidth(note.Pitch.Replace("-", ""), 22);//动态计算音符字符宽度
+                                                note.Width = CalcTextWidth(note.Pitch.Replace("-", ""), 22);//动态计算音符字符宽度
                                                 double noteBaseXOffset = (double)(line.NoteWidth - note.Width > 0 ? (line.NoteWidth - note.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
                                                 note.X = currentX + noteBaseXOffset;
                                                 note.Y = currentY + noteBaseYOffset;
@@ -1552,7 +1546,7 @@ namespace SEH.ViewModels
                                         case "+6":
                                         case "+7":
                                             {
-                                                note.Width = CalcStrWidth(note.Pitch.Replace("+", ""), 22);//动态计算音符字符宽度
+                                                note.Width = CalcTextWidth(note.Pitch.Replace("+", ""), 22);//动态计算音符字符宽度
                                                 double noteBaseXOffset = (double)(line.NoteWidth - note.Width > 0 ? (line.NoteWidth - note.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
                                                 note.X = currentX + noteBaseXOffset;
                                                 note.Y = currentY + noteBaseYOffset;
@@ -1569,7 +1563,7 @@ namespace SEH.ViewModels
                                                 //绘制高音音符上方的点
                                                 RenderElements.Add(new ScoreRenderDotElement
                                                 {
-                                                    X = note.Pitch.Replace("+", "") == "1" ? (double)(note.X + 3) : (double)(note.X + note.Width / 2),
+                                                    X = (double)(note.X + note.Width / 2),
                                                     Y = (double)note.Y,
                                                     Radius = 3
                                                 });
@@ -1580,7 +1574,7 @@ namespace SEH.ViewModels
                                         #region 绘制休止符
                                         case "0":
                                             {
-                                                note.Width = CalcStrWidth("0", 22);//动态计算音符字符宽度
+                                                note.Width = CalcTextWidth("0", 22);//动态计算音符字符宽度
                                                 double noteBaseXOffset = (double)(line.NoteWidth - note.Width > 0 ? (line.NoteWidth - note.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
                                                 note.X = currentX + noteBaseXOffset;
                                                 note.Y = currentY + noteBaseYOffset;
@@ -1600,7 +1594,7 @@ namespace SEH.ViewModels
                                         #region 绘制噪音符
                                         case "X":
                                             {
-                                                note.Width = CalcStrWidth("X", 22);//动态计算音符字符宽度
+                                                note.Width = CalcTextWidth("X", 22);//动态计算音符字符宽度
                                                 double noteBaseXOffset = (double)(line.NoteWidth - note.Width > 0 ? (line.NoteWidth - note.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
                                                 note.X = currentX + noteBaseXOffset;
                                                 note.Y = currentY + noteBaseYOffset;
@@ -1904,12 +1898,12 @@ namespace SEH.ViewModels
         }
 
         /// <summary>
-        /// 动态测量字符串实际宽度
+        /// 动态测量文字实际宽度
         /// </summary>
         /// <param name="text"></param>
         /// <param name="fontSize"></param>
         /// <returns></returns>
-        private double CalcStrWidth(string text, double fontSize)
+        private double CalcTextWidth(string text, double fontSize)
         {
             //创建一个临时的 TextBlock 来测量文本宽度
             TextBlock textBlock = new()
@@ -1920,7 +1914,11 @@ namespace SEH.ViewModels
             };
             //测量文本的实际宽度
             textBlock.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            return textBlock.ActualWidth;
+            double width = textBlock.DesiredSize.Width;
+
+            Log.Information($"测量文本宽度: '{text}'，字体大小: {fontSize}，实际宽度: {width}");
+
+            return width;
         }
 
         /// <summary>
@@ -1981,7 +1979,6 @@ namespace SEH.ViewModels
             _score.MeasureBeatCount = int.Parse(MeasureBeatCount);
             _score.BeatDuration = int.Parse(BeatDuration);
             _score.Tempo = int.Parse(Tempo.Trim());
-            _score.LineMeasureCount = int.Parse(LineMeasureCount.Trim());
             _score.PaperSize = PaperSize.Trim();
             _score.Direction = int.Parse(Direction.Trim());
             _score.LeftMargin = int.Parse(LeftMargin.Trim());
