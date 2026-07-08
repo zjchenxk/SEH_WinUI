@@ -1485,8 +1485,11 @@ namespace SEH.ViewModels
                                         case "6":
                                         case "7":
                                             {
-                                                note.Width = CalcTextWidth(note.Pitch, 22);//动态计算音符字符宽度
-                                                double noteBaseXOffset = (double)(line.NoteWidth - note.Width > 0 ? (line.NoteWidth - note.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
+                                                var size = CalcTextWidth(note.Pitch, 22);//动态计算字符大小
+                                                var noteBaseXOffset = (double)(line.NoteWidth - size.Width > 0 ? (line.NoteWidth - size.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
+
+                                                note.Width = size.Width;
+                                                note.Height = size.Height;
                                                 note.X = currentX + noteBaseXOffset;
                                                 note.Y = currentY + noteBaseYOffset;
 
@@ -1512,8 +1515,11 @@ namespace SEH.ViewModels
                                         case "-6":
                                         case "-7":
                                             {
-                                                note.Width = CalcTextWidth(note.Pitch.Replace("-", ""), 22);//动态计算音符字符宽度
-                                                double noteBaseXOffset = (double)(line.NoteWidth - note.Width > 0 ? (line.NoteWidth - note.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
+                                                var size = CalcTextWidth(note.Pitch.Replace("-", ""), 22);//动态计算字符大小
+                                                var noteBaseXOffset = (double)(line.NoteWidth - size.Width > 0 ? (line.NoteWidth - size.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
+
+                                                note.Width = size.Width;
+                                                note.Height = size.Height;
                                                 note.X = currentX + noteBaseXOffset;
                                                 note.Y = currentY + noteBaseYOffset;
 
@@ -1546,8 +1552,11 @@ namespace SEH.ViewModels
                                         case "+6":
                                         case "+7":
                                             {
-                                                note.Width = CalcTextWidth(note.Pitch.Replace("+", ""), 22);//动态计算音符字符宽度
-                                                double noteBaseXOffset = (double)(line.NoteWidth - note.Width > 0 ? (line.NoteWidth - note.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
+                                                var size = CalcTextWidth(note.Pitch.Replace("+", ""), 22);//动态计算字符大小
+                                                var noteBaseXOffset = (double)(line.NoteWidth - size.Width > 0 ? (line.NoteWidth - size.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
+
+                                                note.Width = size.Width;
+                                                note.Height = size.Height;
                                                 note.X = currentX + noteBaseXOffset;
                                                 note.Y = currentY + noteBaseYOffset;
 
@@ -1574,8 +1583,11 @@ namespace SEH.ViewModels
                                         #region 绘制休止符
                                         case "0":
                                             {
-                                                note.Width = CalcTextWidth("0", 22);//动态计算音符字符宽度
-                                                double noteBaseXOffset = (double)(line.NoteWidth - note.Width > 0 ? (line.NoteWidth - note.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
+                                                var size = CalcTextWidth("0", 22);//动态计算字符大小
+                                                var noteBaseXOffset = (double)(line.NoteWidth - size.Width > 0 ? (line.NoteWidth - size.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
+
+                                                note.Width = size.Width;
+                                                note.Height = size.Height;
                                                 note.X = currentX + noteBaseXOffset;
                                                 note.Y = currentY + noteBaseYOffset;
 
@@ -1594,8 +1606,11 @@ namespace SEH.ViewModels
                                         #region 绘制噪音符
                                         case "X":
                                             {
-                                                note.Width = CalcTextWidth("X", 22);//动态计算音符字符宽度
-                                                double noteBaseXOffset = (double)(line.NoteWidth - note.Width > 0 ? (line.NoteWidth - note.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
+                                                var size = CalcTextWidth("X", 22);//动态计算字符大小
+                                                var noteBaseXOffset = (double)(line.NoteWidth - size.Width > 0 ? (line.NoteWidth - size.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
+
+                                                note.Width = size.Width;
+                                                note.Height = size.Height;
                                                 note.X = currentX + noteBaseXOffset;
                                                 note.Y = currentY + noteBaseYOffset;
 
@@ -1614,8 +1629,11 @@ namespace SEH.ViewModels
                                         #region 绘制增时符
                                         case "-":
                                             {
-                                                note.Width = 10;//增时符宽度固定为10
-                                                double noteBaseXOffset = (double)(line.NoteWidth - note.Width > 0 ? (line.NoteWidth - note.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
+                                                //增时符宽度固定为10
+                                                var noteBaseXOffset = (double)(line.NoteWidth - 10 > 0 ? (line.NoteWidth - 10) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
+
+                                                note.Width = 10;
+                                                note.Height = 30;
                                                 note.X = currentX + noteBaseXOffset;
                                                 note.Y = currentY + noteBaseYOffset;
 
@@ -1637,6 +1655,22 @@ namespace SEH.ViewModels
                                             break;
                                         #endregion
                                     }
+
+                                    #region 绘制附点
+                                    if (note.Dots > 0 && note.X != null && note.Y != null && note.Width != null && note.Height != null)
+                                    {
+                                        for (int i = 0; i < note.Dots; i++)
+                                        {
+                                            RenderElements.Add(new ScoreRenderDotElement
+                                            {
+                                                X = (double)(note.X + note.Width + 2 + i * 5),
+                                                Y = (double)(note.Y + note.Height / 2),
+                                                Radius = 3
+                                            });
+                                        }
+                                    }
+                                    #endregion
+
                                     currentX += line.NoteWidth;
 
                                     if (string.IsNullOrWhiteSpace(note.BeamId))
@@ -1903,7 +1937,7 @@ namespace SEH.ViewModels
         /// <param name="text"></param>
         /// <param name="fontSize"></param>
         /// <returns></returns>
-        private double CalcTextWidth(string text, double fontSize)
+        private Size CalcTextWidth(string text, double fontSize)
         {
             //创建一个临时的 TextBlock 来测量文本宽度
             TextBlock textBlock = new()
@@ -1912,13 +1946,15 @@ namespace SEH.ViewModels
                 FontFamily = new FontFamily("Segoe UI"),
                 FontSize = fontSize
             };
+
+            //默认是 Tabular (等宽)，改为 Proportional (比例宽度)
+            //设置为比例数字，使每个数字宽度自适应内容
+            Microsoft.UI.Xaml.Documents.Typography.SetNumeralAlignment(textBlock, Microsoft.UI.Xaml.FontNumeralAlignment.Proportional);
+
             //测量文本的实际宽度
             textBlock.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            double width = textBlock.DesiredSize.Width;
 
-            Log.Information($"测量文本宽度: '{text}'，字体大小: {fontSize}，实际宽度: {width}");
-
-            return width;
+            return textBlock.DesiredSize;
         }
 
         /// <summary>

@@ -120,5 +120,11 @@ namespace SEH.Models
         /// </summary>
         [Ignore]
         public double? Width { get; set; }
+
+        /// <summary>
+        /// 绘制高度
+        /// </summary>
+        [Ignore]
+        public double? Height { get; set; }
     }
 }
