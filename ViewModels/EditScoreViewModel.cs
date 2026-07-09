@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -16,6 +17,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.UI.Text;
 
 namespace SEH.ViewModels
 {
@@ -1153,15 +1155,15 @@ namespace SEH.ViewModels
             //绘制标题
             if (!string.IsNullOrEmpty(_score.Title))
             {
-                double titleFontSize = 24;
-                double titleWidth = _score.Title.Length * titleFontSize * 0.7; //粗略估算字宽
+                double fontSize = 24;
+                double titleWidth = CalcTextWidth(_score.Title, fontSize, FontWeights.Bold).Width; //动态计算标题宽度
 
                 RenderElements.Add(new ScoreRenderTextElement
                 {
-                    X = (canvasWidth - titleWidth) / 2, //居中
+                    X = _score.LeftMargin + (canvasWidth - titleWidth) / 2, //居中
                     Y = currentY,
                     Text = _score.Title,
-                    FontSize = titleFontSize,
+                    FontSize = fontSize,
                     IsBold = true
                 });
                 currentY += 50;
@@ -1222,11 +1224,13 @@ namespace SEH.ViewModels
                 string lyricist = $"作词: {_score.Lyricist}";
 
                 double fontSize = 18;
-                double width = Math.Max(composer.Length, lyricist.Length) * fontSize * 0.7; //估算宽度
+                double composerWidth = CalcTextWidth(composer, fontSize, FontWeights.Normal).Width;//动态计算作曲宽度
+                double lyricistWidth = CalcTextWidth(lyricist, fontSize, FontWeights.Normal).Width;//动态计算作词宽度
+                double maxWidth = Math.Max(composerWidth, lyricistWidth); //计算最大宽度
 
                 RenderElements.Add(new ScoreRenderTextElement
                 {
-                    X = rightX1 - width,
+                    X = rightX1 - maxWidth,
                     Y = metaY1,
                     Text = composer,
                     FontSize = fontSize
@@ -1257,11 +1261,13 @@ namespace SEH.ViewModels
                 string lyricist = $"作词: {_score.Lyricist}";
 
                 double fontSize = 18;
-                double width = Math.Max(composer.Length, lyricist.Length) * fontSize * 0.7;
+                double composerWidth = CalcTextWidth(composer, fontSize, FontWeights.Normal).Width;//动态计算作曲宽度
+                double lyricistWidth = CalcTextWidth(lyricist, fontSize, FontWeights.Normal).Width;//动态计算作词宽度
+                double maxWidth = Math.Max(composerWidth, lyricistWidth);//计算最大宽度
 
                 RenderElements.Add(new ScoreRenderTextElement
                 {
-                    X = rightX2 - width,
+                    X = rightX2 - maxWidth,
                     Y = metaY2,
                     Text = lyricist,
                     FontSize = fontSize
@@ -1474,6 +1480,7 @@ namespace SEH.ViewModels
 
                                 foreach (var note in measure.Notes)
                                 {
+                                    #region 绘制音高
                                     switch (note.Pitch)
                                     {
                                         #region 绘制中音
@@ -1485,7 +1492,7 @@ namespace SEH.ViewModels
                                         case "6":
                                         case "7":
                                             {
-                                                var size = CalcTextWidth(note.Pitch, 22);//动态计算字符大小
+                                                var size = CalcTextWidth(note.Pitch, 22, FontWeights.Normal);//动态计算字符大小
                                                 var noteBaseXOffset = (double)(line.NoteWidth - size.Width > 0 ? (line.NoteWidth - size.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
 
                                                 note.Width = size.Width;
@@ -1515,7 +1522,7 @@ namespace SEH.ViewModels
                                         case "-6":
                                         case "-7":
                                             {
-                                                var size = CalcTextWidth(note.Pitch.Replace("-", ""), 22);//动态计算字符大小
+                                                var size = CalcTextWidth(note.Pitch.Replace("-", ""), 22, FontWeights.Normal);//动态计算字符大小
                                                 var noteBaseXOffset = (double)(line.NoteWidth - size.Width > 0 ? (line.NoteWidth - size.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
 
                                                 note.Width = size.Width;
@@ -1552,7 +1559,7 @@ namespace SEH.ViewModels
                                         case "+6":
                                         case "+7":
                                             {
-                                                var size = CalcTextWidth(note.Pitch.Replace("+", ""), 22);//动态计算字符大小
+                                                var size = CalcTextWidth(note.Pitch.Replace("+", ""), 22, FontWeights.Normal);//动态计算字符大小
                                                 var noteBaseXOffset = (double)(line.NoteWidth - size.Width > 0 ? (line.NoteWidth - size.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
 
                                                 note.Width = size.Width;
@@ -1583,7 +1590,7 @@ namespace SEH.ViewModels
                                         #region 绘制休止符
                                         case "0":
                                             {
-                                                var size = CalcTextWidth("0", 22);//动态计算字符大小
+                                                var size = CalcTextWidth("0", 22, FontWeights.Normal);//动态计算字符大小
                                                 var noteBaseXOffset = (double)(line.NoteWidth - size.Width > 0 ? (line.NoteWidth - size.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
 
                                                 note.Width = size.Width;
@@ -1606,7 +1613,7 @@ namespace SEH.ViewModels
                                         #region 绘制噪音符
                                         case "X":
                                             {
-                                                var size = CalcTextWidth("X", 22);//动态计算字符大小
+                                                var size = CalcTextWidth("X", 22, FontWeights.Normal);//动态计算字符大小
                                                 var noteBaseXOffset = (double)(line.NoteWidth - size.Width > 0 ? (line.NoteWidth - size.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
 
                                                 note.Width = size.Width;
@@ -1655,6 +1662,7 @@ namespace SEH.ViewModels
                                             break;
                                         #endregion
                                     }
+                                    #endregion
 
                                     #region 绘制附点
                                     if (note.Dots > 0 && note.X != null && note.Y != null && note.Width != null && note.Height != null)
@@ -1666,6 +1674,54 @@ namespace SEH.ViewModels
                                                 X = (double)(note.X + note.Width + 2 + i * 5),
                                                 Y = (double)(note.Y + note.Height / 2),
                                                 Radius = 3
+                                            });
+                                        }
+                                    }
+                                    #endregion
+
+                                    #region 绘制减时线
+                                    if (note.Duration == 0.5 || note.Duration == 0.25 || note.Duration == 0.125)
+                                    {
+                                        //如果是八分音符、十六分音符和三十二分音符，且没有加入减时组合，则绘制减时线
+                                        if (string.IsNullOrEmpty(note.BeamId) && note.X != null && note.Y != null && note.Width != null && note.Height != null)
+                                        {
+                                            RenderElements.Add(new ScoreRenderLineElement
+                                            {
+                                                X = (double)note.X,
+                                                Y = (double)(note.Y + note.Height),
+                                                Width = (double)note.Width,
+                                                Height = 1,
+                                                IsVertical = false
+                                            });
+                                        }
+                                    }
+                                    if (note.Duration == 0.25 || note.Duration == 0.125)
+                                    {
+                                        //如果是十六分音符和三十二分音符，则绘制第二条减时线
+                                        if (note.X != null && note.Y != null && note.Width != null && note.Height != null)
+                                        {
+                                            RenderElements.Add(new ScoreRenderLineElement
+                                            {
+                                                X = (double)note.X,
+                                                Y = (double)(note.Y + note.Height + 3),
+                                                Width = (double)note.Width,
+                                                Height = 1,
+                                                IsVertical = false
+                                            });
+                                        }
+                                    }
+                                    if (note.Duration == 0.125)
+                                    {
+                                        //如果是三十二分音符，则绘制第三条减时线
+                                        if (note.X != null && note.Y != null && note.Width != null && note.Height != null)
+                                        {
+                                            RenderElements.Add(new ScoreRenderLineElement
+                                            {
+                                                X = (double)note.X,
+                                                Y = (double)(note.Y + note.Height + 6),
+                                                Width = (double)note.Width,
+                                                Height = 1,
+                                                IsVertical = false
                                             });
                                         }
                                     }
@@ -1708,7 +1764,7 @@ namespace SEH.ViewModels
                             #endregion
 
                             #region 4.绘制减时组合线
-                            double beamBaseYOffset = 75;//音符组合线在每行中的相对Y位置
+                            double beamBaseYOffset = 40;//减时组合线在每行中的相对Y位置
                             if (measure.Beams != null && measure.Beams.Count > 0)
                             {
                                 foreach (var beam in measure.Beams)
@@ -1719,6 +1775,7 @@ namespace SEH.ViewModels
                                         if (notesInBeam != null && notesInBeam.Count<Note>() > 0)
                                         {
                                             double beamX = notesInBeam.First<Note>().X ?? 0;
+                                            double beamY = currentY + beamBaseYOffset + notesInBeam.First<Note>().Height ?? 0;
                                             double beamWidth = (notesInBeam.Last<Note>().X ?? 0) - (notesInBeam.First<Note>().X ?? 0) + (notesInBeam.Last<Note>().Width ?? 0);
 
                                             if (beamX > 0 && beamWidth > 0)
@@ -1728,7 +1785,7 @@ namespace SEH.ViewModels
                                                 RenderElements.Add(new ScoreRenderLineElement
                                                 {
                                                     X = beamX,
-                                                    Y = currentY + beamBaseYOffset,
+                                                    Y = beamY,
                                                     Width = beamWidth,
                                                     Height = 1,
                                                     IsVertical = false
@@ -1937,14 +1994,15 @@ namespace SEH.ViewModels
         /// <param name="text"></param>
         /// <param name="fontSize"></param>
         /// <returns></returns>
-        private Size CalcTextWidth(string text, double fontSize)
+        private Size CalcTextWidth(string text, double fontSize, FontWeight fontWeight)
         {
             //创建一个临时的 TextBlock 来测量文本宽度
             TextBlock textBlock = new()
             {
                 Text = text,
                 FontFamily = new FontFamily("Segoe UI"),
-                FontSize = fontSize
+                FontSize = fontSize,
+                FontWeight = fontWeight
             };
 
             //默认是 Tabular (等宽)，改为 Proportional (比例宽度)
