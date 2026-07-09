@@ -1538,13 +1538,63 @@ namespace SEH.ViewModels
                                                     Text = note.Pitch.Replace("-", ""),
                                                     Note = note
                                                 });
+                                            }
+                                            break;
+                                        #endregion
 
-                                                //绘制低音音符下方的点，如果有减时线，就在减时线的下方绘制点
-                                                RenderElements.Add(new ScoreRenderDotElement
+                                        #region 绘制倍低
+                                        case "--1":
+                                        case "--2":
+                                        case "--3":
+                                        case "--4":
+                                        case "--5":
+                                        case "--6":
+                                        case "--7":
+                                            {
+                                                var size = CalcTextWidth(note.Pitch.Replace("--", ""), 22, FontWeights.Normal);//动态计算字符大小
+                                                var noteBaseXOffset = (double)(line.NoteWidth - size.Width > 0 ? (line.NoteWidth - size.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
+
+                                                note.Width = size.Width;
+                                                note.Height = size.Height;
+                                                note.X = currentX + noteBaseXOffset;
+                                                note.Y = currentY + noteBaseYOffset;
+
+                                                RenderElements.Add(new ScoreRenderTextElement
                                                 {
-                                                    X = (double)note.X + 5,
-                                                    Y = (double)note.Y + 20 + (note.Duration == 0.5 ? 5 : (note.Duration == 0.25 ? 10 : (note.Duration == 0.125 ? 15 : 0))),
-                                                    Radius = 3
+                                                    FontSize = 22,
+                                                    X = (double)note.X,
+                                                    Y = (double)note.Y,
+                                                    Text = note.Pitch.Replace("--", ""),
+                                                    Note = note
+                                                });
+                                            }
+                                            break;
+                                        #endregion
+
+                                        #region 绘制超低
+                                        case "---1":
+                                        case "---2":
+                                        case "---3":
+                                        case "---4":
+                                        case "---5":
+                                        case "---6":
+                                        case "---7":
+                                            {
+                                                var size = CalcTextWidth(note.Pitch.Replace("---", ""), 22, FontWeights.Normal);//动态计算字符大小
+                                                var noteBaseXOffset = (double)(line.NoteWidth - size.Width > 0 ? (line.NoteWidth - size.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
+
+                                                note.Width = size.Width;
+                                                note.Height = size.Height;
+                                                note.X = currentX + noteBaseXOffset;
+                                                note.Y = currentY + noteBaseYOffset;
+
+                                                RenderElements.Add(new ScoreRenderTextElement
+                                                {
+                                                    FontSize = 22,
+                                                    X = (double)note.X,
+                                                    Y = (double)note.Y,
+                                                    Text = note.Pitch.Replace("---", ""),
+                                                    Note = note
                                                 });
                                             }
                                             break;
@@ -1575,13 +1625,63 @@ namespace SEH.ViewModels
                                                     Text = note.Pitch.Replace("+", ""),
                                                     Note = note
                                                 });
+                                            }
+                                            break;
+                                        #endregion
 
-                                                //绘制高音音符上方的点
-                                                RenderElements.Add(new ScoreRenderDotElement
+                                        #region 绘制倍高
+                                        case "++1":
+                                        case "++2":
+                                        case "++3":
+                                        case "++4":
+                                        case "++5":
+                                        case "++6":
+                                        case "++7":
+                                            {
+                                                var size = CalcTextWidth(note.Pitch.Replace("++", ""), 22, FontWeights.Normal);//动态计算字符大小
+                                                var noteBaseXOffset = (double)(line.NoteWidth - size.Width > 0 ? (line.NoteWidth - size.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
+
+                                                note.Width = size.Width;
+                                                note.Height = size.Height;
+                                                note.X = currentX + noteBaseXOffset;
+                                                note.Y = currentY + noteBaseYOffset;
+
+                                                RenderElements.Add(new ScoreRenderTextElement
                                                 {
-                                                    X = (double)(note.X + note.Width / 2),
+                                                    FontSize = 22,
+                                                    X = (double)note.X,
                                                     Y = (double)note.Y,
-                                                    Radius = 3
+                                                    Text = note.Pitch.Replace("++", ""),
+                                                    Note = note
+                                                });
+                                            }
+                                            break;
+                                        #endregion
+
+                                        #region 绘制极高
+                                        case "+++1":
+                                        case "+++2":
+                                        case "+++3":
+                                        case "+++4":
+                                        case "+++5":
+                                        case "+++6":
+                                        case "+++7":
+                                            {
+                                                var size = CalcTextWidth(note.Pitch.Replace("+++", ""), 22, FontWeights.Normal);//动态计算字符大小
+                                                var noteBaseXOffset = (double)(line.NoteWidth - size.Width > 0 ? (line.NoteWidth - size.Width) / 2 : 0);//音符在每个占位宽度中水平居中偏移量
+
+                                                note.Width = size.Width;
+                                                note.Height = size.Height;
+                                                note.X = currentX + noteBaseXOffset;
+                                                note.Y = currentY + noteBaseYOffset;
+
+                                                RenderElements.Add(new ScoreRenderTextElement
+                                                {
+                                                    FontSize = 22,
+                                                    X = (double)note.X,
+                                                    Y = (double)note.Y,
+                                                    Text = note.Pitch.Replace("+++", ""),
+                                                    Note = note
                                                 });
                                             }
                                             break;
@@ -1664,6 +1764,162 @@ namespace SEH.ViewModels
                                     }
                                     #endregion
 
+                                    #region 绘制上方符号
+                                    {
+                                        double topYOffset = currentY + noteBaseYOffset;
+
+                                        #region 绘制高音点
+                                        if (note.Pitch.StartsWith("+++") || note.Pitch.StartsWith("++") || note.Pitch.StartsWith("+"))
+                                        {
+                                            if (note.X != null && note.Y != null && note.Width != null)
+                                            {
+                                                RenderElements.Add(new ScoreRenderDotElement
+                                                {
+                                                    X = (double)(note.X + note.Width / 2 - 2),
+                                                    Y = (double)topYOffset,
+                                                    Radius = 4
+                                                });
+
+                                                topYOffset -= 4;
+                                            }
+                                        }
+                                        if (note.Pitch.StartsWith("+++") || note.Pitch.StartsWith("++"))
+                                        {
+                                            if (note.X != null && note.Y != null && note.Width != null)
+                                            {
+                                                RenderElements.Add(new ScoreRenderDotElement
+                                                {
+                                                    X = (double)(note.X + note.Width / 2 - 2),
+                                                    Y = (double)topYOffset,
+                                                    Radius = 4
+                                                });
+
+                                                topYOffset -= 4;
+                                            }
+                                        }
+                                        if (note.Pitch.StartsWith("+++"))
+                                        {
+                                            if (note.X != null && note.Y != null && note.Width != null)
+                                            {
+                                                RenderElements.Add(new ScoreRenderDotElement
+                                                {
+                                                    X = (double)(note.X + note.Width / 2 - 2),
+                                                    Y = (double)topYOffset,
+                                                    Radius = 4
+                                                });
+
+                                                topYOffset -= 4;
+                                            }
+                                        }
+                                        #endregion
+                                    }
+                                    #endregion
+
+                                    #region 绘制下方符号
+                                    {
+                                        double bottomYOffset = 0;
+
+                                        #region 绘制减时线
+                                        if (note.Duration == 0.5 || note.Duration == 0.25 || note.Duration == 0.125)
+                                        {
+                                            //如果是八分音符、十六分音符和三十二分音符，且没有加入减时组合，则绘制减时线
+                                            if (string.IsNullOrEmpty(note.BeamId) && note.X != null && note.Y != null && note.Width != null && note.Height != null)
+                                            {
+                                                RenderElements.Add(new ScoreRenderLineElement
+                                                {
+                                                    X = (double)note.X,
+                                                    Y = (double)(note.Y + note.Height),
+                                                    Width = (double)note.Width,
+                                                    Height = 1,
+                                                    IsVertical = false
+                                                });
+
+                                                bottomYOffset = (double)(note.Y + note.Height);
+                                            }
+                                        }
+                                        if (note.Duration == 0.25 || note.Duration == 0.125)
+                                        {
+                                            //如果是十六分音符和三十二分音符，则绘制第二条减时线
+                                            if (note.X != null && note.Y != null && note.Width != null && note.Height != null)
+                                            {
+                                                RenderElements.Add(new ScoreRenderLineElement
+                                                {
+                                                    X = (double)note.X,
+                                                    Y = (double)(note.Y + note.Height + 3),
+                                                    Width = (double)note.Width,
+                                                    Height = 1,
+                                                    IsVertical = false
+                                                });
+
+                                                bottomYOffset = (double)(note.Y + note.Height + 3);
+                                            }
+                                        }
+                                        if (note.Duration == 0.125)
+                                        {
+                                            //如果是三十二分音符，则绘制第三条减时线
+                                            if (note.X != null && note.Y != null && note.Width != null && note.Height != null)
+                                            {
+                                                RenderElements.Add(new ScoreRenderLineElement
+                                                {
+                                                    X = (double)note.X,
+                                                    Y = (double)(note.Y + note.Height + 6),
+                                                    Width = (double)note.Width,
+                                                    Height = 1,
+                                                    IsVertical = false
+                                                });
+
+                                                bottomYOffset = (double)(note.Y + note.Height + 6);
+                                            }
+                                        }
+                                        #endregion
+
+                                        #region 绘制低音点
+                                        if (note.Pitch.StartsWith("---") || note.Pitch.StartsWith("--") || (note.Pitch.StartsWith("-") && note.Pitch != "-"))
+                                        {
+                                            if (note.X != null && note.Y != null && note.Width != null)
+                                            {
+                                                bottomYOffset += 4;
+
+                                                RenderElements.Add(new ScoreRenderDotElement
+                                                {
+                                                    X = (double)(note.X + note.Width / 2 - 2),
+                                                    Y = (double)bottomYOffset,
+                                                    Radius = 4
+                                                });
+                                            }
+                                        }
+                                        if (note.Pitch.StartsWith("---") || note.Pitch.StartsWith("--"))
+                                        {
+                                            if (note.X != null && note.Y != null && note.Width != null)
+                                            {
+                                                bottomYOffset += 4;
+
+                                                RenderElements.Add(new ScoreRenderDotElement
+                                                {
+                                                    X = (double)(note.X + note.Width / 2 - 2),
+                                                    Y = (double)bottomYOffset,
+                                                    Radius = 4
+                                                });
+                                            }
+                                        }
+                                        if (note.Pitch.StartsWith("---"))
+                                        {
+                                            if (note.X != null && note.Y != null && note.Width != null)
+                                            {
+                                                bottomYOffset += 4;
+
+                                                RenderElements.Add(new ScoreRenderDotElement
+                                                {
+                                                    X = (double)(note.X + note.Width / 2 - 2),
+                                                    Y = (double)bottomYOffset,
+                                                    Radius = 4
+                                                });
+                                            }
+                                        }
+                                        #endregion
+                                    }
+                                    #endregion
+
                                     #region 绘制附点
                                     if (note.Dots > 0 && note.X != null && note.Y != null && note.Width != null && note.Height != null)
                                     {
@@ -1673,55 +1929,7 @@ namespace SEH.ViewModels
                                             {
                                                 X = (double)(note.X + note.Width + 2 + i * 5),
                                                 Y = (double)(note.Y + note.Height / 2),
-                                                Radius = 3
-                                            });
-                                        }
-                                    }
-                                    #endregion
-
-                                    #region 绘制减时线
-                                    if (note.Duration == 0.5 || note.Duration == 0.25 || note.Duration == 0.125)
-                                    {
-                                        //如果是八分音符、十六分音符和三十二分音符，且没有加入减时组合，则绘制减时线
-                                        if (string.IsNullOrEmpty(note.BeamId) && note.X != null && note.Y != null && note.Width != null && note.Height != null)
-                                        {
-                                            RenderElements.Add(new ScoreRenderLineElement
-                                            {
-                                                X = (double)note.X,
-                                                Y = (double)(note.Y + note.Height),
-                                                Width = (double)note.Width,
-                                                Height = 1,
-                                                IsVertical = false
-                                            });
-                                        }
-                                    }
-                                    if (note.Duration == 0.25 || note.Duration == 0.125)
-                                    {
-                                        //如果是十六分音符和三十二分音符，则绘制第二条减时线
-                                        if (note.X != null && note.Y != null && note.Width != null && note.Height != null)
-                                        {
-                                            RenderElements.Add(new ScoreRenderLineElement
-                                            {
-                                                X = (double)note.X,
-                                                Y = (double)(note.Y + note.Height + 3),
-                                                Width = (double)note.Width,
-                                                Height = 1,
-                                                IsVertical = false
-                                            });
-                                        }
-                                    }
-                                    if (note.Duration == 0.125)
-                                    {
-                                        //如果是三十二分音符，则绘制第三条减时线
-                                        if (note.X != null && note.Y != null && note.Width != null && note.Height != null)
-                                        {
-                                            RenderElements.Add(new ScoreRenderLineElement
-                                            {
-                                                X = (double)note.X,
-                                                Y = (double)(note.Y + note.Height + 6),
-                                                Width = (double)note.Width,
-                                                Height = 1,
-                                                IsVertical = false
+                                                Radius = 4
                                             });
                                         }
                                     }
