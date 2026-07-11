@@ -55,7 +55,7 @@ namespace SEH.ViewModels
         /// 标题
         /// </summary>
         [Required(ErrorMessage = "标题不能为空！")]
-        [MaxLength(100, ErrorMessage = "标题长度不能超过100个字！")]
+        [MaxLength(30, ErrorMessage = "标题长度不能超过30个字！")]
         [ObservableProperty]
         private string _title = "";
 
@@ -66,9 +66,22 @@ namespace SEH.ViewModels
         private string? _titleError = "";
 
         /// <summary>
+        /// 副标题
+        /// </summary>
+        [MaxLength(30, ErrorMessage = "副标题长度不能超过30个字！")]
+        [ObservableProperty]
+        private string _subTitle = "";
+
+        /// <summary>
+        /// 副标题错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _subTitleError = "";
+
+        /// <summary>
         /// 作曲人
         /// </summary>
-        [MaxLength(50, ErrorMessage = "作曲人长度不能超过50个字！")]
+        [MaxLength(20, ErrorMessage = "作曲人长度不能超过20个字！")]
         [ObservableProperty]
         private string _composer = "";
 
@@ -81,7 +94,7 @@ namespace SEH.ViewModels
         /// <summary>
         /// 作词人
         /// </summary>
-        [MaxLength(50, ErrorMessage = "作词人长度不能超过50个字！")]
+        [MaxLength(20, ErrorMessage = "作词人长度不能超过20个字！")]
         [ObservableProperty]
         private string _lyricist = "";
 
@@ -289,6 +302,12 @@ namespace SEH.ViewModels
                 var errors = GetErrors(nameof(Title));
                 TitleError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
             }
+            else if (e.PropertyName == nameof(SubTitle))//当 SubTitle 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(SubTitle));
+                SubTitleError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
             else if (e.PropertyName == nameof(Composer))//当 Composer 属性的验证状态发生变化时，更新错误提示文本
             {
                 //GetErrors 返回的是 ValidationResult 集合
@@ -380,6 +399,7 @@ namespace SEH.ViewModels
 
                     CategoryId = score.CategoryId;
                     Title = score.Title;
+                    SubTitle = score.Subtitle;
                     Composer = score.Composer ?? "";
                     Lyricist = score.Lyricist ?? "";
                     KeySignature = score.KeySignature;
@@ -462,6 +482,20 @@ namespace SEH.ViewModels
             }
 
             _score.Title = value;
+
+            ScheduleRedraw();
+        }
+
+        partial void OnSubTitleChanged(string value)
+        {
+            ValidateProperty(value, nameof(SubTitle));
+
+            if (!string.IsNullOrWhiteSpace(SubTitleError))
+            {
+                return;
+            }
+
+            _score.Subtitle = value;
 
             ScheduleRedraw();
         }
@@ -1152,8 +1186,9 @@ namespace SEH.ViewModels
             double currentY = startY;
 
             #region 1.绘制元信息
-            //绘制标题
-            if (!string.IsNullOrEmpty(_score.Title))
+
+            #region 1.绘制标题
+            if (!string.IsNullOrWhiteSpace(_score.Title))
             {
                 double fontSize = 24;
                 double titleWidth = CalcTextWidth(_score.Title, fontSize, FontWeights.Bold).Width; //动态计算标题宽度
@@ -1168,113 +1203,138 @@ namespace SEH.ViewModels
                 });
                 currentY += 50;
             }
+            #endregion
 
-            //绘制调号+拍号，作曲
-            double metaY1 = currentY;
-            double leftX1 = startX;
-            double rightX1 = canvasWidth - startX;
-
-            //左侧：调号
-            if (!string.IsNullOrEmpty(_score.KeySignature))
+            #region 2.绘制调号、拍号和作曲
             {
-                RenderElements.Add(new ScoreRenderTextElement
+                double metaY1 = currentY;
+                double leftX1 = startX;
+
+                //左侧：调号
+                if (!string.IsNullOrWhiteSpace(_score.KeySignature))
                 {
-                    X = leftX1,
-                    Y = metaY1,
-                    Text = $"1={_score.KeySignature}",
-                    FontSize = 18
-                });
-                leftX1 += 40; //调号后留出间距
+                    RenderElements.Add(new ScoreRenderTextElement
+                    {
+                        X = leftX1,
+                        Y = metaY1,
+                        Text = $"1={_score.KeySignature}",
+                        FontSize = 18
+                    });
+                    leftX1 += 40; //调号后留出间距
+                }
+
+                //左侧：拍号（按分数上下显示）
+                {
+                    //绘制分子（往上偏移）
+                    RenderElements.Add(new ScoreRenderTextElement
+                    {
+                        X = leftX1,
+                        Y = metaY1 - 10,
+                        Text = _score.MeasureBeatCount.ToString(),
+                        FontSize = 18
+                    });
+                    //绘制中间的横线
+                    RenderElements.Add(new ScoreRenderLineElement
+                    {
+                        X = leftX1,
+                        Y = metaY1 + 14,
+                        Width = 14,
+                        Height = 1,
+                        IsVertical = false
+                    });
+                    //绘制分母 （往下偏移）
+                    RenderElements.Add(new ScoreRenderTextElement
+                    {
+                        X = leftX1,
+                        Y = metaY1 + 8,
+                        Text = _score.BeatDuration.ToString(),
+                        FontSize = 18
+                    });
+                    leftX1 += 30; // 拍号占位
+                }
+
+                //右侧：作曲
+                if (!string.IsNullOrWhiteSpace(_score.Composer))
+                {
+                    string composer = $"作曲: {_score.Composer}";
+                    string lyricist = $"作词: {_score.Lyricist}";
+
+                    double fontSize = 18;
+                    double composerWidth = CalcTextWidth(composer, fontSize, FontWeights.Normal).Width;//动态计算作曲宽度
+                    double lyricistWidth = CalcTextWidth(lyricist, fontSize, FontWeights.Normal).Width;//动态计算作词宽度
+                    double maxWidth = Math.Max(composerWidth, lyricistWidth); //计算最大宽度
+
+                    double rightX1 = Width - _score.RightMargin - maxWidth;
+
+                    RenderElements.Add(new ScoreRenderTextElement
+                    {
+                        X = rightX1,
+                        Y = metaY1,
+                        Text = composer,
+                        FontSize = fontSize
+                    });
+                }
             }
+            #endregion
 
-            // 左侧：拍号（按分数上下显示）
+            #region 3.绘制速度和作词
             {
-                //绘制分子（往上偏移）
-                RenderElements.Add(new ScoreRenderTextElement
+                double metaY2 = currentY + 35; //下移 35 像素作为第二行
+                double leftX2 = startX;
+
+                //左侧：速度
+                if (!string.IsNullOrWhiteSpace(_score.Tempo.ToString()))
                 {
-                    X = leftX1,
-                    Y = metaY1 - 10,
-                    Text = _score.MeasureBeatCount.ToString(),
-                    FontSize = 18
-                });
-                //绘制中间的横线
-                RenderElements.Add(new ScoreRenderLineElement
+                    RenderElements.Add(new ScoreRenderTextElement
+                    {
+                        X = leftX2,
+                        Y = metaY2,
+                        Text = $"♩={_score.Tempo}",
+                        FontSize = 18
+                    });
+                }
+
+                //右侧：作词
+                if (!string.IsNullOrWhiteSpace(_score.Lyricist))
                 {
-                    X = leftX1,
-                    Y = metaY1 + 14,
-                    Width = 14,
-                    Height = 1,
-                    IsVertical = false
-                });
-                //绘制分母 （往下偏移）
-                RenderElements.Add(new ScoreRenderTextElement
-                {
-                    X = leftX1,
-                    Y = metaY1 + 8,
-                    Text = _score.BeatDuration.ToString(),
-                    FontSize = 18
-                });
-                leftX1 += 30; // 拍号占位
+                    string composer = $"作曲: {_score.Composer}";
+                    string lyricist = $"作词: {_score.Lyricist}";
+
+                    double fontSize = 18;
+                    double composerWidth = CalcTextWidth(composer, fontSize, FontWeights.Normal).Width;//动态计算作曲宽度
+                    double lyricistWidth = CalcTextWidth(lyricist, fontSize, FontWeights.Normal).Width;//动态计算作词宽度
+                    double maxWidth = Math.Max(composerWidth, lyricistWidth);//计算最大宽度
+
+                    double rightX2 = Width - _score.RightMargin - maxWidth;
+
+                    RenderElements.Add(new ScoreRenderTextElement
+                    {
+                        X = rightX2,
+                        Y = metaY2,
+                        Text = lyricist,
+                        FontSize = fontSize
+                    });
+                }
             }
+            #endregion
 
-            // 右侧：作曲
-            if (!string.IsNullOrEmpty(_score.Composer))
+            #region 4.绘制副标题
+            if (!string.IsNullOrWhiteSpace(_score.Subtitle))
             {
-                string composer = $"作曲: {_score.Composer}";
-                string lyricist = $"作词: {_score.Lyricist}";
-
                 double fontSize = 18;
-                double composerWidth = CalcTextWidth(composer, fontSize, FontWeights.Normal).Width;//动态计算作曲宽度
-                double lyricistWidth = CalcTextWidth(lyricist, fontSize, FontWeights.Normal).Width;//动态计算作词宽度
-                double maxWidth = Math.Max(composerWidth, lyricistWidth); //计算最大宽度
+                Size subTitleSize = CalcTextWidth(_score.Subtitle, fontSize, FontWeights.Normal);//动态计算标题宽度
 
                 RenderElements.Add(new ScoreRenderTextElement
                 {
-                    X = rightX1 - maxWidth,
-                    Y = metaY1,
-                    Text = composer,
+                    X = _score.LeftMargin + (canvasWidth - subTitleSize.Width) / 2, //水平居中
+                    Y = currentY + (75 - subTitleSize.Height) / 2,//垂直居中
+                    Text = _score.Subtitle,
                     FontSize = fontSize
                 });
             }
+            #endregion
 
-            //绘制速度，作词
-            double metaY2 = metaY1 + 35; //下移 35 像素作为第二行
-            double leftX2 = startX;
-            double rightX2 = canvasWidth - startX;
-
-            //左侧：速度
-            if (!string.IsNullOrEmpty(_score.Tempo.ToString()))
-            {
-                RenderElements.Add(new ScoreRenderTextElement
-                {
-                    X = leftX2,
-                    Y = metaY2,
-                    Text = $"♩={_score.Tempo}",
-                    FontSize = 18
-                });
-            }
-
-            //右侧：作词
-            if (!string.IsNullOrEmpty(_score.Lyricist))
-            {
-                string composer = $"作曲: {_score.Composer}";
-                string lyricist = $"作词: {_score.Lyricist}";
-
-                double fontSize = 18;
-                double composerWidth = CalcTextWidth(composer, fontSize, FontWeights.Normal).Width;//动态计算作曲宽度
-                double lyricistWidth = CalcTextWidth(lyricist, fontSize, FontWeights.Normal).Width;//动态计算作词宽度
-                double maxWidth = Math.Max(composerWidth, lyricistWidth);//计算最大宽度
-
-                RenderElements.Add(new ScoreRenderTextElement
-                {
-                    X = rightX2 - maxWidth,
-                    Y = metaY2,
-                    Text = lyricist,
-                    FontSize = fontSize
-                });
-            }
-
-            currentY = metaY2 + 40;
+            currentY += 75;
 
             #endregion
 
@@ -1823,7 +1883,7 @@ namespace SEH.ViewModels
                                         if (note.Duration == 0.5 || note.Duration == 0.25 || note.Duration == 0.125)
                                         {
                                             //如果是八分音符、十六分音符和三十二分音符，且没有加入减时组合，则绘制减时线
-                                            if (string.IsNullOrEmpty(note.BeamId) && note.X != null && note.Y != null && note.Width != null && note.Height != null)
+                                            if (string.IsNullOrWhiteSpace(note.BeamId) && note.X != null && note.Y != null && note.Width != null && note.Height != null)
                                             {
                                                 RenderElements.Add(new ScoreRenderLineElement
                                                 {
@@ -2275,6 +2335,7 @@ namespace SEH.ViewModels
             //保存简谱数据
             _score.CategoryId = CategoryId;
             _score.Title = Title.Trim();
+            _score.Subtitle = SubTitle.Trim();
             _score.Composer = Composer.Trim();
             _score.Lyricist = Lyricist.Trim();
             _score.KeySignature = KeySignature.Trim();

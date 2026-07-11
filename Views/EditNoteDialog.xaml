@@ -12,10 +12,29 @@
     SecondaryButtonText="取消"
     DefaultButton="Primary">
 
+    <ContentDialog.Resources>
+        <x:Double x:Key="ContentDialogMinWidth">600</x:Double>
+        <x:Double x:Key="ContentDialogMaxWidth">800</x:Double>
+    </ContentDialog.Resources>
+
     <ScrollViewer MaxHeight="800" VerticalScrollBarVisibility="Auto">
-        <StackPanel Width="500">
+        <Grid ColumnSpacing="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="300"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
             <!--音符-->
-            <StackPanel HorizontalAlignment="Stretch">
+            <StackPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch">
                 <ComboBox Header="音符：" PlaceholderText="选择音符..."
                           SelectedValuePath="Tag"
                           SelectedValue="{x:Bind ViewModel.Pitch, Mode=TwoWay}"
@@ -85,17 +104,17 @@
 
                 <!--红字错误提示，绑定到 ViewModel 的 PitchError 属性-->
                 <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
-                <TextBlock Text="{x:Bind ViewModel.PitchError, Mode=OneWay}" 
-                           Foreground="{StaticResource SystemErrorTextColor}" 
-                           FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                <TextBlock Text="{x:Bind ViewModel.PitchError, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
                            Margin="0,4,0,0"/>
             </StackPanel>
 
             <!--时值-->
-            <StackPanel HorizontalAlignment="Stretch">
+            <StackPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch">
                 <ComboBox Header="时值：" PlaceholderText="选择音符时值..."
-                          SelectedValuePath="Tag" 
-                          SelectedValue="{x:Bind ViewModel.Duration, Mode=TwoWay}" 
+                          SelectedValuePath="Tag"
+                          SelectedValue="{x:Bind ViewModel.Duration, Mode=TwoWay}"
                           HorizontalAlignment="Stretch">
                     <ComboBoxItem Content="全音符" Tag="4"/>
                     <ComboBoxItem Content="二分音符" Tag="2"/>
@@ -107,33 +126,51 @@
 
                 <!--红字错误提示，绑定到 ViewModel 的 DurationError 属性-->
                 <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
-                <TextBlock Text="{x:Bind ViewModel.DurationError, Mode=OneWay}" 
-                           Foreground="{StaticResource SystemErrorTextColor}" 
-                           FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                <TextBlock Text="{x:Bind ViewModel.DurationError, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
                            Margin="0,4,0,0"/>
             </StackPanel>
 
             <!--附点数量-->
-            <StackPanel HorizontalAlignment="Stretch">
+            <StackPanel Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch">
                 <NumberBox Header="附点数量：" PlaceholderText="输入附点数量..."
-                           Value="{x:Bind ViewModel.Dots, Mode=TwoWay}" 
-                           Minimum="0" 
+                           Value="{x:Bind ViewModel.Dots, Mode=TwoWay}"
+                           Minimum="0"
                            Maximum="3"
                            HorizontalAlignment="Stretch"/>
 
                 <!--红字错误提示，绑定到 ViewModel 的 DotsError 属性-->
                 <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
-                <TextBlock Text="{x:Bind ViewModel.DotsError, Mode=OneWay}" 
-                           Foreground="{StaticResource SystemErrorTextColor}" 
-                           FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                <TextBlock Text="{x:Bind ViewModel.DotsError, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!--延长号标志-->
+            <StackPanel Grid.Column="0" Grid.Row="3" HorizontalAlignment="Stretch">
+                <ComboBox Header="延长号标志：" PlaceholderText="选择延长号标志..."
+                          SelectedValuePath="Tag"
+                          SelectedValue="{x:Bind ViewModel.Fermata, Mode=TwoWay}"
+                          HorizontalAlignment="Stretch">
+                    <ComboBoxItem Content="有延长号" Tag="1"/>
+                    <ComboBoxItem Content="无延长号" Tag="0"/>
+                </ComboBox>
+
+                <!--红字错误提示，绑定到 ViewModel 的 FermataError 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.FermataError, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
                            Margin="0,4,0,0"/>
             </StackPanel>
 
             <!--连音线标志-->
-            <StackPanel HorizontalAlignment="Stretch">
+            <StackPanel Grid.Column="0" Grid.Row="4" HorizontalAlignment="Stretch">
                 <ComboBox Header="连音线标志：" PlaceholderText="选择连音线标志..."
-                          SelectedValuePath="Tag" 
-                          SelectedValue="{x:Bind ViewModel.Slur, Mode=TwoWay}" 
+                          SelectedValuePath="Tag"
+                          SelectedValue="{x:Bind ViewModel.Slur, Mode=TwoWay}"
                           HorizontalAlignment="Stretch">
                     <ComboBoxItem Content="无连音线" Tag="" IsSelected="True"/>
                     <ComboBoxItem Content="开始连音线" Tag="1"/>
@@ -142,32 +179,14 @@
 
                 <!--红字错误提示，绑定到 ViewModel 的 SlurError 属性-->
                 <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
-                <TextBlock Text="{x:Bind ViewModel.SlurError, Mode=OneWay}" 
-                           Foreground="{StaticResource SystemErrorTextColor}" 
-                           FontSize="{StaticResource ToolTipContentThemeFontSize}" 
-                           Margin="0,4,0,0"/>
-            </StackPanel>
-
-            <!--延长号标志-->
-            <StackPanel HorizontalAlignment="Stretch">
-                <ComboBox Header="延长号标志：" PlaceholderText="选择延长号标志..."
-                          SelectedValuePath="Tag" 
-                          SelectedValue="{x:Bind ViewModel.Fermata, Mode=TwoWay}" 
-                          HorizontalAlignment="Stretch">
-                    <ComboBoxItem Content="有延长号" Tag="1"/>
-                    <ComboBoxItem Content="无延长号" Tag="0"/>
-                </ComboBox>
-
-                <!--红字错误提示，绑定到 ViewModel 的 FermataError 属性-->
-                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
-                <TextBlock Text="{x:Bind ViewModel.FermataError, Mode=OneWay}" 
-                           Foreground="{StaticResource SystemErrorTextColor}" 
-                           FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                <TextBlock Text="{x:Bind ViewModel.SlurError, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
                            Margin="0,4,0,0"/>
             </StackPanel>
 
             <!--演奏方式-->
-            <StackPanel HorizontalAlignment="Stretch">
+            <StackPanel Grid.Column="0" Grid.Row="5" HorizontalAlignment="Stretch">
                 <ComboBox Header="演奏方式：" PlaceholderText="选择演奏方式..."
                           SelectedItem="{x:Bind ViewModel.Articulation, Mode=TwoWay}"
                           HorizontalAlignment="Stretch">
@@ -182,28 +201,75 @@
 
                 <!--红字错误提示，绑定到 ViewModel 的 ArticulationError 属性-->
                 <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
-                <TextBlock Text="{x:Bind ViewModel.ArticulationError, Mode=OneWay}" 
-                           Foreground="{StaticResource SystemErrorTextColor}" 
-                           FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                <TextBlock Text="{x:Bind ViewModel.ArticulationError, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!--圆括号标志-->
+            <StackPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch">
+                <ComboBox Header="圆括号标志：" PlaceholderText="选择圆括号标志..."
+                          SelectedValuePath="Tag"
+                          SelectedValue="{x:Bind ViewModel.Paren, Mode=TwoWay}"
+                          HorizontalAlignment="Stretch">
+                    <ComboBoxItem Content="无括号" Tag="" IsSelected="True"/>
+                    <ComboBoxItem Content="左括号" Tag="1"/>
+                    <ComboBoxItem Content="右括号" Tag="0"/>
+                </ComboBox>
+
+                <!--红字错误提示，绑定到 ViewModel 的 ParenError 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.ParenError, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
                            Margin="0,4,0,0"/>
             </StackPanel>
 
             <!--歌词-->
-            <StackPanel HorizontalAlignment="Stretch">
+            <StackPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch">
                 <TextBox Header="歌词：" PlaceholderText="输入歌词..."
-                         Text="{x:Bind ViewModel.Lyrics, Mode=TwoWay}" 
+                         Text="{x:Bind ViewModel.Lyrics, Mode=TwoWay}"
                          HorizontalAlignment="Stretch"/>
 
                 <!--红字错误提示，绑定到 ViewModel 的 LyricsError 属性-->
                 <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
-                <TextBlock Text="{x:Bind ViewModel.LyricsError, Mode=OneWay}" 
-                           Foreground="{StaticResource SystemErrorTextColor}" 
-                           FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                <TextBlock Text="{x:Bind ViewModel.LyricsError, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!--歌词2-->
+            <StackPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch">
+                <TextBox Header="歌词2：" PlaceholderText="输入歌词..."
+                         Text="{x:Bind ViewModel.Lyrics2, Mode=TwoWay}"
+                         HorizontalAlignment="Stretch"/>
+
+                <!--红字错误提示，绑定到 ViewModel 的 Lyrics2Error 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.Lyrics2Error, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!--歌词3-->
+            <StackPanel Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch">
+                <TextBox Header="歌词3：" PlaceholderText="输入歌词..."
+                         Text="{x:Bind ViewModel.Lyrics3, Mode=TwoWay}"
+                         HorizontalAlignment="Stretch"/>
+
+                <!--红字错误提示，绑定到 ViewModel 的 Lyrics3Error 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.Lyrics3Error, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
                            Margin="0,4,0,0"/>
             </StackPanel>
 
             <!--减时组合-->
-            <StackPanel HorizontalAlignment="Stretch">
+            <StackPanel Grid.Column="1" Grid.Row="4" HorizontalAlignment="Stretch">
                 <ComboBox Header="减时组合" PlaceholderText="选择减时组合..."
                           ItemsSource="{x:Bind ViewModel.Beams, Mode=OneWay}"
                           SelectedItem="{x:Bind ViewModel.SelectedBeam, Mode=TwoWay}"
@@ -212,11 +278,11 @@
 
                 <!--红字错误提示，绑定到 ViewModel 的 SelectedBeamError 属性-->
                 <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
-                <TextBlock Text="{x:Bind ViewModel.SelectedBeamError, Mode=OneWay}" 
-                           Foreground="{StaticResource SystemErrorTextColor}" 
-                           FontSize="{StaticResource ToolTipContentThemeFontSize}" 
+                <TextBlock Text="{x:Bind ViewModel.SelectedBeamError, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
                            Margin="0,4,0,0"/>
             </StackPanel>
-        </StackPanel>
+        </Grid>
     </ScrollViewer>
 </ContentDialog>

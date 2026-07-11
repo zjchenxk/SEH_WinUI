@@ -14,7 +14,7 @@
     SecondaryButtonText="取消"
     DefaultButton="Primary">
 
-    <StackPanel Orientation="Vertical" Width="500">
+    <StackPanel Orientation="Vertical" Width="300">
         <!--小节数-->
         <StackPanel HorizontalAlignment="Stretch">
             <ComboBox x:Name="MeasuresPerLine" 

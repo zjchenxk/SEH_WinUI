@@ -68,6 +68,12 @@ namespace SEH.Models
         public int Dots { get; set; }
 
         /// <summary>
+        /// 延长号标记，如：1-有，0-无。延长号的形状是一个半圆弧线，弧心中间加一小圆点。
+        /// </summary>
+        [Column("fermata")]
+        public int Fermata { get; set; }
+
+        /// <summary>
         /// 连音线标记，如：1-开始，0-表示结束
         /// </summary>
         [Column("slur")]
@@ -80,16 +86,28 @@ namespace SEH.Models
         public string? Articulation { get; set; }
 
         /// <summary>
-        /// 延长号标记，如：1-有，0-无。延长号的形状是一个半圆弧线，弧心中间加一小圆点。
+        /// 圆括号标记，如：1-左括号，0-右括号
         /// </summary>
-        [Column("fermata")]
-        public int Fermata { get; set; }
+        [Column("paren")]
+        public int? Paren { get; set; }
 
         /// <summary>
         /// 歌词
         /// </summary>
         [Column("lyrics")]
         public string? Lyrics { get; set; }
+
+        /// <summary>
+        /// 歌词2
+        /// </summary>
+        [Column("lyrics2")]
+        public string? Lyrics2 { get; set; }
+
+        /// <summary>
+        /// 歌词3
+        /// </summary>
+        [Column("lyrics3")]
+        public string? Lyrics3 { get; set; }
 
         /// <summary>
         /// 组合主键

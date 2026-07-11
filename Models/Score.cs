@@ -25,21 +25,28 @@ namespace SEH.Models
         /// <summary>
         /// 标题
         /// </summary>
-        [MaxLength(100)]
+        [MaxLength(30)]
         [Column("title")]
         public string Title { get; set; } = "";
 
         /// <summary>
+        /// 副标题
+        /// </summary>
+        [MaxLength(30)]
+        [Column("sub_title")]
+        public string Subtitle { get; set; } = "";
+
+        /// <summary>
         /// 作曲人
         /// </summary>
-        [MaxLength(50)]
+        [MaxLength(20)]
         [Column("composer")]
         public string? Composer { get; set; }
 
         /// <summary>
         /// 作词人
         /// </summary>
-        [MaxLength(50)]
+        [MaxLength(20)]
         [Column("lyricist")]
         public string? Lyricist { get; set; }
 
