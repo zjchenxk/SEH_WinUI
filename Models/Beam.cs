@@ -46,10 +46,10 @@ namespace SEH.Models
         public string Name { get; set; } = "";
 
         /// <summary>
-        /// 组合时值，如：0.5-八分音符，0.25-十六分音符，0.125-三十二分音符
+        /// 组合时值，如：0.5-八分音符，0.25-十六分音符，0.125-三十二分音符，默认0.5
         /// </summary>
         [Column("duration")]
-        public float? Duration { get; set; }
+        public float Duration { get; set; }
 
     }
 }

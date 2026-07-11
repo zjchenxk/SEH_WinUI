@@ -147,5 +147,48 @@ namespace SEH.Services
             return null;
         }
 
+        /// <summary>
+        /// 显示减时组合编辑对话框
+        /// </summary>
+        /// <param name="beam"></param>
+        /// <returns></returns>
+        public async Task<Beam?> ShowEditBeamDialogAsync(Beam? beam = null)
+        {
+            if (XamlRoot == null)
+            {
+                return null;
+            }
+
+            var viewModel = new EditBeamViewModel();
+
+            //实现传参初始化
+            viewModel.Initialize(beam);
+
+            var dialog = new EditBeamDialog(viewModel)
+            {
+                XamlRoot = this.XamlRoot, //关键：设置 XamlRoot
+                Title = beam == null ? "新增组合" : "修改组合" //根据传参动态修改标题
+            };
+
+            dialog.PrimaryButtonClick += (sender, e) =>
+            {
+                //验证数据
+                bool isValid = viewModel.ValidateProperties();
+                if (!isValid)
+                {
+                    //阻止对话框关闭
+                    e.Cancel = true;
+                }
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                return viewModel.GetBeam();
+            }
+
+            return null;
+        }
+
     }
 }

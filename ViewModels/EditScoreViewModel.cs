@@ -1087,18 +1087,25 @@ namespace SEH.ViewModels
                 return;
             }
 
-            //新增组合
-            _measure.Beams ??= [];
-            _beam = new Beam()
+            //调用服务显示弹窗并获取结果
+            var ret = await _dialogService.ShowEditBeamDialogAsync();
+            if (ret != null)
             {
-                Id = Guid.NewGuid().ToString(),
-                MeasureId = _measure.Id,
-                LineId = _line.Id,
-                ScoreId = _score.Id,
-                Number = _measure.Beams.Count + 1,
-                Name = $"组合{_measure.Beams.Count + 1}"
-            };
-            _measure.Beams.Add(_beam);
+                _measure.Beams ??= [];
+
+                //新增组合
+                _beam = new Beam()
+                {
+                    Id = ret.Id,
+                    MeasureId = _measure.Id,
+                    LineId = _line.Id,
+                    ScoreId = _score.Id,
+                    Number = _measure.Beams.Count + 1,
+                    Duration = ret.Duration,
+                    Name = ret.Duration == 0.5 ? $"八分音符组合{_measure.Beams.Count + 1}" : (ret.Duration== 0.25? $"十六分音符组合{_measure.Beams.Count + 1}" : $"三十二分音符组合{_measure.Beams.Count + 1}")
+                };
+                _measure.Beams.Add(_beam);
+            }
         }
 
         /// <summary>
