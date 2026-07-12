@@ -35,6 +35,12 @@ namespace SEH.Models
         public int MeasureCount { get; set; }
 
         /// <summary>
+        /// 高度
+        /// </summary>
+        [Ignore]
+        public double Height { get; set; }
+
+        /// <summary>
         /// 音符占位宽度
         /// </summary>
         [Ignore]

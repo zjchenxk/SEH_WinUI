@@ -12,6 +12,7 @@ using SEH.Services.Interfaces;
 using SEH.Views;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -982,7 +983,8 @@ namespace SEH.ViewModels
                     Articulation = ret.Articulation,
                     Fermata = ret.Fermata,
                     Lyrics = ret.Lyrics,
-                    BeamId = ret.BeamId
+                    BeamId = ret.BeamId,
+                    Beam = ret.Beam
                 };
 
                 //添加到集合
@@ -1025,6 +1027,7 @@ namespace SEH.ViewModels
                 _note.Fermata = ret.Fermata;
                 _note.Lyrics = ret.Lyrics;
                 _note.BeamId = ret.BeamId;
+                _note.Beam = ret.Beam;
 
                 //重新绘制简谱
                 DrawScore();
@@ -1093,6 +1096,45 @@ namespace SEH.ViewModels
             {
                 _measure.Beams ??= [];
 
+                //生成组合名称
+                string beamName = "";
+                if (ret.Duration == 0.5)//八分音符组合
+                {
+                    var beams = _measure.Beams.Where<Beam>(b => b.Duration == ret.Duration);
+                    if (beams != null)
+                    {
+                        beamName = $"八分音符组合{beams.Count() + 1}";
+                    }
+                    else
+                    {
+                        beamName = "八分音符组合1";
+                    }
+                }
+                else if (ret.Duration == 0.25)//十六分音符组合
+                {
+                    var beams = _measure.Beams.Where<Beam>(b => b.Duration == ret.Duration);
+                    if (beams != null)
+                    {
+                        beamName = $"十六分音符组合{beams.Count() + 1}";
+                    }
+                    else
+                    {
+                        beamName = "十六分音符组合1";
+                    }
+                }
+                else//三十二分音符组合
+                {
+                    var beams = _measure.Beams.Where<Beam>(b => b.Duration == ret.Duration);
+                    if (beams != null)
+                    {
+                        beamName = $"三十二分音符组合{beams.Count() + 1}";
+                    }
+                    else
+                    {
+                        beamName = "三十二分音符组合1";
+                    }
+                }
+
                 //新增组合
                 _beam = new Beam()
                 {
@@ -1102,7 +1144,7 @@ namespace SEH.ViewModels
                     ScoreId = _score.Id,
                     Number = _measure.Beams.Count + 1,
                     Duration = ret.Duration,
-                    Name = ret.Duration == 0.5 ? $"八分音符组合{_measure.Beams.Count + 1}" : (ret.Duration== 0.25? $"十六分音符组合{_measure.Beams.Count + 1}" : $"三十二分音符组合{_measure.Beams.Count + 1}")
+                    Name = beamName
                 };
                 _measure.Beams.Add(_beam);
             }
@@ -1186,9 +1228,10 @@ namespace SEH.ViewModels
             double startY = _score.TopMargin;
             double canvasWidth = Width - _score.LeftMargin - _score.RightMargin;//设置画布宽度
             double canvasHeight = Height - _score.TopMargin - _score.BottomMargin;//设置画布高度
-            double rowHeight = 120;//设置每行高度
+            double lineHeight = 120;//设置每行高度（默认为120）
             double measureLeftPadding = 10;//小节左边距
             double measureRightPadding = 10;//小节右边距
+            double noteBaseYOffset = 40;//音符在每行中的相对Y位置
 
             double currentY = startY;
 
@@ -1352,6 +1395,8 @@ namespace SEH.ViewModels
 
                 foreach (var line in _score.Lines)
                 {
+                    lineHeight = 120;//重置行高
+
                     #region 1.计算当前行音符占位宽度
                     int currentLineBeats = 0;//当前行累计拍数
                     int currentLineNotes = 0;//当前行累计音符数
@@ -1541,13 +1586,11 @@ namespace SEH.ViewModels
                             #region 3.绘制音符
                             if (measure.Notes != null && measure.Notes.Count > 0)
                             {
-                                double noteBaseYOffset = 40;//音符在每行中的相对Y位置
-
                                 int currentMeasureBeats = 0;
 
                                 foreach (var note in measure.Notes)
                                 {
-                                    #region 绘制音高
+                                    #region 1.绘制音高
                                     switch (note.Pitch)
                                     {
                                         #region 绘制中音
@@ -1831,11 +1874,11 @@ namespace SEH.ViewModels
                                     }
                                     #endregion
 
-                                    #region 绘制上方符号
+                                    #region 2.绘制上方符号
                                     {
                                         double topYOffset = currentY + noteBaseYOffset;
 
-                                        #region 绘制高音点
+                                        #region 1.绘制高音点
                                         if (note.Pitch.StartsWith("+++") || note.Pitch.StartsWith("++") || note.Pitch.StartsWith("+"))
                                         {
                                             if (note.X != null && note.Y != null && note.Width != null)
@@ -1879,14 +1922,21 @@ namespace SEH.ViewModels
                                             }
                                         }
                                         #endregion
+
+                                        #region 2.绘制延长号
+                                        if (note.Fermata == 1)
+                                        {
+
+                                        }
+                                        #endregion
                                     }
                                     #endregion
 
-                                    #region 绘制下方符号
+                                    #region 3.绘制下方符号和歌词
                                     {
                                         double bottomYOffset = 0;
 
-                                        #region 绘制减时线
+                                        #region 1.绘制减时线
                                         if (note.Duration == 0.5 || note.Duration == 0.25 || note.Duration == 0.125)
                                         {
                                             //如果是八分音符、十六分音符和三十二分音符，且没有加入减时组合，则绘制减时线
@@ -1940,7 +1990,7 @@ namespace SEH.ViewModels
                                         }
                                         #endregion
 
-                                        #region 绘制低音点
+                                        #region 2.绘制低音点
                                         if (note.Pitch.StartsWith("---") || note.Pitch.StartsWith("--") || (note.Pitch.StartsWith("-") && note.Pitch != "-"))
                                         {
                                             if (note.X != null && note.Y != null && note.Width != null)
@@ -1984,10 +2034,23 @@ namespace SEH.ViewModels
                                             }
                                         }
                                         #endregion
+
+                                        #region 3.绘制歌词
+                                        if (!string.IsNullOrWhiteSpace(note.Lyrics) && note.X != null)
+                                        {
+                                            RenderElements.Add(new ScoreRenderTextElement
+                                            {
+                                                FontSize = 14,
+                                                X = (double)note.X,
+                                                Y = currentY + 100,
+                                                Text = note.Lyrics
+                                            });
+                                        }
+                                        #endregion
                                     }
                                     #endregion
 
-                                    #region 绘制附点
+                                    #region 4.绘制附点
                                     if (note.Dots > 0 && note.X != null && note.Y != null && note.Width != null && note.Height != null)
                                     {
                                         for (int i = 0; i < note.Dots; i++)
@@ -2243,8 +2306,122 @@ namespace SEH.ViewModels
                     }
                     #endregion
 
-                    #region 4.自动换页
-                    currentY += rowHeight;
+                    #region 4.绘制连音线
+                    {
+                        List<(Note? from, Note? to)> slurNotes = [];//连音音符集合
+
+                        if (line.Measures != null && line.Measures.Count > 0)
+                        {
+                            foreach (var measure in line.Measures)
+                            {
+                                if (measure.Notes != null && measure.Notes.Count > 0)
+                                {
+                                    foreach (var note in measure.Notes)
+                                    {
+                                        if (note.Slur == 1)//连音线开始
+                                        {
+                                            slurNotes.Add((note, null));
+                                        }
+                                        else if (note.Slur == 0)//连音线结束
+                                        {
+                                            int i = slurNotes.Count - 1;
+                                            while (i >= 0)
+                                            {
+                                                if (slurNotes[i].from != null && slurNotes[i].to == null)
+                                                {
+                                                    slurNotes[i] = (slurNotes[i].from, note);
+                                                    break;
+                                                }
+                                                i--;
+                                            }
+                                            if (i < 0)
+                                            {
+                                                slurNotes.Add((null, note));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (slurNotes.Count > 0)
+                        {
+                            for (int i = 0; i < slurNotes.Count; i++)
+                            {
+                                Note? fromNote = slurNotes[i].from;
+                                Note? toNote = slurNotes[i].to;
+
+                                if (fromNote != null && toNote != null)
+                                {
+                                    if (fromNote.X != null && fromNote.Width != null && toNote.X != null && toNote.Width != null)
+                                    {
+                                        double fromX = (double)(fromNote.X + fromNote.Width / 2);
+                                        double fromY = currentY + noteBaseYOffset;
+                                        if (fromNote.Pitch.StartsWith("+++") || fromNote.Pitch.StartsWith("++") || fromNote.Pitch.StartsWith("+"))
+                                        {
+                                            fromY -= 4;
+                                        }
+                                        if (fromNote.Pitch.StartsWith("+++") || fromNote.Pitch.StartsWith("++"))
+                                        {
+                                            fromY -= 4;
+                                        }
+                                        if (fromNote.Pitch.StartsWith("+++"))
+                                        {
+                                            fromY -= 4;
+                                        }
+                                        if (fromNote.Fermata == 1)
+                                        {
+                                            fromY -= 20;
+                                        }
+
+                                        double toX = (double)(toNote.X + toNote.Width / 2);
+                                        double toY = currentY + noteBaseYOffset;
+                                        if (toNote.Pitch.StartsWith("+++") || toNote.Pitch.StartsWith("++") || toNote.Pitch.StartsWith("+"))
+                                        {
+                                            toY -= 4;
+                                        }
+                                        if (toNote.Pitch.StartsWith("+++") || toNote.Pitch.StartsWith("++"))
+                                        {
+                                            toY -= 4;
+                                        }
+                                        if (toNote.Pitch.StartsWith("+++"))
+                                        {
+                                            toY -= 4;
+                                        }
+                                        if (toNote.Fermata == 1)
+                                        {
+                                            toY -= 20;
+                                        }
+
+                                        double Y = Math.Min(fromY, toY);
+
+                                        RenderElements.Add(new ScoreRenderArcElement
+                                        {
+                                            StartX = fromX,
+                                            StartY = Y,
+                                            EndX = toX,
+                                            EndY = Y,
+                                        });
+                                    }
+                                }
+                                else
+                                {
+                                    if (fromNote != null)
+                                    {
+
+                                    }
+                                    else if (toNote != null)
+                                    {
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    #endregion
+
+                    #region 5.自动换页
+                    line.Height = lineHeight;
+                    currentY += line.Height;
                     if (currentY > canvasHeight)
                     {
                         if (_score.Direction == 1)//纵向

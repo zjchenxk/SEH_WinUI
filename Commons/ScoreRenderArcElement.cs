@@ -8,11 +8,11 @@ namespace SEH.Commons
     /// </summary>
     public class ScoreRenderArcElement : ScoreRenderElement
     {
-        public int StartX { get; set; }
-        public int StartY { get; set; }
-        public int EndX { get; set; }
-        public int EndY { get; set; }
-        public int ControlOffset { get; set; } = 20; //弧线高度
+        public double StartX { get; set; }
+        public double StartY { get; set; }
+        public double EndX { get; set; }
+        public double EndY { get; set; }
+        public int ControlOffset { get; set; } = 15; //弧线高度
 
         public Point StartPoint => new(StartX, StartY);
         public Point EndPoint => new(EndX, EndY);

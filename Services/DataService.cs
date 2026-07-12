@@ -267,13 +267,27 @@ namespace SEH.Services
                                 {
                                     foreach (var measure in measures)
                                     {
-                                        //读取每小节的音符记录
-                                        var notes = db.Table<Note>().Where(u => u.ScoreId == id && u.LineId == line.Id && u.MeasureId == measure.Id).OrderBy(u => u.Number).ToList();
-                                        measure.Notes = notes;
-
-                                        //读取每小节的连尾组合记录
+                                        //读取每小节的减时组合记录
                                         var beams = db.Table<Beam>().Where(u => u.ScoreId == id && u.LineId == line.Id && u.MeasureId == measure.Id).OrderBy(u => u.Number).ToList();
                                         measure.Beams = beams;
+
+                                        //读取每小节的音符记录
+                                        var notes = db.Table<Note>().Where(u => u.ScoreId == id && u.LineId == line.Id && u.MeasureId == measure.Id).OrderBy(u => u.Number).ToList();
+                                        if (notes != null && notes.Count > 0)
+                                        {
+                                            foreach (var note in notes)
+                                            {
+                                                if (!string.IsNullOrWhiteSpace(note.BeamId))
+                                                {
+                                                    if (beams != null)
+                                                    {
+                                                        var beam = beams.Find(b => b.Id == note.BeamId);
+                                                        note.Beam = beam;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        measure.Notes = notes;
                                     }
                                 }
                                 line.Measures = measures;

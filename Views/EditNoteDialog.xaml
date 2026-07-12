@@ -96,9 +96,9 @@
                     <ComboBoxItem Content="超高音符６" Tag="+++6"/>
                     <ComboBoxItem Content="超高音符７" Tag="+++7"/>
 
-                    <ComboBoxItem Content="休止符０" Tag="0"/>
-                    <ComboBoxItem Content="噪音符Ｘ" Tag="X"/>
-                    <ComboBoxItem Content="增时符－" Tag="-"/>
+                    <ComboBoxItem Content="休止符[0]" Tag="0"/>
+                    <ComboBoxItem Content="噪音符[X]" Tag="X"/>
+                    <ComboBoxItem Content="增时符[-]" Tag="-"/>
                     <ComboBoxItem Content="空白符[ ]" Tag="_"/>
                 </ComboBox>
 
@@ -226,8 +226,24 @@
                            Margin="0,4,0,0"/>
             </StackPanel>
 
-            <!--歌词-->
+            <!--减时组合-->
             <StackPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch">
+                <ComboBox Header="减时组合" PlaceholderText="选择减时组合..."
+                          ItemsSource="{x:Bind ViewModel.Beams, Mode=OneWay}"
+                          SelectedItem="{x:Bind ViewModel.SelectedBeam, Mode=TwoWay}"
+                          DisplayMemberPath="Name"
+                          HorizontalAlignment="Stretch"/>
+
+                <!--红字错误提示，绑定到 ViewModel 的 SelectedBeamError 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.SelectedBeamError, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!--歌词-->
+            <StackPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch">
                 <TextBox Header="歌词：" PlaceholderText="输入歌词..."
                          Text="{x:Bind ViewModel.Lyrics, Mode=TwoWay}"
                          HorizontalAlignment="Stretch"/>
@@ -241,7 +257,7 @@
             </StackPanel>
 
             <!--歌词2-->
-            <StackPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch">
+            <StackPanel Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch">
                 <TextBox Header="歌词2：" PlaceholderText="输入歌词..."
                          Text="{x:Bind ViewModel.Lyrics2, Mode=TwoWay}"
                          HorizontalAlignment="Stretch"/>
@@ -255,7 +271,7 @@
             </StackPanel>
 
             <!--歌词3-->
-            <StackPanel Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch">
+            <StackPanel Grid.Column="1" Grid.Row="4" HorizontalAlignment="Stretch">
                 <TextBox Header="歌词3：" PlaceholderText="输入歌词..."
                          Text="{x:Bind ViewModel.Lyrics3, Mode=TwoWay}"
                          HorizontalAlignment="Stretch"/>
@@ -263,22 +279,6 @@
                 <!--红字错误提示，绑定到 ViewModel 的 Lyrics3Error 属性-->
                 <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
                 <TextBlock Text="{x:Bind ViewModel.Lyrics3Error, Mode=OneWay}"
-                           Foreground="{StaticResource SystemErrorTextColor}"
-                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
-                           Margin="0,4,0,0"/>
-            </StackPanel>
-
-            <!--减时组合-->
-            <StackPanel Grid.Column="1" Grid.Row="4" HorizontalAlignment="Stretch">
-                <ComboBox Header="减时组合" PlaceholderText="选择减时组合..."
-                          ItemsSource="{x:Bind ViewModel.Beams, Mode=OneWay}"
-                          SelectedItem="{x:Bind ViewModel.SelectedBeam, Mode=TwoWay}"
-                          DisplayMemberPath="Name"
-                          HorizontalAlignment="Stretch"/>
-
-                <!--红字错误提示，绑定到 ViewModel 的 SelectedBeamError 属性-->
-                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
-                <TextBlock Text="{x:Bind ViewModel.SelectedBeamError, Mode=OneWay}"
                            Foreground="{StaticResource SystemErrorTextColor}"
                            FontSize="{StaticResource ToolTipContentThemeFontSize}"
                            Margin="0,4,0,0"/>
