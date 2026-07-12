@@ -1939,18 +1939,21 @@ namespace SEH.ViewModels
                                         #region 1.绘制减时线
                                         if (note.Duration == 0.5 || note.Duration == 0.25 || note.Duration == 0.125)
                                         {
-                                            //如果是八分音符、十六分音符和三十二分音符，且没有加入减时组合，则绘制减时线
-                                            if (string.IsNullOrWhiteSpace(note.BeamId) && note.X != null && note.Y != null && note.Width != null && note.Height != null)
+                                            //如果是八分音符、十六分音符和三十二分音符
+                                            if (note.X != null && note.Y != null && note.Width != null && note.Height != null)
                                             {
-                                                RenderElements.Add(new ScoreRenderLineElement
+                                                //如果没有加入减时组合，则绘制减时线
+                                                if (string.IsNullOrWhiteSpace(note.BeamId))
                                                 {
-                                                    X = (double)note.X,
-                                                    Y = (double)(note.Y + note.Height),
-                                                    Width = (double)note.Width,
-                                                    Height = 1,
-                                                    IsVertical = false
-                                                });
-
+                                                    RenderElements.Add(new ScoreRenderLineElement
+                                                    {
+                                                        X = (double)note.X,
+                                                        Y = (double)(note.Y + note.Height),
+                                                        Width = (double)note.Width,
+                                                        Height = 1,
+                                                        IsVertical = false
+                                                    });
+                                                }
                                                 bottomYOffset = (double)(note.Y + note.Height);
                                             }
                                         }
@@ -1959,15 +1962,18 @@ namespace SEH.ViewModels
                                             //如果是十六分音符和三十二分音符，则绘制第二条减时线
                                             if (note.X != null && note.Y != null && note.Width != null && note.Height != null)
                                             {
-                                                RenderElements.Add(new ScoreRenderLineElement
+                                                //如果没有加入减时组合，则绘制减时线
+                                                if (string.IsNullOrWhiteSpace(note.BeamId))
                                                 {
-                                                    X = (double)note.X,
-                                                    Y = (double)(note.Y + note.Height + 3),
-                                                    Width = (double)note.Width,
-                                                    Height = 1,
-                                                    IsVertical = false
-                                                });
-
+                                                    RenderElements.Add(new ScoreRenderLineElement
+                                                    {
+                                                        X = (double)note.X,
+                                                        Y = (double)(note.Y + note.Height + 3),
+                                                        Width = (double)note.Width,
+                                                        Height = 1,
+                                                        IsVertical = false
+                                                    });
+                                                }
                                                 bottomYOffset = (double)(note.Y + note.Height + 3);
                                             }
                                         }
@@ -1976,15 +1982,18 @@ namespace SEH.ViewModels
                                             //如果是三十二分音符，则绘制第三条减时线
                                             if (note.X != null && note.Y != null && note.Width != null && note.Height != null)
                                             {
-                                                RenderElements.Add(new ScoreRenderLineElement
+                                                //如果没有加入减时组合，则绘制减时线
+                                                if (string.IsNullOrWhiteSpace(note.BeamId))
                                                 {
-                                                    X = (double)note.X,
-                                                    Y = (double)(note.Y + note.Height + 6),
-                                                    Width = (double)note.Width,
-                                                    Height = 1,
-                                                    IsVertical = false
-                                                });
-
+                                                    RenderElements.Add(new ScoreRenderLineElement
+                                                    {
+                                                        X = (double)note.X,
+                                                        Y = (double)(note.Y + note.Height + 6),
+                                                        Width = (double)note.Width,
+                                                        Height = 1,
+                                                        IsVertical = false
+                                                    });
+                                                }
                                                 bottomYOffset = (double)(note.Y + note.Height + 6);
                                             }
                                         }
@@ -2102,32 +2111,57 @@ namespace SEH.ViewModels
                             #endregion
 
                             #region 4.绘制减时组合线
-                            double beamBaseYOffset = 40;//减时组合线在每行中的相对Y位置
                             if (measure.Beams != null && measure.Beams.Count > 0)
                             {
                                 foreach (var beam in measure.Beams)
                                 {
                                     if (measure.Notes != null)
                                     {
-                                        var notesInBeam = measure.Notes.Where(n => n.BeamId == beam.Id).OrderBy(n => n.Number);
-                                        if (notesInBeam != null && notesInBeam.Count<Note>() > 0)
+                                        var beamNotes = measure.Notes.Where(n => n.BeamId == beam.Id).OrderBy(n => n.Number);
+                                        if (beamNotes != null && beamNotes.Any())
                                         {
-                                            double beamX = notesInBeam.First<Note>().X ?? 0;
-                                            double beamY = currentY + beamBaseYOffset + notesInBeam.First<Note>().Height ?? 0;
-                                            double beamWidth = (notesInBeam.Last<Note>().X ?? 0) - (notesInBeam.First<Note>().X ?? 0) + (notesInBeam.Last<Note>().Width ?? 0);
+                                            double? beamX = beamNotes.First<Note>().X;
+                                            double? beamY = beamNotes.First<Note>().Y + beamNotes.First<Note>().Height;
+                                            double? beamWidth = beamNotes.Last<Note>().X - beamNotes.First<Note>().X + beamNotes.Last<Note>().Width;
 
-                                            if (beamX > 0 && beamWidth > 0)
+                                            if (beamX > 0 && beamY > 0 && beamWidth > 0)
                                             {
-                                                //绘制组合横线
-                                                //音符字符字体大小为22，像素高度为33，其中内边距上部为11，下部为5，实际字符高度为17
-                                                RenderElements.Add(new ScoreRenderLineElement
+                                                if (beam.Duration == 0.5 || beam.Duration == 0.25 || beam.Duration == 0.125)
                                                 {
-                                                    X = beamX,
-                                                    Y = beamY,
-                                                    Width = beamWidth,
-                                                    Height = 1,
-                                                    IsVertical = false
-                                                });
+                                                    //绘制单横线
+                                                    RenderElements.Add(new ScoreRenderLineElement
+                                                    {
+                                                        X = (double)beamX,
+                                                        Y = (double)beamY,
+                                                        Width = (double)beamWidth,
+                                                        Height = 1,
+                                                        IsVertical = false
+                                                    });
+                                                }
+                                                if (beam.Duration == 0.25 || beam.Duration == 0.125)
+                                                {
+                                                    //绘制双横线
+                                                    RenderElements.Add(new ScoreRenderLineElement
+                                                    {
+                                                        X = (double)beamX,
+                                                        Y = (double)beamY + 3,
+                                                        Width = (double)beamWidth,
+                                                        Height = 1,
+                                                        IsVertical = false
+                                                    });
+                                                }
+                                                if (beam.Duration == 0.125)
+                                                {
+                                                    //绘制三横线
+                                                    RenderElements.Add(new ScoreRenderLineElement
+                                                    {
+                                                        X = (double)beamX,
+                                                        Y = (double)beamY + 6,
+                                                        Width = (double)beamWidth,
+                                                        Height = 1,
+                                                        IsVertical = false
+                                                    });
+                                                }
                                             }
                                         }
                                     }
