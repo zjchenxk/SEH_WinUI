@@ -917,15 +917,30 @@ namespace SEH.ViewModels
             var ret = await _dialogService.ShowEditNoteDialogAsync(_measure.Beams, null);
             if (ret != null)
             {
-                //检查当前小节总拍数是否已满
-                int currentMeasureBeats = 0;
+                #region 检查当前小节总拍数是否已满
+                double currentMeasureBeats = 0;
                 if (_measure.Notes != null)
                 {
                     foreach (var note in _measure.Notes)
                     {
                         if (string.IsNullOrWhiteSpace(note.BeamId))
                         {
-                            currentMeasureBeats++;
+                            if (note.Duration == 1)//四分音符
+                            {
+                                currentMeasureBeats++;
+                            }
+                            else if (note.Duration == 0.5)//八分音符
+                            {
+                                currentMeasureBeats += 0.5;
+                            }
+                            else if (note.Duration == 0.25)//十六分音符
+                            {
+                                currentMeasureBeats += 0.25;
+                            }
+                            else if (note.Duration == 0.125)//三十二分音符
+                            {
+                                currentMeasureBeats += 0.125;
+                            }
                         }
                     }
                 }
@@ -945,7 +960,22 @@ namespace SEH.ViewModels
                 }
                 if (string.IsNullOrWhiteSpace(ret.BeamId))
                 {
-                    currentMeasureBeats++;
+                    if (ret.Duration == 1)//四分音符
+                    {
+                        currentMeasureBeats++;
+                    }
+                    else if (ret.Duration == 0.5)//八分音符
+                    {
+                        currentMeasureBeats += 0.5;
+                    }
+                    else if (ret.Duration == 0.25)//十六分音符
+                    {
+                        currentMeasureBeats += 0.25;
+                    }
+                    else if (ret.Duration == 0.125)//三十二分音符
+                    {
+                        currentMeasureBeats += 0.125;
+                    }
                 }
                 else
                 {
@@ -963,6 +993,7 @@ namespace SEH.ViewModels
                     await _messageService.ShowErrorAsync("当前小节拍数已满，请新增小节！");
                     return;
                 }
+                #endregion
 
                 //初始化 Note 集合
                 _measure.Notes ??= [];
@@ -1353,8 +1384,8 @@ namespace SEH.ViewModels
                     lineHeight = 120;//重置行高
 
                     #region 1.计算当前行音符占位宽度
-                    int currentLineBeats = 0;//当前行累计拍数
-                    int currentLineNotes = 0;//当前行累计音符数
+                    double currentLineBeats = 0;//当前行累计拍数
+                    double currentLineNotes = 0;//当前行累计音符数
                     if (line.Measures != null && line.Measures.Count > 0)
                     {
                         foreach (var measure in line.Measures)
@@ -1366,7 +1397,22 @@ namespace SEH.ViewModels
                                 {
                                     if (string.IsNullOrWhiteSpace(note.BeamId))
                                     {
-                                        currentLineBeats++;
+                                        if (note.Duration == 1)//四分音符
+                                        {
+                                            currentLineBeats++;
+                                        }
+                                        else if (note.Duration == 0.5)//八分音符
+                                        {
+                                            currentLineBeats += 0.5;
+                                        }
+                                        else if (note.Duration == 0.25)//十六分音符
+                                        {
+                                            currentLineBeats += 0.25;
+                                        }
+                                        else if (note.Duration == 0.125)//三十二分音符
+                                        {
+                                            currentLineBeats += 0.125;
+                                        }
                                     }
                                 }
                                 //计算组合拍数，一个组合为一拍
@@ -1541,7 +1587,7 @@ namespace SEH.ViewModels
                             #region 3.绘制音符
                             if (measure.Notes != null && measure.Notes.Count > 0)
                             {
-                                int currentMeasureBeats = 0;
+                                double currentMeasureBeats = 0;
 
                                 foreach (var note in measure.Notes)
                                 {
@@ -1955,11 +2001,18 @@ namespace SEH.ViewModels
                                         #endregion
 
                                         #region 2.绘制低音点
-                                        if (note.Pitch.StartsWith("---") || note.Pitch.StartsWith("--") || (note.Pitch.StartsWith("-") && note.Pitch != "-"))
+                                        if (note.Pitch.StartsWith("---") || note.Pitch.StartsWith("--") || (note.Pitch.StartsWith('-') && note.Pitch != "-"))
                                         {
-                                            if (note.X != null && note.Y != null && note.Width != null)
+                                            if (note.X != null && note.Y != null && note.Width != null && note.Height != null)
                                             {
-                                                bottomYOffset += 4;
+                                                if (bottomYOffset == 0)
+                                                {
+                                                    bottomYOffset = (double)(note.Y + note.Height);
+                                                }
+                                                else
+                                                {
+                                                    bottomYOffset += 4;
+                                                }
 
                                                 RenderElements.Add(new ScoreRenderDotElement
                                                 {
@@ -2063,7 +2116,22 @@ namespace SEH.ViewModels
 
                                     if (string.IsNullOrWhiteSpace(note.BeamId))
                                     {
-                                        currentMeasureBeats++;
+                                        if (note.Duration == 1)//四分音符
+                                        {
+                                            currentMeasureBeats++;
+                                        }
+                                        else if (note.Duration == 0.5)//八分音符
+                                        {
+                                            currentMeasureBeats += 0.5;
+                                        }
+                                        else if (note.Duration == 0.25)//十六分音符
+                                        {
+                                            currentMeasureBeats += 0.25;
+                                        }
+                                        else if (note.Duration == 0.125)//三十二分音符
+                                        {
+                                            currentMeasureBeats += 0.125;
+                                        }
                                     }
                                 }
 
