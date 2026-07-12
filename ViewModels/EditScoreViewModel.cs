@@ -10,7 +10,6 @@ using SEH.Commons;
 using SEH.Models;
 using SEH.Services.Interfaces;
 using SEH.Views;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -1090,64 +1089,20 @@ namespace SEH.ViewModels
                 return;
             }
 
-            //调用服务显示弹窗并获取结果
-            var ret = await _dialogService.ShowEditBeamDialogAsync();
-            if (ret != null)
+            //新增组合
+            _measure.Beams ??= [];
+            _beam = new Beam()
             {
-                _measure.Beams ??= [];
+                Id = Guid.NewGuid().ToString(),
+                MeasureId = _measure.Id,
+                LineId = _line.Id,
+                ScoreId = _score.Id,
+                Number = _measure.Beams.Count + 1,
+                Name = $"组合{_measure.Beams.Count + 1}"
+            };
+            _measure.Beams.Add(_beam);
 
-                //生成组合名称
-                string beamName = "";
-                if (ret.Duration == 0.5)//八分音符组合
-                {
-                    var beams = _measure.Beams.Where<Beam>(b => b.Duration == ret.Duration);
-                    if (beams != null)
-                    {
-                        beamName = $"八分音符组合{beams.Count() + 1}";
-                    }
-                    else
-                    {
-                        beamName = "八分音符组合1";
-                    }
-                }
-                else if (ret.Duration == 0.25)//十六分音符组合
-                {
-                    var beams = _measure.Beams.Where<Beam>(b => b.Duration == ret.Duration);
-                    if (beams != null)
-                    {
-                        beamName = $"十六分音符组合{beams.Count() + 1}";
-                    }
-                    else
-                    {
-                        beamName = "十六分音符组合1";
-                    }
-                }
-                else//三十二分音符组合
-                {
-                    var beams = _measure.Beams.Where<Beam>(b => b.Duration == ret.Duration);
-                    if (beams != null)
-                    {
-                        beamName = $"三十二分音符组合{beams.Count() + 1}";
-                    }
-                    else
-                    {
-                        beamName = "三十二分音符组合1";
-                    }
-                }
-
-                //新增组合
-                _beam = new Beam()
-                {
-                    Id = ret.Id,
-                    MeasureId = _measure.Id,
-                    LineId = _line.Id,
-                    ScoreId = _score.Id,
-                    Number = _measure.Beams.Count + 1,
-                    Duration = ret.Duration,
-                    Name = beamName
-                };
-                _measure.Beams.Add(_beam);
-            }
+            await _messageService.ShowInfoAsync("新增组合成功！");
         }
 
         /// <summary>
@@ -2055,6 +2010,36 @@ namespace SEH.ViewModels
                                                 Text = note.Lyrics
                                             });
                                         }
+                                        if (!string.IsNullOrWhiteSpace(note.Lyrics2) && note.X != null)
+                                        {
+                                            RenderElements.Add(new ScoreRenderTextElement
+                                            {
+                                                FontSize = 14,
+                                                X = (double)note.X,
+                                                Y = currentY + 120,
+                                                Text = note.Lyrics2
+                                            });
+
+                                            if (lineHeight < 140)
+                                            {
+                                                lineHeight = 140;
+                                            }
+                                        }
+                                        if (!string.IsNullOrWhiteSpace(note.Lyrics3) && note.X != null)
+                                        {
+                                            RenderElements.Add(new ScoreRenderTextElement
+                                            {
+                                                FontSize = 14,
+                                                X = (double)note.X,
+                                                Y = currentY + 140,
+                                                Text = note.Lyrics3
+                                            });
+
+                                            if (lineHeight < 160)
+                                            {
+                                                lineHeight = 160;
+                                            }
+                                        }
                                         #endregion
                                     }
                                     #endregion
@@ -2120,15 +2105,14 @@ namespace SEH.ViewModels
                                         var beamNotes = measure.Notes.Where(n => n.BeamId == beam.Id).OrderBy(n => n.Number);
                                         if (beamNotes != null && beamNotes.Any())
                                         {
-                                            double? beamX = beamNotes.First<Note>().X;
-                                            double? beamY = beamNotes.First<Note>().Y + beamNotes.First<Note>().Height;
-                                            double? beamWidth = beamNotes.Last<Note>().X - beamNotes.First<Note>().X + beamNotes.Last<Note>().Width;
-
-                                            if (beamX > 0 && beamY > 0 && beamWidth > 0)
+                                            #region 1.默认绘制八分音符组合线
                                             {
-                                                if (beam.Duration == 0.5 || beam.Duration == 0.25 || beam.Duration == 0.125)
+                                                double? beamX = beamNotes.First<Note>().X;
+                                                double? beamY = beamNotes.First<Note>().Y + beamNotes.First<Note>().Height;
+                                                double? beamWidth = beamNotes.Last<Note>().X - beamNotes.First<Note>().X + beamNotes.Last<Note>().Width;
+
+                                                if (beamX > 0 && beamY > 0 && beamWidth > 0)
                                                 {
-                                                    //绘制单横线
                                                     RenderElements.Add(new ScoreRenderLineElement
                                                     {
                                                         X = (double)beamX,
@@ -2138,31 +2122,62 @@ namespace SEH.ViewModels
                                                         IsVertical = false
                                                     });
                                                 }
-                                                if (beam.Duration == 0.25 || beam.Duration == 0.125)
+                                            }
+                                            #endregion
+
+                                            #region 2.绘制十六分音符组合线
+                                            {
+                                                var noteSequences = FindConsecutiveNoteSequences(beamNotes.ToList(), 0.25F, 1);
+                                                if (noteSequences != null && noteSequences.Count > 0)
                                                 {
-                                                    //绘制双横线
-                                                    RenderElements.Add(new ScoreRenderLineElement
+                                                    foreach (var noteSequence in noteSequences)
                                                     {
-                                                        X = (double)beamX,
-                                                        Y = (double)beamY + 3,
-                                                        Width = (double)beamWidth,
-                                                        Height = 1,
-                                                        IsVertical = false
-                                                    });
-                                                }
-                                                if (beam.Duration == 0.125)
-                                                {
-                                                    //绘制三横线
-                                                    RenderElements.Add(new ScoreRenderLineElement
-                                                    {
-                                                        X = (double)beamX,
-                                                        Y = (double)beamY + 6,
-                                                        Width = (double)beamWidth,
-                                                        Height = 1,
-                                                        IsVertical = false
-                                                    });
+                                                        double? beamX = noteSequence.First<Note>().X;
+                                                        double? beamY = noteSequence.First<Note>().Y + noteSequence.First<Note>().Height;
+                                                        double? beamWidth = noteSequence.Last<Note>().X - noteSequence.First<Note>().X + noteSequence.Last<Note>().Width;
+
+                                                        if (beamX > 0 && beamY > 0 && beamWidth > 0)
+                                                        {
+                                                            RenderElements.Add(new ScoreRenderLineElement
+                                                            {
+                                                                X = (double)beamX,
+                                                                Y = (double)beamY + 3,
+                                                                Width = (double)beamWidth,
+                                                                Height = 1,
+                                                                IsVertical = false
+                                                            });
+                                                        }
+                                                    }
                                                 }
                                             }
+                                            #endregion
+
+                                            #region 3.绘制三十二分音符组合线
+                                            {
+                                                var noteSequences = FindConsecutiveNoteSequences(beamNotes.ToList(), 0.125F, 1);
+                                                if (noteSequences != null && noteSequences.Count > 0)
+                                                {
+                                                    foreach (var noteSequence in noteSequences)
+                                                    {
+                                                        double? beamX = noteSequence.First<Note>().X;
+                                                        double? beamY = noteSequence.First<Note>().Y + noteSequence.First<Note>().Height;
+                                                        double? beamWidth = noteSequence.Last<Note>().X - noteSequence.First<Note>().X + noteSequence.Last<Note>().Width;
+
+                                                        if (beamX > 0 && beamY > 0 && beamWidth > 0)
+                                                        {
+                                                            RenderElements.Add(new ScoreRenderLineElement
+                                                            {
+                                                                X = (double)beamX,
+                                                                Y = (double)beamY + 6,
+                                                                Width = (double)beamWidth,
+                                                                Height = 1,
+                                                                IsVertical = false
+                                                            });
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            #endregion
                                         }
                                     }
                                 }
@@ -2499,6 +2514,48 @@ namespace SEH.ViewModels
             textBlock.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 
             return textBlock.DesiredSize;
+        }
+
+        /// <summary>
+        /// 找出集合中所有连续的音符序列
+        /// </summary>
+        /// <param name="notes">音符集合</param>
+        /// <param name="duration">时值，默认为八分音符0.5</param>
+        /// <param name="minCount">最小连续数量，默认为2（单个音符不构成序列）</param>
+        /// <returns></returns>
+        private List<List<Note>> FindConsecutiveNoteSequences(List<Note> notes, float duration = 0.5F, int minCount = 2)
+        {
+            var result = new List<List<Note>>();
+            var currentSequence = new List<Note>();
+
+            foreach (var note in notes)
+            {
+                //判断是否为指定时值音符
+                if (note.Duration == duration)
+                {
+                    currentSequence.Add(note);
+                }
+                else
+                {
+                    //遇到了非十六分音符，说明连续序列断裂
+                    //如果当前序列满足最小长度要求，则加入结果集
+                    if (currentSequence.Count >= minCount)
+                    {
+                        result.Add(currentSequence);
+                    }
+
+                    //清空当前序列，准备寻找下一个连续序列
+                    currentSequence = [];
+                }
+            }
+
+            //遍历结束后，检查最后一段序列（因为可能集合的最后一个元素也是指定时值音符）
+            if (currentSequence.Count >= minCount)
+            {
+                result.Add(currentSequence);
+            }
+
+            return result;
         }
 
         /// <summary>

@@ -27,12 +27,5 @@ namespace SEH.Services.Interfaces
         /// <param name="note"></param>
         /// <returns></returns>
         Task<Note?> ShowEditNoteDialogAsync(List<Beam>? beams = null, Note? note = null);
-
-        /// <summary>
-        /// 显示组合编辑对话框
-        /// </summary>
-        /// <param name="beam"></param>
-        /// <returns></returns>
-        Task<Beam?> ShowEditBeamDialogAsync(Beam? beam = null);
     }
 }
