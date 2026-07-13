@@ -927,19 +927,71 @@ namespace SEH.ViewModels
                         {
                             if (note.Duration == 1)//四分音符
                             {
-                                currentMeasureBeats++;
+                                currentMeasureBeats += 1;
+
+                                if (note.Dots == 1)//单附点延长音符时值的二分之一
+                                {
+                                    currentMeasureBeats += (1 * 0.5);
+                                }
+                                else if (note.Dots == 2)//复附点延长音符时值的四分之三
+                                {
+                                    currentMeasureBeats += (1 * 3.0 / 4.0);
+                                }
+                                else if (note.Dots == 3)//三附点延长音符时值的八分之七
+                                {
+                                    currentMeasureBeats += (1 * 7.0 / 8.0);
+                                }
                             }
                             else if (note.Duration == 0.5)//八分音符
                             {
                                 currentMeasureBeats += 0.5;
+
+                                if (note.Dots == 1)//单附点延长音符时值的二分之一
+                                {
+                                    currentMeasureBeats += (0.5 * 0.5);
+                                }
+                                else if (note.Dots == 2)//复附点延长音符时值的四分之三
+                                {
+                                    currentMeasureBeats += (0.5 * 3.0 / 4.0);
+                                }
+                                else if (note.Dots == 3)//三附点延长音符时值的八分之七
+                                {
+                                    currentMeasureBeats += (0.5 * 7.0 / 8.0);
+                                }
                             }
                             else if (note.Duration == 0.25)//十六分音符
                             {
                                 currentMeasureBeats += 0.25;
+
+                                if (note.Dots == 1)//单附点延长音符时值的二分之一
+                                {
+                                    currentMeasureBeats += (0.25 * 0.5);
+                                }
+                                else if (note.Dots == 2)//复附点延长音符时值的四分之三
+                                {
+                                    currentMeasureBeats += (0.25 * 3.0 / 4.0);
+                                }
+                                else if (note.Dots == 3)//三附点延长音符时值的八分之七
+                                {
+                                    currentMeasureBeats += (0.25 * 7.0 / 8.0);
+                                }
                             }
                             else if (note.Duration == 0.125)//三十二分音符
                             {
                                 currentMeasureBeats += 0.125;
+
+                                if (note.Dots == 1)//单附点延长音符时值的二分之一
+                                {
+                                    currentMeasureBeats += (0.125 * 0.5);
+                                }
+                                else if (note.Dots == 2)//复附点延长音符时值的四分之三
+                                {
+                                    currentMeasureBeats += (0.125 * 3.0 / 4.0);
+                                }
+                                else if (note.Dots == 3)//三附点延长音符时值的八分之七
+                                {
+                                    currentMeasureBeats += (0.125 * 7.0 / 8.0);
+                                }
                             }
                         }
                     }
@@ -962,19 +1014,71 @@ namespace SEH.ViewModels
                 {
                     if (ret.Duration == 1)//四分音符
                     {
-                        currentMeasureBeats++;
+                        currentMeasureBeats += 1;
+
+                        if (ret.Dots == 1)//单附点延长音符时值的二分之一
+                        {
+                            currentMeasureBeats += (1 * 0.5);
+                        }
+                        else if (ret.Dots == 2)//复附点延长音符时值的四分之三
+                        {
+                            currentMeasureBeats += (1 * 3.0 / 4.0);
+                        }
+                        else if (ret.Dots == 3)//三附点延长音符时值的八分之七
+                        {
+                            currentMeasureBeats += (1 * 7.0 / 8.0);
+                        }
                     }
                     else if (ret.Duration == 0.5)//八分音符
                     {
                         currentMeasureBeats += 0.5;
+
+                        if (ret.Dots == 1)//单附点延长音符时值的二分之一
+                        {
+                            currentMeasureBeats += (0.5 * 0.5);
+                        }
+                        else if (ret.Dots == 2)//复附点延长音符时值的四分之三
+                        {
+                            currentMeasureBeats += (0.5 * 3.0 / 4.0);
+                        }
+                        else if (ret.Dots == 3)//三附点延长音符时值的八分之七
+                        {
+                            currentMeasureBeats += (0.5 * 7.0 / 8.0);
+                        }
                     }
                     else if (ret.Duration == 0.25)//十六分音符
                     {
                         currentMeasureBeats += 0.25;
+
+                        if (ret.Dots == 1)//单附点延长音符时值的二分之一
+                        {
+                            currentMeasureBeats += (0.25 * 0.5);
+                        }
+                        else if (ret.Dots == 2)//复附点延长音符时值的四分之三
+                        {
+                            currentMeasureBeats += (0.25 * 3.0 / 4.0);
+                        }
+                        else if (ret.Dots == 3)//三附点延长音符时值的八分之七
+                        {
+                            currentMeasureBeats += (0.25 * 7.0 / 8.0);
+                        }
                     }
                     else if (ret.Duration == 0.125)//三十二分音符
                     {
                         currentMeasureBeats += 0.125;
+
+                        if (ret.Dots == 1)//单附点延长音符时值的二分之一
+                        {
+                            currentMeasureBeats += (0.125 * 0.5);
+                        }
+                        else if (ret.Dots == 2)//复附点延长音符时值的四分之三
+                        {
+                            currentMeasureBeats += (0.125 * 3.0 / 4.0);
+                        }
+                        else if (ret.Dots == 3)//三附点延长音符时值的八分之七
+                        {
+                            currentMeasureBeats += (0.125 * 7.0 / 8.0);
+                        }
                     }
                 }
                 else
@@ -1399,19 +1503,71 @@ namespace SEH.ViewModels
                                     {
                                         if (note.Duration == 1)//四分音符
                                         {
-                                            currentLineBeats++;
+                                            currentLineBeats += 1;
+
+                                            if (note.Dots == 1)//单附点延长音符时值的二分之一
+                                            {
+                                                currentLineBeats += (1 * 0.5);
+                                            }
+                                            else if (note.Dots == 2)//复附点延长音符时值的四分之三
+                                            {
+                                                currentLineBeats += (1 * 3.0 / 4.0);
+                                            }
+                                            else if (note.Dots == 3)//三附点延长音符时值的八分之七
+                                            {
+                                                currentLineBeats += (1 * 7.0 / 8.0);
+                                            }
                                         }
                                         else if (note.Duration == 0.5)//八分音符
                                         {
                                             currentLineBeats += 0.5;
+
+                                            if (note.Dots == 1)//单附点延长音符时值的二分之一
+                                            {
+                                                currentLineBeats += (0.5 * 0.5);
+                                            }
+                                            else if (note.Dots == 2)//复附点延长音符时值的四分之三
+                                            {
+                                                currentLineBeats += (0.5 * 3.0 / 4.0);
+                                            }
+                                            else if (note.Dots == 3)//三附点延长音符时值的八分之七
+                                            {
+                                                currentLineBeats += (0.5 * 7.0 / 8.0);
+                                            }
                                         }
                                         else if (note.Duration == 0.25)//十六分音符
                                         {
                                             currentLineBeats += 0.25;
+
+                                            if (note.Dots == 1)//单附点延长音符时值的二分之一
+                                            {
+                                                currentLineBeats += (0.25 * 0.5);
+                                            }
+                                            else if (note.Dots == 2)//复附点延长音符时值的四分之三
+                                            {
+                                                currentLineBeats += (0.25 * 3.0 / 4.0);
+                                            }
+                                            else if (note.Dots == 3)//三附点延长音符时值的八分之七
+                                            {
+                                                currentLineBeats += (0.25 * 7.0 / 8.0);
+                                            }
                                         }
                                         else if (note.Duration == 0.125)//三十二分音符
                                         {
                                             currentLineBeats += 0.125;
+
+                                            if (note.Dots == 1)//单附点延长音符时值的二分之一
+                                            {
+                                                currentLineBeats += (0.125 * 0.5);
+                                            }
+                                            else if (note.Dots == 2)//复附点延长音符时值的四分之三
+                                            {
+                                                currentLineBeats += (0.125 * 3.0 / 4.0);
+                                            }
+                                            else if (note.Dots == 3)//三附点延长音符时值的八分之七
+                                            {
+                                                currentLineBeats += (0.125 * 7.0 / 8.0);
+                                            }
                                         }
                                     }
                                 }
@@ -2118,19 +2274,71 @@ namespace SEH.ViewModels
                                     {
                                         if (note.Duration == 1)//四分音符
                                         {
-                                            currentMeasureBeats++;
+                                            currentMeasureBeats += 1;
+
+                                            if (note.Dots == 1)//单附点延长音符时值的二分之一
+                                            {
+                                                currentMeasureBeats += (1 * 0.5);
+                                            }
+                                            else if (note.Dots == 2)//复附点延长音符时值的四分之三
+                                            {
+                                                currentMeasureBeats += (1 * 3.0 / 4.0);
+                                            }
+                                            else if (note.Dots == 3)//三附点延长音符时值的八分之七
+                                            {
+                                                currentMeasureBeats += (1 * 7.0 / 8.0);
+                                            }
                                         }
                                         else if (note.Duration == 0.5)//八分音符
                                         {
                                             currentMeasureBeats += 0.5;
+
+                                            if (note.Dots == 1)//单附点延长音符时值的二分之一
+                                            {
+                                                currentMeasureBeats += (0.5 * 0.5);
+                                            }
+                                            else if (note.Dots == 2)//复附点延长音符时值的四分之三
+                                            {
+                                                currentMeasureBeats += (0.5 * 3.0 / 4.0);
+                                            }
+                                            else if (note.Dots == 3)//三附点延长音符时值的八分之七
+                                            {
+                                                currentMeasureBeats += (0.5 * 7.0 / 8.0);
+                                            }
                                         }
                                         else if (note.Duration == 0.25)//十六分音符
                                         {
                                             currentMeasureBeats += 0.25;
+
+                                            if (note.Dots == 1)//单附点延长音符时值的二分之一
+                                            {
+                                                currentMeasureBeats += (0.25 * 0.5);
+                                            }
+                                            else if (note.Dots == 2)//复附点延长音符时值的四分之三
+                                            {
+                                                currentMeasureBeats += (0.25 * 3.0 / 4.0);
+                                            }
+                                            else if (note.Dots == 3)//三附点延长音符时值的八分之七
+                                            {
+                                                currentMeasureBeats += (0.25 * 7.0 / 8.0);
+                                            }
                                         }
                                         else if (note.Duration == 0.125)//三十二分音符
                                         {
                                             currentMeasureBeats += 0.125;
+
+                                            if (note.Dots == 1)//单附点延长音符时值的二分之一
+                                            {
+                                                currentMeasureBeats += (0.125 * 0.5);
+                                            }
+                                            else if (note.Dots == 2)//复附点延长音符时值的四分之三
+                                            {
+                                                currentMeasureBeats += (0.125 * 3.0 / 4.0);
+                                            }
+                                            else if (note.Dots == 3)//三附点延长音符时值的八分之七
+                                            {
+                                                currentMeasureBeats += (0.125 * 7.0 / 8.0);
+                                            }
                                         }
                                     }
                                 }
@@ -2456,6 +2664,25 @@ namespace SEH.ViewModels
                                                 slurNotes.Add((null, note));
                                             }
                                         }
+                                        else if (note.Slur == 2)//连音线结束后开始新连音线
+                                        {
+                                            int i = slurNotes.Count - 1;
+                                            while (i >= 0)
+                                            {
+                                                if (slurNotes[i].from != null && slurNotes[i].to == null)
+                                                {
+                                                    slurNotes[i] = (slurNotes[i].from, note);
+                                                    break;
+                                                }
+                                                i--;
+                                            }
+                                            if (i < 0)
+                                            {
+                                                slurNotes.Add((null, note));
+                                            }
+
+                                            slurNotes.Add((note, null));
+                                        }
                                     }
                                 }
                             }
@@ -2541,6 +2768,17 @@ namespace SEH.ViewModels
                     currentY += line.Height;
                     if (currentY > canvasHeight)
                     {
+                        RenderElements.Add(new ScoreRenderLineElement
+                        {
+                            X = 0,
+                            Y = Height,
+                            Width = Width,
+                            Height = 1,
+                            IsVertical = false,
+                            IsDashed = true,
+                            LineBrush = new SolidColorBrush(Microsoft.UI.Colors.Gainsboro)
+                        });
+
                         if (_score.Direction == 1)//纵向
                         {
                             Height += 1123;

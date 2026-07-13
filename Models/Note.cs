@@ -74,7 +74,7 @@ namespace SEH.Models
         public int Fermata { get; set; }
 
         /// <summary>
-        /// 连音线标记，如：1-开始，0-表示结束
+        /// 连音线标记，如：1-开始，0-结束，2-结束并开始
         /// </summary>
         [Column("slur")]
         public int? Slur { get; set; }

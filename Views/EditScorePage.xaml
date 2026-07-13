@@ -52,7 +52,7 @@
 
                 <!--通过计算属性直接绘制横线或竖线-->
                 <Line X1="{x:Bind X1}" Y1="{x:Bind Y1}" X2="{x:Bind X2}" Y2="{x:Bind Y2}"
-                      Stroke="Black" 
+                      Stroke="{x:Bind LineBrush}" 
                       StrokeThickness="{x:Bind Thickness}" 
                       StrokeStartLineCap="Square" 
                       StrokeEndLineCap="Square"

@@ -74,7 +74,7 @@ namespace SEH.ViewModels
         private string? _fermataError = "";
 
         /// <summary>
-        /// 连音线标记（1-开始，0-结束）
+        /// 连音线标记（1-开始，0-结束，2-结束并开始）
         /// </summary>
         [ObservableProperty]
         private string _slur = "";

@@ -172,9 +172,10 @@
                           SelectedValuePath="Tag"
                           SelectedValue="{x:Bind ViewModel.Slur, Mode=TwoWay}"
                           HorizontalAlignment="Stretch">
-                    <ComboBoxItem Content="无连音线" Tag="" IsSelected="True"/>
-                    <ComboBoxItem Content="开始连音线" Tag="1"/>
-                    <ComboBoxItem Content="结束连音线" Tag="0"/>
+                    <ComboBoxItem Content="无" Tag="" IsSelected="True"/>
+                    <ComboBoxItem Content="开始" Tag="1"/>
+                    <ComboBoxItem Content="结束" Tag="0"/>
+                    <ComboBoxItem Content="结束并开始" Tag="2"/>
                 </ComboBox>
 
                 <!--红字错误提示，绑定到 ViewModel 的 SlurError 属性-->

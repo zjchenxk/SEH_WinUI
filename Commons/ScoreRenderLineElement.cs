@@ -1,4 +1,6 @@
-﻿using SEH.Models;
+﻿using Microsoft.UI;
+using Microsoft.UI.Xaml.Media;
+using SEH.Models;
 
 namespace SEH.Commons
 {
@@ -11,6 +13,7 @@ namespace SEH.Commons
         public double Height { get; set; }
         public bool IsVertical { get; set; }
         public bool IsDashed { get; set; } = false;
+        public SolidColorBrush LineBrush { get; set; } = new SolidColorBrush(Colors.Black);
 
         public double X1 => 0;
         public double Y1 => 0;
