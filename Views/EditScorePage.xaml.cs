@@ -32,6 +32,7 @@ namespace SEH.Views
         private IPrintDocumentSource? PrintDocSource;
         private UIElement? PrintContainer; //要打印的 UI 元素
         private IntPtr PrintHwnd;
+        private PrintPageDescription PrintPageDesc;
 
 
         public EditScorePage()
@@ -131,24 +132,116 @@ namespace SEH.Views
 
         private void Paginate(object sender, PaginateEventArgs e)
         {
-            PrintDoc?.SetPreviewPageCount(1, PreviewPageCountType.Final);
+            if (ViewModel == null) return;
+
+            //获取打印设置中的第一页页面描述，并缓存起来
+            PrintPageDesc = e.PrintTaskOptions.GetPageDescription(0);
+            double printableHeight = PrintPageDesc.ImageableRect.Height;
+
+            //直接使用 ViewModel 中的简谱总高度（去除界面边距和边框的影响）
+            double contentHeight = ViewModel.Height;
+
+            //计算需要打印的总页数
+            int pageCount = (int)(contentHeight / printableHeight);
+
+            //加入 1 像素容差防止精度误差导致多出空白页
+            //只有当内容高度大于一页，且超出部分大于 1 像素时，才增加一页
+            if (contentHeight > printableHeight && (contentHeight % printableHeight) > 1.0)
+            {
+                pageCount++;
+            }
+            if (pageCount < 1) pageCount = 1;
+
+            PrintDoc?.SetPreviewPageCount(pageCount, PreviewPageCountType.Final);
         }
 
         private void GetPreviewPage(object sender, GetPreviewPageEventArgs e)
         {
             if (PrintContainer != null)
             {
-                PrintDoc?.SetPreviewPage(e.PageNumber, PrintContainer);
+                var pageElement = CreatePageForPrinting(e.PageNumber, PrintPageDesc);
+                PrintDoc?.SetPreviewPage(e.PageNumber, pageElement);
             }
         }
 
         private void AddPages(object sender, AddPagesEventArgs e)
         {
-            if (PrintContainer != null)
+            if (ViewModel == null) return;
+
+            double printableHeight = PrintPageDesc.ImageableRect.Height;
+            double contentHeight = ViewModel.Height;
+
+            //同样使用带容差的计算方式
+            int pageCount = (int)(contentHeight / printableHeight);
+            if (contentHeight > printableHeight && (contentHeight % printableHeight) > 1.0)
             {
-                PrintDoc?.AddPage(PrintContainer);
+                pageCount++;
+            }
+            if (pageCount < 1) pageCount = 1;
+
+            for (int i = 1; i <= pageCount; i++)
+            {
+                var pageElement = CreatePageForPrinting(i, PrintPageDesc);
+                PrintDoc?.AddPage(pageElement);
             }
             PrintDoc?.AddPagesComplete();
+        }
+
+        /// <summary>
+        /// 根据页码动态创建带有偏移和裁剪的单页 UI 元素
+        /// </summary>
+        private UIElement CreatePageForPrinting(int pageNumber, PrintPageDescription pageDesc)
+        {
+            if (ViewModel == null) return new Canvas();
+
+            double printableHeight = pageDesc.ImageableRect.Height;
+            double printableWidth = pageDesc.ImageableRect.Width;
+
+            //计算当前页需要偏移的高度
+            double offsetY = (pageNumber - 1) * printableHeight;
+
+            //创建一个 Canvas 作为当前页的外壳，限定其尺寸为单张打印纸大小
+            Canvas printPage = new Canvas
+            {
+                Width = pageDesc.PageSize.Width,
+                Height = pageDesc.PageSize.Height
+            };
+
+            //使用 XamlReader 动态创建带有指定宽高 Grid 的 ItemsControl
+            string itemsControlXaml = $@"
+                <ItemsControl xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Grid Width=""{ViewModel.Width}"" Height=""{ViewModel.Height}""/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>";
+
+            var printItemsControl = (ItemsControl)Microsoft.UI.Xaml.Markup.XamlReader.Load(itemsControlXaml);
+
+            //绑定同一份数据源
+            printItemsControl.ItemsSource = ViewModel.RenderElements;
+
+            //复用页面中的模板选择器
+            printItemsControl.ItemTemplateSelector = (ScoreRenderTemplateSelector)this.Resources["ScoreTemplateSelector"];
+
+            //将动态生成的控件放入裁剪容器中
+            printPage.Children.Add(printItemsControl);
+
+            //设置偏移，让目标页的内容显示在可视区域内，并加上打印机要求的安全边距
+            printItemsControl.RenderTransform = new TranslateTransform
+            {
+                X = pageDesc.ImageableRect.X,
+                Y = pageDesc.ImageableRect.Y - offsetY
+            };
+
+            //使用矩形裁剪，防止其他页的内容溢出到当前页
+            printPage.Clip = new RectangleGeometry
+            {
+                Rect = new Rect(pageDesc.ImageableRect.X, pageDesc.ImageableRect.Y, printableWidth, printableHeight)
+            };
+
+            return printPage;
         }
 
         private async Task PrintAsync()
