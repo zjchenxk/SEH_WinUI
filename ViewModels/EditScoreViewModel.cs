@@ -1317,7 +1317,6 @@ namespace SEH.ViewModels
             double startX = _score.LeftMargin;
             double startY = _score.TopMargin;
             double canvasWidth = Width - _score.LeftMargin - _score.RightMargin;//设置画布宽度
-            double canvasHeight = Height - _score.TopMargin - _score.BottomMargin;//设置画布高度
             double lineHeight = 120;//设置每行高度（默认为120）
             double measureLeftPadding = 10;//小节左边距
             double measureRightPadding = 10;//小节右边距
@@ -1485,9 +1484,55 @@ namespace SEH.ViewModels
 
                 foreach (var line in _score.Lines)
                 {
-                    lineHeight = 120;//重置行高
+                    #region 1.计算行高
+                    {
+                        lineHeight = 120;//重置行高
 
-                    #region 1.计算当前行音符占位宽度
+                        if (line.Measures != null && line.Measures.Count > 0)
+                        {
+                            foreach (var measure in line.Measures)
+                            {
+                                if (measure.Notes != null && measure.Notes.Count > 0)
+                                {
+                                    foreach (var note in measure.Notes)
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(note.Lyrics2))
+                                        {
+                                            if (lineHeight < 140)
+                                            {
+                                                lineHeight = 140;
+                                            }
+                                        }
+                                        if (!string.IsNullOrWhiteSpace(note.Lyrics3))
+                                        {
+                                            if (lineHeight < 160)
+                                            {
+                                                lineHeight = 160;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        line.Height = lineHeight;
+
+                        if (currentY + line.Height + _score.BottomMargin > Height)
+                        {
+                            currentY = (Height + startY);
+
+                            if (_score.Direction == 1)//纵向
+                            {
+                                Height += 1123;
+                            }
+                            else//横向
+                            {
+                                Height += 794;
+                            }
+                        }
+                    }
+                    #endregion
+
+                    #region 2.计算当前行音符占位宽度
                     double currentLineBeats = 0;//当前行累计拍数
                     double currentLineNotes = 0;//当前行累计音符数
                     if (line.Measures != null && line.Measures.Count > 0)
@@ -1599,7 +1644,7 @@ namespace SEH.ViewModels
                     line.NoteWidth = (canvasWidth - line.MeasureCount * (measureLeftPadding + measureRightPadding)) / currentLineNotes;
                     #endregion
 
-                    #region 2.绘制行起点竖线
+                    #region 3.绘制行起点竖线
                     //每行的高度为：rowHeight，上边距为：20，下边距为：20，中间绘制区高度为：80
                     //-------------------------
                     //   20
@@ -1624,7 +1669,7 @@ namespace SEH.ViewModels
                     });
                     #endregion
 
-                    #region 3.绘制小节
+                    #region 4.绘制小节
                     if (line.Measures != null && line.Measures.Count > 0)
                     {
                         double currentX = startX;
@@ -2228,11 +2273,6 @@ namespace SEH.ViewModels
                                                 Y = currentY + 120,
                                                 Text = note.Lyrics2
                                             });
-
-                                            if (lineHeight < 140)
-                                            {
-                                                lineHeight = 140;
-                                            }
                                         }
                                         if (!string.IsNullOrWhiteSpace(note.Lyrics3) && note.X != null)
                                         {
@@ -2243,11 +2283,6 @@ namespace SEH.ViewModels
                                                 Y = currentY + 140,
                                                 Text = note.Lyrics3
                                             });
-
-                                            if (lineHeight < 160)
-                                            {
-                                                lineHeight = 160;
-                                            }
                                         }
                                         #endregion
                                     }
@@ -2631,7 +2666,7 @@ namespace SEH.ViewModels
                     }
                     #endregion
 
-                    #region 4.绘制连音线
+                    #region 5.绘制连音线
                     {
                         List<(Note? from, Note? to)> slurNotes = [];//连音音符集合
 
@@ -2763,33 +2798,36 @@ namespace SEH.ViewModels
                     }
                     #endregion
 
-                    #region 5.自动换页
-                    line.Height = lineHeight;
                     currentY += line.Height;
-                    if (currentY > canvasHeight)
-                    {
-                        RenderElements.Add(new ScoreRenderLineElement
-                        {
-                            X = 0,
-                            Y = Height,
-                            Width = Width,
-                            Height = 1,
-                            IsVertical = false,
-                            IsDashed = true,
-                            LineBrush = new SolidColorBrush(Microsoft.UI.Colors.Gainsboro)
-                        });
+                }
+            }
+            #endregion
 
-                        if (_score.Direction == 1)//纵向
-                        {
-                            Height += 1123;
-                        }
-                        else//横向
-                        {
-                            Height += 794;
-                        }
-                        canvasHeight = Height - _score.TopMargin - _score.BottomMargin;//重置画布高度
-                    }
-                    #endregion
+            #region 3.绘制分页分隔线
+            {
+                int pageHeight;
+                if (_score.Direction == 1)//纵向
+                {
+                    pageHeight = 1123;
+                }
+                else//横向
+                {
+                    pageHeight = 794;
+                }
+
+                int pageCount = (int)(Height / pageHeight);
+                for (int i = 1; i < pageCount; i++)
+                {
+                    RenderElements.Add(new ScoreRenderLineElement
+                    {
+                        X = 0,
+                        Y = i * pageHeight,
+                        Width = Width,
+                        Height = 1,
+                        IsVertical = false,
+                        IsDashed = true,
+                        LineBrush = new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 118, 118, 118))
+                    });
                 }
             }
             #endregion
