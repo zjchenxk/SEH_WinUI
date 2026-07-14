@@ -2803,7 +2803,7 @@ namespace SEH.ViewModels
             }
             #endregion
 
-            #region 3.绘制分页分隔线
+            #region 3.绘制分页符和页码
             {
                 int pageHeight;
                 if (_score.Direction == 1)//纵向
@@ -2816,12 +2816,29 @@ namespace SEH.ViewModels
                 }
 
                 int pageCount = (int)(Height / pageHeight);
-                for (int i = 1; i < pageCount; i++)
+
+                //绘制页码
+                for (int pageIndex = 1; pageIndex <= pageCount; pageIndex++)
+                {
+                    var pageNo = $"第{pageIndex}页 共{pageCount}页";
+                    var pageNoSize = CalcTextWidth(pageNo, 14, FontWeights.Normal);
+
+                    RenderElements.Add(new ScoreRenderTextElement
+                    {
+                        FontSize = 14,
+                        X = startX + (canvasWidth - pageNoSize.Width) / 2,
+                        Y = pageIndex * pageHeight - _score.BottomMargin + (_score.BottomMargin - pageNoSize.Height) / 2,
+                        Text = pageNo
+                    });
+                }
+
+                //绘制分页符
+                for (int pageIndex = 1; pageIndex < pageCount; pageIndex++)
                 {
                     RenderElements.Add(new ScoreRenderLineElement
                     {
                         X = 0,
-                        Y = i * pageHeight,
+                        Y = pageIndex * pageHeight,
                         Width = Width,
                         Height = 1,
                         IsVertical = false,
