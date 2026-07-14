@@ -61,6 +61,19 @@
             </Canvas>
         </DataTemplate>
 
+        <!--直线连音线模板-->
+        <DataTemplate x:Key="TieLineTemplate" x:DataType="commons:ScoreRenderTieLineElement">
+            <Path Stroke="Black" StrokeThickness="{x:Bind Height}" Data="{x:Bind PathData}" 
+                  StrokeStartLineCap="Round" 
+                  StrokeEndLineCap="Round"
+                  HorizontalAlignment="Left" 
+                  VerticalAlignment="Top">
+                <Path.RenderTransform>
+                    <TranslateTransform X="{x:Bind X}" Y="{x:Bind Y}"/>
+                </Path.RenderTransform>
+            </Path>
+        </DataTemplate>
+
         <!--弧线渲染模板-->
         <DataTemplate x:Key="ArcTemplate" x:DataType="commons:ScoreRenderArcElement">
             <Path Stroke="Black" StrokeThickness="1.5" Fill="Transparent"
@@ -104,6 +117,7 @@
                                              TextDataTemplate="{StaticResource TextTemplate}"
                                              DotDataTemplate="{StaticResource DotTemplate}"
                                              LineDataTemplate="{StaticResource LineTemplate}"
+                                             TieLineDataTemplate="{StaticResource TieLineTemplate}"
                                              ArcDataTemplate="{StaticResource ArcTemplate}"
                                              FermataDataTemplate="{StaticResource FermataTemplate}"/>
     </Page.Resources>

@@ -8,6 +8,7 @@ namespace SEH.Commons
         public DataTemplate? TextDataTemplate { get; set; }
         public DataTemplate? DotDataTemplate { get; set; }
         public DataTemplate? LineDataTemplate { get; set; }
+        public DataTemplate? TieLineDataTemplate { get; set; }
         public DataTemplate? ArcDataTemplate { get; set; }
         public DataTemplate? FermataDataTemplate { get; set; }
 
@@ -24,6 +25,7 @@ namespace SEH.Commons
             if (item is ScoreRenderTextElement) return TextDataTemplate;
             if (item is ScoreRenderDotElement) return DotDataTemplate;
             if (item is ScoreRenderLineElement) return LineDataTemplate;
+            if (item is ScoreRenderTieLineElement) return TieLineDataTemplate;
             if (item is ScoreRenderArcElement) return ArcDataTemplate;
             if (item is ScoreRenderFermataElement) return FermataDataTemplate;
 

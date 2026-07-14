@@ -2751,6 +2751,7 @@ namespace SEH.ViewModels
                                         {
                                             fromY -= 20;
                                         }
+                                        fromY -= 5;
 
                                         double toX = (double)(toNote.X + toNote.Width / 2);
                                         double toY = currentY + noteBaseYOffset;
@@ -2770,15 +2771,16 @@ namespace SEH.ViewModels
                                         {
                                             toY -= 20;
                                         }
+                                        toY -= 5;
 
                                         double Y = Math.Min(fromY, toY);
 
-                                        RenderElements.Add(new ScoreRenderArcElement
+                                        RenderElements.Add(new ScoreRenderTieLineElement
                                         {
-                                            StartX = fromX,
-                                            StartY = Y,
-                                            EndX = toX,
-                                            EndY = Y,
+                                            X = fromX,
+                                            Y = Y,
+                                            Width = toX - fromX,
+                                            Height = 1,
                                         });
                                     }
                                 }
