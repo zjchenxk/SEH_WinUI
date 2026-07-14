@@ -2781,6 +2781,7 @@ namespace SEH.ViewModels
                                             Y = Y,
                                             Width = toX - fromX,
                                             Height = 1,
+                                            Shape = TieLineShape.Full //两端带圆角
                                         });
                                     }
                                 }
