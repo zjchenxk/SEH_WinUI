@@ -166,21 +166,19 @@
                            Margin="0,4,0,0"/>
             </StackPanel>
 
-            <!--连音线标志-->
+            <!--连音线结束-->
             <StackPanel Grid.Column="0" Grid.Row="4" HorizontalAlignment="Stretch">
-                <ComboBox Header="连音线标志：" PlaceholderText="选择连音线标志..."
-                          SelectedValuePath="Tag"
-                          SelectedValue="{x:Bind ViewModel.Slur, Mode=TwoWay}"
-                          HorizontalAlignment="Stretch">
-                    <ComboBoxItem Content="无" Tag="" IsSelected="True"/>
-                    <ComboBoxItem Content="开始" Tag="1"/>
-                    <ComboBoxItem Content="结束" Tag="0"/>
-                    <ComboBoxItem Content="结束并开始" Tag="2"/>
-                </ComboBox>
+                <ComboBox Header="结束已有连音线：" PlaceholderText="不结束任何连音线..." 
+                          ItemsSource="{x:Bind ViewModel.Slurs, Mode=OneWay}"
+                          SelectedItem="{x:Bind ViewModel.SelectedEndSlur, Mode=TwoWay}"
+                          DisplayMemberPath="Name"
+                          HorizontalAlignment="Stretch" 
+                          IsEnabled="{x:Bind ViewModel.Slurs.Count, Mode=OneWay, Converter={StaticResource BoolToDashArrayConverter}}"/>
+                <!-- 这里可以用转换器判断Count>0是否可用，或者直接不管 -->
 
-                <!--红字错误提示，绑定到 ViewModel 的 SlurError 属性-->
+                <!--红字错误提示，绑定到 ViewModel 的 SelectedEndSlurError 属性-->
                 <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
-                <TextBlock Text="{x:Bind ViewModel.SlurError, Mode=OneWay}"
+                <TextBlock Text="{x:Bind ViewModel.SelectedEndSlurError, Mode=OneWay}"
                            Foreground="{StaticResource SystemErrorTextColor}"
                            FontSize="{StaticResource ToolTipContentThemeFontSize}"
                            Margin="0,4,0,0"/>

@@ -44,6 +44,5 @@ namespace SEH.Models
         /// </summary>
         [Column("name")]
         public string Name { get; set; } = "";
-
     }
 }

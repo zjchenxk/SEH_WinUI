@@ -116,5 +116,11 @@ namespace SEH.Models
         /// </summary>
         [Ignore]
         public List<Line>? Lines { get; set; }
+
+        /// <summary>
+        /// 连音线集合
+        /// </summary>
+        [Ignore]
+        public List<Slur>? Slurs { get; set; }
     }
 }

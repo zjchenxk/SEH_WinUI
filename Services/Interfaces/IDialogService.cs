@@ -24,8 +24,9 @@ namespace SEH.Services.Interfaces
         /// 显示音符编辑对话框
         /// </summary>
         /// <param name="beams"></param>
+        /// <param name="slurs"></param>
         /// <param name="note"></param>
         /// <returns></returns>
-        Task<Note?> ShowEditNoteDialogAsync(List<Beam>? beams = null, Note? note = null);
+        Task<Note?> ShowEditNoteDialogAsync(List<Beam>? beams = null, List<Slur>? slurs = null, Note? note = null);
     }
 }

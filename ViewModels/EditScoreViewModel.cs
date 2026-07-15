@@ -913,8 +913,11 @@ namespace SEH.ViewModels
                 return;
             }
 
+            //获取当前已打开的连音线
+            var slurs = _score.Slurs?.Where(s => string.IsNullOrEmpty(s.EndNoteId)).ToList();
+
             //调用服务显示弹窗并获取结果
-            var ret = await _dialogService.ShowEditNoteDialogAsync(_measure.Beams, null);
+            var ret = await _dialogService.ShowEditNoteDialogAsync(_measure.Beams, slurs, null);
             if (ret != null)
             {
                 #region 检查当前小节总拍数是否已满
@@ -1099,6 +1102,8 @@ namespace SEH.ViewModels
                 }
                 #endregion
 
+                #region 添加音符到小节
+
                 //初始化 Note 集合
                 _measure.Notes ??= [];
 
@@ -1113,7 +1118,6 @@ namespace SEH.ViewModels
                     Pitch = ret.Pitch,
                     Duration = ret.Duration,
                     Dots = ret.Dots,
-                    Slur = ret.Slur,
                     Articulation = ret.Articulation,
                     Fermata = ret.Fermata,
                     Lyrics = ret.Lyrics,
@@ -1123,6 +1127,44 @@ namespace SEH.ViewModels
 
                 //添加到集合
                 _measure.Notes.Add(_note);
+
+                #endregion
+
+                #region 处理连音线
+
+                _score.Slurs ??= [];
+
+                //如果勾选了开始新连音线
+                if (ret.IsStartSlur ?? false)
+                {
+                    var slur = new Slur
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ScoreId = _score.Id,
+                        StartLineId = _line.Id,
+                        StartMeasureId = _measure.Id,
+                        StartNoteId = _note.Id,
+                        Number = _score.Slurs.Where<Slur>(s => s.StartLineId == _line.Id && s.StartMeasureId == _measure.Id).Count() + 1,
+                        Name = $"第{_line.Number}行第{_measure.Number}小节第{_score.Slurs.Where<Slur>(s => s.StartLineId == _line.Id && s.StartMeasureId == _measure.Id).Count() + 1}条连音线",
+                        EndLineId = "",
+                        EndMeasureId = "",
+                        EndNoteId = "", // 尚未结束
+                    };
+                    _score.Slurs.Add(slur);
+                }
+
+                //如果选择了结束某条已有连音线
+                if (ret.SelectedEndSlur != null)
+                {
+                    var slurToClose = _score.Slurs.FirstOrDefault(s => s.Id == ret.SelectedEndSlur.Id);
+                    if (slurToClose != null)
+                    {
+                        slurToClose.EndNoteId = _note.Id;
+                    }
+                }
+
+                #endregion
+
 
                 //重新绘制简谱
                 DrawScore();
@@ -1148,15 +1190,17 @@ namespace SEH.ViewModels
                 return;
             }
 
+            //获取当前已打开的连音线
+            var slurs = _score.Slurs?.Where(s => string.IsNullOrEmpty(s.EndNoteId)).ToList();
+
             //调用服务显示弹窗并获取结果
-            var ret = await _dialogService.ShowEditNoteDialogAsync(_measure.Beams, _note);
+            var ret = await _dialogService.ShowEditNoteDialogAsync(_measure.Beams, slurs, _note);
             if (ret != null)
             {
                 //修改音符
                 _note.Pitch = ret.Pitch;
                 _note.Duration = ret.Duration;
                 _note.Dots = ret.Dots;
-                _note.Slur = ret.Slur;
                 _note.Articulation = ret.Articulation;
                 _note.Fermata = ret.Fermata;
                 _note.Lyrics = ret.Lyrics;
@@ -2670,58 +2714,58 @@ namespace SEH.ViewModels
                     {
                         List<(Note? from, Note? to)> slurNotes = [];//连音音符集合
 
-                        if (line.Measures != null && line.Measures.Count > 0)
-                        {
-                            foreach (var measure in line.Measures)
-                            {
-                                if (measure.Notes != null && measure.Notes.Count > 0)
-                                {
-                                    foreach (var note in measure.Notes)
-                                    {
-                                        if (note.Slur == 1)//连音线开始
-                                        {
-                                            slurNotes.Add((note, null));
-                                        }
-                                        else if (note.Slur == 0)//连音线结束
-                                        {
-                                            int i = slurNotes.Count - 1;
-                                            while (i >= 0)
-                                            {
-                                                if (slurNotes[i].from != null && slurNotes[i].to == null)
-                                                {
-                                                    slurNotes[i] = (slurNotes[i].from, note);
-                                                    break;
-                                                }
-                                                i--;
-                                            }
-                                            if (i < 0)
-                                            {
-                                                slurNotes.Add((null, note));
-                                            }
-                                        }
-                                        else if (note.Slur == 2)//连音线结束后开始新连音线
-                                        {
-                                            int i = slurNotes.Count - 1;
-                                            while (i >= 0)
-                                            {
-                                                if (slurNotes[i].from != null && slurNotes[i].to == null)
-                                                {
-                                                    slurNotes[i] = (slurNotes[i].from, note);
-                                                    break;
-                                                }
-                                                i--;
-                                            }
-                                            if (i < 0)
-                                            {
-                                                slurNotes.Add((null, note));
-                                            }
+                        //if (line.Measures != null && line.Measures.Count > 0)
+                        //{
+                        //    foreach (var measure in line.Measures)
+                        //    {
+                        //        if (measure.Notes != null && measure.Notes.Count > 0)
+                        //        {
+                        //            foreach (var note in measure.Notes)
+                        //            {
+                        //                if (note.Slur == 1)//连音线开始
+                        //                {
+                        //                    slurNotes.Add((note, null));
+                        //                }
+                        //                else if (note.Slur == 0)//连音线结束
+                        //                {
+                        //                    int i = slurNotes.Count - 1;
+                        //                    while (i >= 0)
+                        //                    {
+                        //                        if (slurNotes[i].from != null && slurNotes[i].to == null)
+                        //                        {
+                        //                            slurNotes[i] = (slurNotes[i].from, note);
+                        //                            break;
+                        //                        }
+                        //                        i--;
+                        //                    }
+                        //                    if (i < 0)
+                        //                    {
+                        //                        slurNotes.Add((null, note));
+                        //                    }
+                        //                }
+                        //                else if (note.Slur == 2)//连音线结束后开始新连音线
+                        //                {
+                        //                    int i = slurNotes.Count - 1;
+                        //                    while (i >= 0)
+                        //                    {
+                        //                        if (slurNotes[i].from != null && slurNotes[i].to == null)
+                        //                        {
+                        //                            slurNotes[i] = (slurNotes[i].from, note);
+                        //                            break;
+                        //                        }
+                        //                        i--;
+                        //                    }
+                        //                    if (i < 0)
+                        //                    {
+                        //                        slurNotes.Add((null, note));
+                        //                    }
 
-                                            slurNotes.Add((note, null));
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        //                    slurNotes.Add((note, null));
+                        //                }
+                        //            }
+                        //        }
+                        //    }
+                        //}
                         if (slurNotes.Count > 0)
                         {
                             for (int i = 0; i < slurNotes.Count; i++)
@@ -2931,7 +2975,7 @@ namespace SEH.ViewModels
             if (clickedNote != null)
             {
                 //这里可以执行点击后的逻辑，例如播放音符、弹窗提示等
-                string msg = $"你点击了音符: {clickedNote.Pitch} (时值:{clickedNote.Duration}, 附点数:{clickedNote.Dots}, 连音线标志:{clickedNote.Slur}，演奏方法:{clickedNote.Articulation}，延长号标志:{clickedNote.Fermata}，歌词:{clickedNote.Lyrics})";
+                string msg = $"你点击了音符: {clickedNote.Pitch} (时值:{clickedNote.Duration}, 附点数:{clickedNote.Dots}, 演奏方法:{clickedNote.Articulation}，延长号标志:{clickedNote.Fermata}，歌词:{clickedNote.Lyrics})";
 
                 //实际开发中可以调用依赖注入的播放服务或弹出通知
                 //这里为了演示，修改该音符的颜色（需要给 TextElement 加颜色属性）

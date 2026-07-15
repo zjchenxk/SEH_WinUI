@@ -74,16 +74,34 @@ namespace SEH.ViewModels
         private string? _fermataError = "";
 
         /// <summary>
-        /// 连音线标记（1-开始，0-结束，2-结束并开始）
+        /// 当前已打开（未结束）的连音线集合
         /// </summary>
         [ObservableProperty]
-        private string _slur = "";
+        private ObservableCollection<Slur> _slurs = [];
 
         /// <summary>
-        /// 连音线标记错误信息
+        /// 开始新连音线标志
         /// </summary>
         [ObservableProperty]
-        private string? _slurError = "";
+        private bool _isStartSlur = false;
+
+        /// <summary>
+        /// 开始新连音线标志错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _isStartSlurError = "";
+
+        /// <summary>
+        /// 选择要结束的已有连音线（如果不结束则为 null）
+        /// </summary>
+        [ObservableProperty]
+        private Slur? _selectedEndSlur = null;
+
+        /// <summary>
+        /// 选择要结束的已有连音线错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _selectedEndSlurError = "";
 
         /// <summary>
         /// 演奏方法
@@ -146,6 +164,42 @@ namespace SEH.ViewModels
         private string? _lyrics3Error = "";
 
         /// <summary>
+        /// 歌词4
+        /// </summary>
+        [ObservableProperty]
+        private string _lyrics4 = "";
+
+        /// <summary>
+        /// 歌词4错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _lyrics4Error = "";
+
+        /// <summary>
+        /// 歌词5
+        /// </summary>
+        [ObservableProperty]
+        private string _lyrics5 = "";
+
+        /// <summary>
+        /// 歌词5错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _lyrics5Error = "";
+
+        /// <summary>
+        /// 歌词6
+        /// </summary>
+        [ObservableProperty]
+        private string _lyrics6 = "";
+
+        /// <summary>
+        /// 歌词6错误信息
+        /// </summary>
+        [ObservableProperty]
+        private string? _lyrics6Error = "";
+
+        /// <summary>
         /// 组合集合
         /// </summary>
         [ObservableProperty]
@@ -197,11 +251,17 @@ namespace SEH.ViewModels
                 var errors = GetErrors(nameof(Fermata));
                 FermataError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
             }
-            else if (e.PropertyName == nameof(Slur))//当 Slur 属性的验证状态发生变化时，更新错误提示文本
+            else if (e.PropertyName == nameof(IsStartSlur))//当 IsStartSlur 属性的验证状态发生变化时，更新错误提示文本
             {
                 //GetErrors 返回的是 ValidationResult 集合
-                var errors = GetErrors(nameof(Slur));
-                SlurError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+                var errors = GetErrors(nameof(IsStartSlur));
+                IsStartSlurError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
+            else if (e.PropertyName == nameof(SelectedEndSlur))//当 SelectedEndSlur 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(SelectedEndSlur));
+                SelectedEndSlurError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
             }
             else if (e.PropertyName == nameof(Articulation))//当 Articulation 属性的验证状态发生变化时，更新错误提示文本
             {
@@ -233,6 +293,24 @@ namespace SEH.ViewModels
                 var errors = GetErrors(nameof(Lyrics3));
                 Lyrics3Error = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
             }
+            else if (e.PropertyName == nameof(Lyrics4))//当 Lyrics4 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(Lyrics4));
+                Lyrics4Error = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
+            else if (e.PropertyName == nameof(Lyrics5))//当 Lyrics5 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(Lyrics5));
+                Lyrics5Error = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
+            else if (e.PropertyName == nameof(Lyrics6))//当 Lyrics6 属性的验证状态发生变化时，更新错误提示文本
+            {
+                //GetErrors 返回的是 ValidationResult 集合
+                var errors = GetErrors(nameof(Lyrics6));
+                Lyrics6Error = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+            }
             else if (e.PropertyName == nameof(SelectedBeam))//当 SelectedBeam 属性的验证状态发生变化时，更新错误提示文本
             {
                 //GetErrors 返回的是 ValidationResult 集合
@@ -246,13 +324,21 @@ namespace SEH.ViewModels
         /// </summary>
         /// <param name="beams"></param>
         /// <param name="note"></param>
-        public void Initialize(List<Beam>? beams = null, Note? note = null)
+        public void Initialize(List<Beam>? beams = null, List<Slur>? slurs = null, Note? note = null)
         {
             if (beams != null)
             {
                 foreach (var beam in beams)
                 {
                     Beams.Add(beam);
+                }
+            }
+
+            if (slurs != null)
+            {
+                foreach (var slur in slurs)
+                {
+                    Slurs.Add(slur);
                 }
             }
 
@@ -263,12 +349,15 @@ namespace SEH.ViewModels
                 Duration = note.Duration.ToString();
                 Dots = note.Dots.ToString();
                 Fermata = note.Fermata.ToString();
-                Slur = (note.Slur?.ToString()) ?? "";
+
                 Articulation = note.Articulation ?? "";
                 Paren = (note.Paren?.ToString()) ?? "";
                 Lyrics = note.Lyrics ?? "";
                 Lyrics2 = note.Lyrics2 ?? "";
                 Lyrics3 = note.Lyrics3 ?? "";
+                Lyrics4 = note.Lyrics4 ?? "";
+                Lyrics5 = note.Lyrics5 ?? "";
+                Lyrics6 = note.Lyrics6 ?? "";
                 SelectedBeam = note.Beam;
             }
         }
@@ -293,9 +382,14 @@ namespace SEH.ViewModels
             ValidateProperty(value, nameof(Fermata));
         }
 
-        partial void OnSlurChanged(string value)
+        partial void OnIsStartSlurChanged(bool value)
         {
-            ValidateProperty(value, nameof(Slur));
+            ValidateProperty(value, nameof(IsStartSlur));
+        }
+
+        partial void OnSelectedEndSlurChanged(Slur? value)
+        {
+            ValidateProperty(value, nameof(SelectedEndSlur));
         }
 
         partial void OnArticulationChanged(string value)
@@ -321,6 +415,21 @@ namespace SEH.ViewModels
         partial void OnLyrics3Changed(string value)
         {
             ValidateProperty(value, nameof(Lyrics3));
+        }
+
+        partial void OnLyrics4Changed(string value)
+        {
+            ValidateProperty(value, nameof(Lyrics4));
+        }
+
+        partial void OnLyrics5Changed(string value)
+        {
+            ValidateProperty(value, nameof(Lyrics5));
+        }
+
+        partial void OnLyrics6Changed(string value)
+        {
+            ValidateProperty(value, nameof(Lyrics6));
         }
 
         partial void OnSelectedBeamChanged(Beam? value)
@@ -372,12 +481,16 @@ namespace SEH.ViewModels
                 Duration = float.Parse(this.Duration),
                 Dots = int.Parse(this.Dots),
                 Fermata = int.Parse(this.Fermata),
-                Slur = string.IsNullOrWhiteSpace(this.Slur) ? null : int.Parse(this.Slur),
+                IsStartSlur = this.IsStartSlur,
+                SelectedEndSlur = this.SelectedEndSlur,
                 Articulation = this.Articulation,
                 Paren = string.IsNullOrWhiteSpace(this.Paren) ? null : int.Parse(this.Paren),
                 Lyrics = this.Lyrics,
                 Lyrics2 = this.Lyrics2,
                 Lyrics3 = this.Lyrics3,
+                Lyrics4 = this.Lyrics4,
+                Lyrics5 = this.Lyrics5,
+                Lyrics6 = this.Lyrics6,
                 BeamId = SelectedBeam?.Id,
                 Beam = SelectedBeam,
             };

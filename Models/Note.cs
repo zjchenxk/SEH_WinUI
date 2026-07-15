@@ -74,12 +74,6 @@ namespace SEH.Models
         public int Fermata { get; set; }
 
         /// <summary>
-        /// 连音线标记，如：1-开始，0-结束，2-结束并开始
-        /// </summary>
-        [Column("slur")]
-        public int? Slur { get; set; }
-
-        /// <summary>
         /// 演奏方法，如：staccato-跳音，accent-重音
         /// </summary>
         [Column("articulation")]
@@ -110,6 +104,24 @@ namespace SEH.Models
         public string? Lyrics3 { get; set; }
 
         /// <summary>
+        /// 歌词4
+        /// </summary>
+        [Column("lyrics4")]
+        public string? Lyrics4 { get; set; }
+
+        /// <summary>
+        /// 歌词5
+        /// </summary>
+        [Column("lyrics5")]
+        public string? Lyrics5 { get; set; }
+
+        /// <summary>
+        /// 歌词6
+        /// </summary>
+        [Column("lyrics6")]
+        public string? Lyrics6 { get; set; }
+
+        /// <summary>
         /// 组合主键
         /// </summary>
         [Column("beam_id")]
@@ -120,6 +132,18 @@ namespace SEH.Models
         /// </summary>
         [Ignore]
         public Beam? Beam { get; set; }
+
+        /// <summary>
+        /// 开始新连音线
+        /// </summary>
+        [Ignore]
+        public bool? IsStartSlur { get; set; }
+
+        /// <summary>
+        /// 选择结束的连音线
+        /// </summary>
+        [Ignore]
+        public Slur? SelectedEndSlur { get; set; }
 
         /// <summary>
         /// 绘制X坐标
