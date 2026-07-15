@@ -131,90 +131,123 @@
         </Grid.RowDefinitions>
 
         <!--工具栏-->
-        <CommandBar Grid.Row="0" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right" Padding="0" HorizontalAlignment="Left">
-            <AppBarButton Label="新增行" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.NewLineCommand}">
-                <AppBarButton.Icon>
-                    <BitmapIcon UriSource="/Assets/Images/添加一行.png" ShowAsMonochrome="False"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
-            <AppBarButton Label="修改行" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.EditLineCommand}">
-                <AppBarButton.Icon>
-                    <BitmapIcon UriSource="/Assets/Images/修改一行.png" ShowAsMonochrome="False"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
-            <AppBarButton Label="删除行" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.DeleteLineCommand}">
-                <AppBarButton.Icon>
-                    <BitmapIcon UriSource="/Assets/Images/删除一行.png" ShowAsMonochrome="False"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
+        <MenuBar Grid.Row="0" Background="Transparent">
+            <MenuBarItem Title="文件操作">
+                <MenuFlyoutItem Text="保存简谱" Command="{x:Bind ViewModel.SaveCommand}">
+                    <MenuFlyoutItem.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/保存.png" ShowAsMonochrome="False"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
 
-            <AppBarSeparator/>
+                <MenuFlyoutItem Text="打印简谱" Command="{x:Bind ViewModel.PrintCommand}">
+                    <MenuFlyoutItem.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/打印.png" ShowAsMonochrome="False"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
 
-            <AppBarButton Label="新增小节" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.NewMeasureCommand}">
-                <AppBarButton.Icon>
-                    <BitmapIcon UriSource="/Assets/Images/添加小节.png" ShowAsMonochrome="False"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
-            <AppBarButton Label="修改小节" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.EditMeasureCommand}">
-                <AppBarButton.Icon>
-                    <BitmapIcon UriSource="/Assets/Images/修改小节.png" ShowAsMonochrome="False"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
-            <AppBarButton Label="删除小节" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.DeleteMeasureCommand}">
-                <AppBarButton.Icon>
-                    <BitmapIcon UriSource="/Assets/Images/删除小节.png" ShowAsMonochrome="False"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
+                <MenuFlyoutSeparator/>
 
-            <AppBarSeparator/>
+                <MenuFlyoutItem Text="关闭退出" Command="{x:Bind ViewModel.CloseCommand}">
+                    <MenuFlyoutItem.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/关闭.png" ShowAsMonochrome="False"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+            </MenuBarItem>
 
-            <AppBarButton Label="新增音符" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.NewNoteCommand}">
-                <AppBarButton.Icon>
-                    <BitmapIcon UriSource="/Assets/Images/添加音符.png" ShowAsMonochrome="False"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
-            <AppBarButton Label="修改音符" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.EditNoteCommand}">
-                <AppBarButton.Icon>
-                    <BitmapIcon UriSource="/Assets/Images/修改音符.png" ShowAsMonochrome="False"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
-            <AppBarButton Label="删除音符" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.DeleteNoteCommand}">
-                <AppBarButton.Icon>
-                    <BitmapIcon UriSource="/Assets/Images/删除音符.png" ShowAsMonochrome="False"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
+            <MenuBarItem Title="行操作">
+                <MenuFlyoutItem Text="新增行" Command="{x:Bind ViewModel.NewLineCommand}">
+                    <MenuFlyoutItem.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/添加一行.png" ShowAsMonochrome="False"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
 
-            <AppBarSeparator/>
+                <MenuFlyoutItem Text="修改行" Command="{x:Bind ViewModel.EditLineCommand}">
+                    <MenuFlyoutItem.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/修改一行.png" ShowAsMonochrome="False"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
 
-            <AppBarButton Label="新增组合" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.NewBeamCommand}">
-                <AppBarButton.Icon>
-                    <BitmapIcon UriSource="/Assets/Images/添加组合.png" ShowAsMonochrome="False"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
-            <AppBarButton Label="删除组合" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.DeleteBeamCommand}">
-                <AppBarButton.Icon>
-                    <BitmapIcon UriSource="/Assets/Images/删除组合.png" ShowAsMonochrome="False"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
+                <MenuFlyoutItem Text="删除行" Command="{x:Bind ViewModel.DeleteLineCommand}">
+                    <MenuFlyoutItem.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/删除一行.png" ShowAsMonochrome="False"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+            </MenuBarItem>
 
-            <AppBarSeparator/>
+            <MenuBarItem Title="小节操作">
+                <MenuFlyoutItem Text="新增小节" Command="{x:Bind ViewModel.NewMeasureCommand}">
+                    <MenuFlyoutItem.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/添加小节.png" ShowAsMonochrome="False"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
 
-            <AppBarButton Label="保存简谱" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.SaveCommand}">
-                <AppBarButton.Icon>
-                    <BitmapIcon UriSource="/Assets/Images/保存.png" ShowAsMonochrome="False"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
-            <AppBarButton Label="打印简谱" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.PrintCommand}">
-                <AppBarButton.Icon>
-                    <BitmapIcon UriSource="/Assets/Images/打印.png" ShowAsMonochrome="False"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
-            <AppBarButton Label="关闭退出" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.CloseCommand}">
-                <AppBarButton.Icon>
-                    <BitmapIcon UriSource="/Assets/Images/关闭.png" ShowAsMonochrome="False"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
-        </CommandBar>
+                <MenuFlyoutItem Text="修改小节" Command="{x:Bind ViewModel.EditMeasureCommand}">
+                    <MenuFlyoutItem.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/修改小节.png" ShowAsMonochrome="False"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+
+                <MenuFlyoutItem Text="删除小节" Command="{x:Bind ViewModel.DeleteMeasureCommand}">
+                    <MenuFlyoutItem.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/删除小节.png" ShowAsMonochrome="False"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+            </MenuBarItem>
+
+            <MenuBarItem Title="音符操作">
+                <MenuFlyoutItem Text="新增音符" Command="{x:Bind ViewModel.NewNoteCommand}">
+                    <MenuFlyoutItem.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/添加音符.png" ShowAsMonochrome="False"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+
+                <MenuFlyoutItem Text="修改音符" Command="{x:Bind ViewModel.EditNoteCommand}">
+                    <MenuFlyoutItem.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/修改音符.png" ShowAsMonochrome="False"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+
+                <MenuFlyoutItem Text="删除音符" Command="{x:Bind ViewModel.DeleteNoteCommand}">
+                    <MenuFlyoutItem.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/删除音符.png" ShowAsMonochrome="False"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+            </MenuBarItem>
+
+            <MenuBarItem Title="组合操作">
+                <MenuFlyoutItem Text="新增组合" Command="{x:Bind ViewModel.NewBeamCommand}">
+                    <MenuFlyoutItem.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/添加组合.png" ShowAsMonochrome="False"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+
+                <MenuFlyoutItem Text="删除组合" Command="{x:Bind ViewModel.DeleteBeamCommand}">
+                    <MenuFlyoutItem.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/删除组合.png" ShowAsMonochrome="False"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+            </MenuBarItem>
+
+            <MenuBarItem Title="连音线操作">
+                <MenuFlyoutItem Text="新增连音线">
+                    <MenuFlyoutItem.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/添加弧线.png" ShowAsMonochrome="False"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+
+                <MenuFlyoutItem Text="修改连音线">
+                    <MenuFlyoutItem.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/修改弧线.png" ShowAsMonochrome="False"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+
+                <MenuFlyoutItem Text="删除连音线">
+                    <MenuFlyoutItem.Icon>
+                        <BitmapIcon UriSource="/Assets/Images/删除弧线.png" ShowAsMonochrome="False"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+            </MenuBarItem>
+        </MenuBar>
 
         <!--内容区-->
         <Grid Grid.Row="1" Margin="20,5,20,20" ColumnSpacing="20">

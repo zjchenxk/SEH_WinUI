@@ -60,6 +60,7 @@ namespace SEH
             services.AddTransient<MoveScoreViewModel>();
             services.AddTransient<EditNoteViewModel>();
             services.AddTransient<EditMeasureViewModel>();
+            services.AddTransient<EditSlurViewModel>();
 
             //3.注册窗口和页面
             services.AddSingleton<MainWindow>();
@@ -70,6 +71,7 @@ namespace SEH
             services.AddTransient<MoveScorePage>();
             services.AddTransient<EditNoteDialog>();
             services.AddTransient<EditMeasureDialog>();
+            services.AddTransient<EditSlurDialog>();
 
             //4.注册MessageService，并在获取实例时把 MainWindow 传给它
             services.AddSingleton<IMessageService>(sp =>

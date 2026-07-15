@@ -28,5 +28,12 @@ namespace SEH.Services.Interfaces
         /// <param name="note"></param>
         /// <returns></returns>
         Task<Note?> ShowEditNoteDialogAsync(List<Beam>? beams = null, List<Slur>? slurs = null, Note? note = null);
+
+        /// <summary>
+        /// 显示连音线编辑对话框
+        /// </summary>
+        /// <param name="slur"></param>
+        /// <returns></returns>
+        Task<Slur?> ShowEditSlurDialogAsync(Slur? slur = null);
     }
 }

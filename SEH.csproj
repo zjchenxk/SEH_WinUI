@@ -23,6 +23,7 @@
     <None Remove="Views\EditMeasureDialog.xaml" />
     <None Remove="Views\EditNoteDialog.xaml" />
     <None Remove="Views\EditScorePage.xaml" />
+    <None Remove="Views\EditSlurDialog.xaml" />
     <None Remove="Views\HomePage.xaml" />
     <None Remove="Views\MoveScorePage.xaml" />
     <None Remove="Views\ViewScorePage.xaml" />
@@ -88,6 +89,9 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+    <Page Update="Views\EditSlurDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\EditLineDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

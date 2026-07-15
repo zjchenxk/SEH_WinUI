@@ -148,5 +148,48 @@ namespace SEH.Services
             return null;
         }
 
+        /// <summary>
+        /// 显示连音线编辑对话框
+        /// </summary>
+        /// <param name="slur"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Slur?> ShowEditSlurDialogAsync(Slur? slur = null)
+        {
+            if (XamlRoot == null)
+            {
+                return null;
+            }
+
+            var viewModel = new EditSlurViewModel();
+
+            //实现传参初始化
+            viewModel.Initialize(slur);
+
+            var dialog = new EditSlurDialog(viewModel)
+            {
+                XamlRoot = this.XamlRoot, //关键：设置 XamlRoot
+                Title = slur == null ? "新增连音线" : "修改连音线" //根据传参动态修改标题
+            };
+
+            dialog.PrimaryButtonClick += (sender, e) =>
+            {
+                //验证数据
+                bool isValid = viewModel.ValidateProperties();
+                if (!isValid)
+                {
+                    //阻止对话框关闭
+                    e.Cancel = true;
+                }
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                return viewModel.GetSlur();
+            }
+
+            return null;
+        }
     }
 }
