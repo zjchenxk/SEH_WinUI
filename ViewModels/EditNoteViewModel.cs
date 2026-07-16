@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using SEH.Models;
-using SEH.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -80,28 +79,28 @@ namespace SEH.ViewModels
         private ObservableCollection<Slur> _slurs = [];
 
         /// <summary>
-        /// 开始新连音线标志
+        /// 选择开始的连音线（如果不结束则为 null）
         /// </summary>
         [ObservableProperty]
-        private bool _isStartSlur = false;
+        private ObservableCollection<Slur>? _selectedStartSlurs = null;
 
         /// <summary>
-        /// 开始新连音线标志错误信息
+        /// 选择开始的连音线错误信息
         /// </summary>
         [ObservableProperty]
-        private string? _isStartSlurError = "";
+        private string? _selectedStartSlursError = "";
 
         /// <summary>
-        /// 选择要结束的已有连音线（如果不结束则为 null）
+        /// 选择结束的连音线（如果不结束则为 null）
         /// </summary>
         [ObservableProperty]
-        private Slur? _selectedEndSlur = null;
+        private ObservableCollection<Slur>? _selectedEndSlurs = null;
 
         /// <summary>
-        /// 选择要结束的已有连音线错误信息
+        /// 选择结束的连音线错误信息
         /// </summary>
         [ObservableProperty]
-        private string? _selectedEndSlurError = "";
+        private string? _selectedEndSlursError = "";
 
         /// <summary>
         /// 演奏方法
@@ -217,6 +216,7 @@ namespace SEH.ViewModels
         [ObservableProperty]
         private string? _selectedBeamError = "";
 
+
         /// <summary>
         /// 构造方法
         /// </summary>
@@ -251,17 +251,17 @@ namespace SEH.ViewModels
                 var errors = GetErrors(nameof(Fermata));
                 FermataError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
             }
-            else if (e.PropertyName == nameof(IsStartSlur))//当 IsStartSlur 属性的验证状态发生变化时，更新错误提示文本
+            else if (e.PropertyName == nameof(SelectedStartSlurs))//当 SelectedStartSlurs 属性的验证状态发生变化时，更新错误提示文本
             {
                 //GetErrors 返回的是 ValidationResult 集合
-                var errors = GetErrors(nameof(IsStartSlur));
-                IsStartSlurError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+                var errors = GetErrors(nameof(SelectedStartSlurs));
+                SelectedStartSlursError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
             }
-            else if (e.PropertyName == nameof(SelectedEndSlur))//当 SelectedEndSlur 属性的验证状态发生变化时，更新错误提示文本
+            else if (e.PropertyName == nameof(SelectedEndSlurs))//当 SelectedEndSlurs 属性的验证状态发生变化时，更新错误提示文本
             {
                 //GetErrors 返回的是 ValidationResult 集合
-                var errors = GetErrors(nameof(SelectedEndSlur));
-                SelectedEndSlurError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
+                var errors = GetErrors(nameof(SelectedEndSlurs));
+                SelectedEndSlursError = errors.Cast<ValidationResult>().FirstOrDefault()?.ErrorMessage;
             }
             else if (e.PropertyName == nameof(Articulation))//当 Articulation 属性的验证状态发生变化时，更新错误提示文本
             {
@@ -382,14 +382,14 @@ namespace SEH.ViewModels
             ValidateProperty(value, nameof(Fermata));
         }
 
-        partial void OnIsStartSlurChanged(bool value)
+        partial void OnSelectedStartSlursChanged(ObservableCollection<Slur>? value)
         {
-            ValidateProperty(value, nameof(IsStartSlur));
+            ValidateProperty(value, nameof(SelectedStartSlurs));
         }
 
-        partial void OnSelectedEndSlurChanged(Slur? value)
+        partial void OnSelectedEndSlursChanged(ObservableCollection<Slur>? value)
         {
-            ValidateProperty(value, nameof(SelectedEndSlur));
+            ValidateProperty(value, nameof(SelectedEndSlurs));
         }
 
         partial void OnArticulationChanged(string value)
@@ -481,8 +481,8 @@ namespace SEH.ViewModels
                 Duration = float.Parse(this.Duration),
                 Dots = int.Parse(this.Dots),
                 Fermata = int.Parse(this.Fermata),
-                IsStartSlur = this.IsStartSlur,
-                SelectedEndSlur = this.SelectedEndSlur,
+                StartSlurs = this.SelectedStartSlurs?.ToList(),
+                EndSlurs = this.SelectedEndSlurs?.ToList(),
                 Articulation = this.Articulation,
                 Paren = string.IsNullOrWhiteSpace(this.Paren) ? null : int.Parse(this.Paren),
                 Lyrics = this.Lyrics,

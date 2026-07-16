@@ -151,10 +151,11 @@ namespace SEH.Services
         /// <summary>
         /// 显示连音线编辑对话框
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="slur"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<Slur?> ShowEditSlurDialogAsync(Slur? slur = null)
+        public async Task<Slur?> ShowEditSlurDialogAsync(string name = "", Slur? slur = null)
         {
             if (XamlRoot == null)
             {
@@ -164,7 +165,7 @@ namespace SEH.Services
             var viewModel = new EditSlurViewModel();
 
             //实现传参初始化
-            viewModel.Initialize(slur);
+            viewModel.Initialize(name, slur);
 
             var dialog = new EditSlurDialog(viewModel)
             {

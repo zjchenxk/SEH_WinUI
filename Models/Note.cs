@@ -1,4 +1,6 @@
-﻿using SQLite;
+﻿using System.Collections.Generic;
+using SQLite;
+using System.Collections.Generic;
 
 namespace SEH.Models
 {
@@ -134,16 +136,16 @@ namespace SEH.Models
         public Beam? Beam { get; set; }
 
         /// <summary>
-        /// 开始新连音线
+        /// 开始的连音线
         /// </summary>
         [Ignore]
-        public bool? IsStartSlur { get; set; }
+        public List<Slur>? StartSlurs { get; set; }
 
         /// <summary>
-        /// 选择结束的连音线
+        /// 结束的连音线
         /// </summary>
         [Ignore]
-        public Slur? SelectedEndSlur { get; set; }
+        public List<Slur>? EndSlurs { get; set; }
 
         /// <summary>
         /// 绘制X坐标

@@ -229,19 +229,19 @@
             </MenuBarItem>
 
             <MenuBarItem Title="连音线操作">
-                <MenuFlyoutItem Text="新增连音线">
+                <MenuFlyoutItem Text="新增连音线" Command="{x:Bind ViewModel.NewSlurCommand}">
                     <MenuFlyoutItem.Icon>
                         <SymbolIcon Symbol="Add" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
 
-                <MenuFlyoutItem Text="修改连音线">
+                <MenuFlyoutItem Text="修改连音线" Command="{x:Bind ViewModel.EditSlurCommand}">
                     <MenuFlyoutItem.Icon>
                         <SymbolIcon Symbol="Edit" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
 
-                <MenuFlyoutItem Text="删除连音线">
+                <MenuFlyoutItem Text="删除连音线" Command="{x:Bind ViewModel.DeleteSlurCommand}">
                     <MenuFlyoutItem.Icon>
                         <SymbolIcon Symbol="Delete" />
                     </MenuFlyoutItem.Icon>

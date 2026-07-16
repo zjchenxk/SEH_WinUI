@@ -275,6 +275,10 @@ namespace SEH.ViewModels
         /// 当前组合对象
         /// </summary>
         private Beam? _beam = null;
+        /// <summary>
+        /// 当前连音线对象
+        /// </summary>
+        private Slur? _slur = null;
 
 
         /// <summary>
@@ -433,6 +437,11 @@ namespace SEH.ViewModels
                     if (_measure != null && _measure.Beams != null && _measure.Beams.Count > 0)
                     {
                         _beam = _measure.Beams[^1];
+                    }
+                    _slur = null;
+                    if (_score.Slurs != null && _score.Slurs.Count > 0)
+                    {
+                        _slur = _score.Slurs[^1];
                     }
                     #endregion
                 }
@@ -1132,39 +1141,38 @@ namespace SEH.ViewModels
 
                 #region 处理连音线
 
-                _score.Slurs ??= [];
+                //_score.Slurs ??= [];
 
-                //如果勾选了开始新连音线
-                if (ret.IsStartSlur ?? false)
-                {
-                    var slur = new Slur
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        ScoreId = _score.Id,
-                        StartLineId = _line.Id,
-                        StartMeasureId = _measure.Id,
-                        StartNoteId = _note.Id,
-                        Number = _score.Slurs.Where<Slur>(s => s.StartLineId == _line.Id && s.StartMeasureId == _measure.Id).Count() + 1,
-                        Name = $"第{_line.Number}行第{_measure.Number}小节第{_score.Slurs.Where<Slur>(s => s.StartLineId == _line.Id && s.StartMeasureId == _measure.Id).Count() + 1}条连音线",
-                        EndLineId = "",
-                        EndMeasureId = "",
-                        EndNoteId = "", // 尚未结束
-                    };
-                    _score.Slurs.Add(slur);
-                }
+                ////如果勾选了开始新连音线
+                //if (ret.IsStartSlur ?? false)
+                //{
+                //    var slur = new Slur
+                //    {
+                //        Id = Guid.NewGuid().ToString(),
+                //        ScoreId = _score.Id,
+                //        StartLineId = _line.Id,
+                //        StartMeasureId = _measure.Id,
+                //        StartNoteId = _note.Id,
+                //        Number = _score.Slurs.Where<Slur>(s => s.StartLineId == _line.Id && s.StartMeasureId == _measure.Id).Count() + 1,
+                //        Name = $"第{_line.Number}行第{_measure.Number}小节第{_score.Slurs.Where<Slur>(s => s.StartLineId == _line.Id && s.StartMeasureId == _measure.Id).Count() + 1}条连音线",
+                //        EndLineId = "",
+                //        EndMeasureId = "",
+                //        EndNoteId = "", // 尚未结束
+                //    };
+                //    _score.Slurs.Add(slur);
+                //}
 
-                //如果选择了结束某条已有连音线
-                if (ret.SelectedEndSlur != null)
-                {
-                    var slurToClose = _score.Slurs.FirstOrDefault(s => s.Id == ret.SelectedEndSlur.Id);
-                    if (slurToClose != null)
-                    {
-                        slurToClose.EndNoteId = _note.Id;
-                    }
-                }
+                ////如果选择了结束某条已有连音线
+                //if (ret.EndSlur != null)
+                //{
+                //    var slurToClose = _score.Slurs.FirstOrDefault(s => s.Id == ret.EndSlur.Id);
+                //    if (slurToClose != null)
+                //    {
+                //        slurToClose.EndNoteId = _note.Id;
+                //    }
+                //}
 
                 #endregion
-
 
                 //重新绘制简谱
                 DrawScore();
@@ -1333,6 +1341,64 @@ namespace SEH.ViewModels
 
             //绘制简谱
             DrawScore();
+        }
+
+        /// <summary>
+        /// 新增连音线命令
+        /// </summary>
+        [RelayCommand]
+        private async Task NewSlur()
+        {
+            if (_line == null)
+            {
+                await _messageService.ShowErrorAsync("请新增一行！");
+                return;
+            }
+            if (_measure == null)
+            {
+                await _messageService.ShowErrorAsync("请新增小节！");
+                return;
+            }
+
+            var slurs = _score.Slurs?.Where(s => s.ScoreId == _score.Id && s.StartLineId == _line.Id && s.StartMeasureId == _measure.Id).ToList();
+            var name = $"第{_line.Number}行第{_measure.Number}小节第{(slurs?.Count + 1 ?? 1)}条连音线";
+
+            //调用服务显示弹窗并获取结果
+            var ret = await _dialogService.ShowEditSlurDialogAsync(name);
+            if (ret != null)
+            {
+                _score.Slurs ??= [];
+
+                //新增连音线
+                _slur = new Slur()
+                {
+                    Id = ret.Id,
+                    ScoreId = _score.Id,
+                    StartLineId = _line.Id,
+                    StartMeasureId = _measure.Id,
+                    Number = _score.Slurs.Count + 1,
+                    Name = ret.Name,
+                };
+                _score.Slurs.Add(_slur);
+            }
+        }
+
+        /// <summary>
+        /// 修改连音线命令
+        /// </summary>
+        [RelayCommand]
+        private void EditSlur()
+        {
+
+        }
+
+        /// <summary>
+        /// 删除连音线命令
+        /// </summary>
+        [RelayCommand]
+        private void DeleteSlur()
+        {
+
         }
 
         /// <summary>

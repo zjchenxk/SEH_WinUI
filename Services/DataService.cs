@@ -294,6 +294,10 @@ namespace SEH.Services
                             }
                         }
                         score.Lines = lines;
+
+                        //读取连音线记录
+                        var slurs = db.Table<Slur>().Where(u => u.ScoreId == id).OrderBy(u => u.Number).ToList();
+                        score.Slurs = slurs;
                     }
                     return score;
                 }

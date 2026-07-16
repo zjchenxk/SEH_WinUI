@@ -52,13 +52,18 @@ namespace SEH.ViewModels
         /// <summary>
         /// 初始化数据
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="slur"></param>
-        public void Initialize(Slur? slur = null)
+        public void Initialize(string name = "", Slur? slur = null)
         {
             if (slur != null)
             {
                 Id = slur.Id;
                 Name = slur.Name;
+            }
+            else
+            {
+                Name = name;
             }
         }
 

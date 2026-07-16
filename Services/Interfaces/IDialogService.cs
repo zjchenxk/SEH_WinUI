@@ -32,8 +32,9 @@ namespace SEH.Services.Interfaces
         /// <summary>
         /// 显示连音线编辑对话框
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="slur"></param>
         /// <returns></returns>
-        Task<Slur?> ShowEditSlurDialogAsync(Slur? slur = null);
+        Task<Slur?> ShowEditSlurDialogAsync(string name = "", Slur? slur = null);
     }
 }
