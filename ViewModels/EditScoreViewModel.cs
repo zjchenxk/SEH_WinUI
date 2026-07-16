@@ -16,6 +16,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Windows.Foundation;
 using Windows.UI.Text;
 
@@ -279,7 +280,6 @@ namespace SEH.ViewModels
         /// 当前连音线对象
         /// </summary>
         private Slur? _slur = null;
-
 
         /// <summary>
         /// 定时器
@@ -1130,8 +1130,15 @@ namespace SEH.ViewModels
                     Articulation = ret.Articulation,
                     Fermata = ret.Fermata,
                     Lyrics = ret.Lyrics,
+                    Lyrics2 = ret.Lyrics2,
+                    Lyrics3 = ret.Lyrics3,
+                    Lyrics4 = ret.Lyrics4,
+                    Lyrics5 = ret.Lyrics5,
+                    Lyrics6 = ret.Lyrics6,
                     BeamId = ret.BeamId,
-                    Beam = ret.Beam
+                    Beam = ret.Beam,
+                    StartSlurs = ret.StartSlurs,
+                    EndSlurs = ret.EndSlurs
                 };
 
                 //添加到集合
@@ -1141,36 +1148,31 @@ namespace SEH.ViewModels
 
                 #region 处理连音线
 
-                //_score.Slurs ??= [];
+                //如果选择了开始连音线
+                if (ret.StartSlurs != null && ret.StartSlurs.Count > 0)
+                {
+                    foreach (var startSlur in ret.StartSlurs)
+                    {
+                        var slur = _score.Slurs?.FirstOrDefault(s => s.Id == startSlur.Id);
+                        if (slur != null)
+                        {
+                            slur.StartNoteId = _note.Id;
+                        }
+                    }
+                }
 
-                ////如果勾选了开始新连音线
-                //if (ret.IsStartSlur ?? false)
-                //{
-                //    var slur = new Slur
-                //    {
-                //        Id = Guid.NewGuid().ToString(),
-                //        ScoreId = _score.Id,
-                //        StartLineId = _line.Id,
-                //        StartMeasureId = _measure.Id,
-                //        StartNoteId = _note.Id,
-                //        Number = _score.Slurs.Where<Slur>(s => s.StartLineId == _line.Id && s.StartMeasureId == _measure.Id).Count() + 1,
-                //        Name = $"第{_line.Number}行第{_measure.Number}小节第{_score.Slurs.Where<Slur>(s => s.StartLineId == _line.Id && s.StartMeasureId == _measure.Id).Count() + 1}条连音线",
-                //        EndLineId = "",
-                //        EndMeasureId = "",
-                //        EndNoteId = "", // 尚未结束
-                //    };
-                //    _score.Slurs.Add(slur);
-                //}
-
-                ////如果选择了结束某条已有连音线
-                //if (ret.EndSlur != null)
-                //{
-                //    var slurToClose = _score.Slurs.FirstOrDefault(s => s.Id == ret.EndSlur.Id);
-                //    if (slurToClose != null)
-                //    {
-                //        slurToClose.EndNoteId = _note.Id;
-                //    }
-                //}
+                //如果选择了结束连音线
+                if (ret.EndSlurs != null && ret.EndSlurs.Count > 0)
+                {
+                    foreach (var endSlur in ret.EndSlurs)
+                    {
+                        var slur = _score.Slurs?.FirstOrDefault(s => s.Id == endSlur.Id);
+                        if (slur != null)
+                        {
+                            slur.EndNoteId = _note.Id;
+                        }
+                    }
+                }
 
                 #endregion
 
@@ -1212,8 +1214,15 @@ namespace SEH.ViewModels
                 _note.Articulation = ret.Articulation;
                 _note.Fermata = ret.Fermata;
                 _note.Lyrics = ret.Lyrics;
+                _note.Lyrics2 = ret.Lyrics2;
+                _note.Lyrics3 = ret.Lyrics3;
+                _note.Lyrics4 = ret.Lyrics4;
+                _note.Lyrics5 = ret.Lyrics5;
+                _note.Lyrics6 = ret.Lyrics6;
                 _note.BeamId = ret.BeamId;
                 _note.Beam = ret.Beam;
+                _note.StartSlurs = ret.StartSlurs;
+                _note.EndSlurs = ret.EndSlurs;
 
                 //重新绘制简谱
                 DrawScore();
@@ -1387,9 +1396,20 @@ namespace SEH.ViewModels
         /// 修改连音线命令
         /// </summary>
         [RelayCommand]
-        private void EditSlur()
+        private async Task EditSlur()
         {
+            if (_slur == null)
+            {
+                return;
+            }
 
+            //调用服务显示弹窗并获取结果
+            var ret = await _dialogService.ShowEditSlurDialogAsync("", _slur);
+            if (ret != null)
+            {
+                //修改连音线
+                _slur.Name = ret.Name;
+            }
         }
 
         /// <summary>
@@ -1398,7 +1418,29 @@ namespace SEH.ViewModels
         [RelayCommand]
         private void DeleteSlur()
         {
+            if (_score.Slurs == null || _score.Slurs.Count == 0)
+            {
+                return;
+            }
+            if (_slur == null)
+            {
+                return;
+            }
 
+            _score.Slurs.Remove(_slur);
+
+            if (_score.Slurs.Count == 0)
+            {
+                _score.Slurs = null;
+                _slur = null;
+            }
+            else
+            {
+                _slur = _score.Slurs[^1];//[^1]代表最后一个元素
+            }
+
+            //绘制简谱
+            DrawScore();
         }
 
         /// <summary>

@@ -14,8 +14,7 @@
     DefaultButton="Primary">
 
     <ContentDialog.Resources>
-        <x:Double x:Key="ContentDialogMinWidth">600</x:Double>
-        <x:Double x:Key="ContentDialogMaxWidth">800</x:Double>
+        <x:Double x:Key="ContentDialogMinWidth">1000</x:Double>
     </ContentDialog.Resources>
 
     <ScrollViewer MaxHeight="800" VerticalScrollBarVisibility="Auto">
@@ -23,10 +22,10 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="300"/>
                 <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="300"/>
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -167,25 +166,8 @@
                            Margin="0,4,0,0"/>
             </StackPanel>
 
-            <!--开始连音线-->
-            <StackPanel Grid.Column="0" Grid.Row="4" HorizontalAlignment="Stretch">
-                <controls:MultiSelectComboBox Header="开始连音线：" PlaceholderText="选择开始的连音线..."
-                                              ItemsSource="{x:Bind ViewModel.Slurs}"
-                                              SelectedItems="{x:Bind ViewModel.SelectedStartSlurs, Mode=TwoWay}"
-                                              DisplayMemberPath="Name"
-                                              Delimiter=", "
-                                              HorizontalAlignment="Stretch"/>
-
-                <!--红字错误提示，绑定到 ViewModel 的 SelectedStartSlursError 属性-->
-                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
-                <TextBlock Text="{x:Bind ViewModel.SelectedStartSlursError, Mode=OneWay}"
-                           Foreground="{StaticResource SystemErrorTextColor}"
-                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
-                           Margin="0,4,0,0"/>
-            </StackPanel>
-
             <!--演奏方式-->
-            <StackPanel Grid.Column="0" Grid.Row="5" HorizontalAlignment="Stretch">
+            <StackPanel Grid.Column="0" Grid.Row="4" HorizontalAlignment="Stretch">
                 <ComboBox Header="演奏方式：" PlaceholderText="选择演奏方式..."
                           SelectedItem="{x:Bind ViewModel.Articulation, Mode=TwoWay}"
                           HorizontalAlignment="Stretch">
@@ -206,8 +188,58 @@
                            Margin="0,4,0,0"/>
             </StackPanel>
 
-            <!--圆括号标志-->
+            <!--减时组合-->
             <StackPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch">
+                <ComboBox Header="减时组合" PlaceholderText="选择减时组合..."
+                          ItemsSource="{x:Bind ViewModel.Beams, Mode=OneWay}"
+                          SelectedItem="{x:Bind ViewModel.SelectedBeam, Mode=TwoWay}"
+                          DisplayMemberPath="Name"
+                          HorizontalAlignment="Stretch"/>
+
+                <!--红字错误提示，绑定到 ViewModel 的 SelectedBeamError 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.SelectedBeamError, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!--开始连音线-->
+            <StackPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch">
+                <controls:MultiSelectComboBox Header="开始连音线：" PlaceholderText="选择开始的连音线..."
+                                              ItemsSource="{x:Bind ViewModel.Slurs}"
+                                              SelectedItems="{x:Bind ViewModel.SelectedStartSlurs, Mode=TwoWay}"
+                                              DisplayMemberPath="Name"
+                                              Delimiter=", "
+                                              HorizontalAlignment="Stretch"/>
+
+                <!--红字错误提示，绑定到 ViewModel 的 SelectedStartSlursError 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.SelectedStartSlursError, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!--结束连音线-->
+            <StackPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch">
+                <controls:MultiSelectComboBox Header="结束连音线：" PlaceholderText="选择结束的连音线..."
+                                              ItemsSource="{x:Bind ViewModel.Slurs}"
+                                              SelectedItems="{x:Bind ViewModel.SelectedEndSlurs, Mode=TwoWay}"
+                                              DisplayMemberPath="Name"
+                                              Delimiter=", "
+                                              HorizontalAlignment="Stretch"/>
+
+                <!--红字错误提示，绑定到 ViewModel 的 SelectedEndSlursError 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.SelectedEndSlursError, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!--圆括号标志-->
+            <StackPanel Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch">
                 <ComboBox Header="圆括号标志：" PlaceholderText="选择圆括号标志..."
                           SelectedValuePath="Tag"
                           SelectedValue="{x:Bind ViewModel.Paren, Mode=TwoWay}"
@@ -225,24 +257,8 @@
                            Margin="0,4,0,0"/>
             </StackPanel>
 
-            <!--减时组合-->
-            <StackPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch">
-                <ComboBox Header="减时组合" PlaceholderText="选择减时组合..."
-                          ItemsSource="{x:Bind ViewModel.Beams, Mode=OneWay}"
-                          SelectedItem="{x:Bind ViewModel.SelectedBeam, Mode=TwoWay}"
-                          DisplayMemberPath="Name"
-                          HorizontalAlignment="Stretch"/>
-
-                <!--红字错误提示，绑定到 ViewModel 的 SelectedBeamError 属性-->
-                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
-                <TextBlock Text="{x:Bind ViewModel.SelectedBeamError, Mode=OneWay}"
-                           Foreground="{StaticResource SystemErrorTextColor}"
-                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
-                           Margin="0,4,0,0"/>
-            </StackPanel>
-
             <!--歌词-->
-            <StackPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch">
+            <StackPanel Grid.Column="1" Grid.Row="4" HorizontalAlignment="Stretch">
                 <TextBox Header="歌词：" PlaceholderText="输入歌词..."
                          Text="{x:Bind ViewModel.Lyrics, Mode=TwoWay}"
                          HorizontalAlignment="Stretch"/>
@@ -256,7 +272,7 @@
             </StackPanel>
 
             <!--歌词2-->
-            <StackPanel Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch">
+            <StackPanel Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch">
                 <TextBox Header="歌词2：" PlaceholderText="输入歌词..."
                          Text="{x:Bind ViewModel.Lyrics2, Mode=TwoWay}"
                          HorizontalAlignment="Stretch"/>
@@ -270,7 +286,7 @@
             </StackPanel>
 
             <!--歌词3-->
-            <StackPanel Grid.Column="1" Grid.Row="4" HorizontalAlignment="Stretch">
+            <StackPanel Grid.Column="2" Grid.Row="1" HorizontalAlignment="Stretch">
                 <TextBox Header="歌词3：" PlaceholderText="输入歌词..."
                          Text="{x:Bind ViewModel.Lyrics3, Mode=TwoWay}"
                          HorizontalAlignment="Stretch"/>
@@ -278,6 +294,48 @@
                 <!--红字错误提示，绑定到 ViewModel 的 Lyrics3Error 属性-->
                 <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
                 <TextBlock Text="{x:Bind ViewModel.Lyrics3Error, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!--歌词4-->
+            <StackPanel Grid.Column="2" Grid.Row="2" HorizontalAlignment="Stretch">
+                <TextBox Header="歌词4：" PlaceholderText="输入歌词..."
+                         Text="{x:Bind ViewModel.Lyrics4, Mode=TwoWay}"
+                         HorizontalAlignment="Stretch"/>
+
+                <!--红字错误提示，绑定到 ViewModel 的 Lyrics4Error 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.Lyrics4Error, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!--歌词5-->
+            <StackPanel Grid.Column="2" Grid.Row="3" HorizontalAlignment="Stretch">
+                <TextBox Header="歌词5：" PlaceholderText="输入歌词..."
+                         Text="{x:Bind ViewModel.Lyrics5, Mode=TwoWay}"
+                         HorizontalAlignment="Stretch"/>
+
+                <!--红字错误提示，绑定到 ViewModel 的 Lyrics5Error 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.Lyrics5Error, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!--歌词6-->
+            <StackPanel Grid.Column="2" Grid.Row="4" HorizontalAlignment="Stretch">
+                <TextBox Header="歌词6：" PlaceholderText="输入歌词..."
+                         Text="{x:Bind ViewModel.Lyrics6, Mode=TwoWay}"
+                         HorizontalAlignment="Stretch"/>
+
+                <!--红字错误提示，绑定到 ViewModel 的 Lyrics6Error 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.Lyrics6Error, Mode=OneWay}"
                            Foreground="{StaticResource SystemErrorTextColor}"
                            FontSize="{StaticResource ToolTipContentThemeFontSize}"
                            Margin="0,4,0,0"/>

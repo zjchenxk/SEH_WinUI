@@ -62,7 +62,7 @@
 
                             <!--弹出的多选列表-->
                             <Popup x:Name="Popup" VerticalOffset="{Binding ElementName=RootBorder, Path=ActualHeight}">
-                                <Border Background="{ThemeResource SurfaceBrush}"
+                                <Border Background="{ThemeResource ComboBoxDropDownBackground}"
                                         BorderBrush="{ThemeResource ComboBoxBorderBrush}"
                                         BorderThickness="1"
                                         CornerRadius="4"

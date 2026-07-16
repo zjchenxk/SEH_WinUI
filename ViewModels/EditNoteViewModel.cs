@@ -349,7 +349,6 @@ namespace SEH.ViewModels
                 Duration = note.Duration.ToString();
                 Dots = note.Dots.ToString();
                 Fermata = note.Fermata.ToString();
-
                 Articulation = note.Articulation ?? "";
                 Paren = (note.Paren?.ToString()) ?? "";
                 Lyrics = note.Lyrics ?? "";
@@ -359,6 +358,22 @@ namespace SEH.ViewModels
                 Lyrics5 = note.Lyrics5 ?? "";
                 Lyrics6 = note.Lyrics6 ?? "";
                 SelectedBeam = note.Beam;
+
+                if (note.StartSlurs != null)
+                {
+                    foreach (var slur in note.StartSlurs)
+                    {
+                        SelectedStartSlurs?.Add(slur);
+                    }
+                }
+
+                if (note.EndSlurs != null)
+                {
+                    foreach (var slur in note.EndSlurs)
+                    {
+                        SelectedEndSlurs?.Add(slur);
+                    }
+                }
             }
         }
 
