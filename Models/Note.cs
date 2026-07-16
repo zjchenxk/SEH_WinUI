@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using SQLite;
-using System.Collections.Generic;
 
 namespace SEH.Models
 {

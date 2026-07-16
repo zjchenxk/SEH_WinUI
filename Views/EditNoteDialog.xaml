@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SEH.Views"
+    xmlns:controls="using:SEH.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -166,8 +167,21 @@
                            Margin="0,4,0,0"/>
             </StackPanel>
 
-            <!--连音线结束-->
+            <!--开始连音线-->
             <StackPanel Grid.Column="0" Grid.Row="4" HorizontalAlignment="Stretch">
+                <controls:MultiSelectComboBox Header="开始连音线：" PlaceholderText="选择开始的连音线..."
+                                              ItemsSource="{x:Bind ViewModel.Slurs}"
+                                              SelectedItems="{x:Bind ViewModel.SelectedStartSlurs, Mode=TwoWay}"
+                                              DisplayMemberPath="Name"
+                                              Delimiter=", "
+                                              HorizontalAlignment="Stretch"/>
+
+                <!--红字错误提示，绑定到 ViewModel 的 SelectedStartSlursError 属性-->
+                <!--如果没有错误，该属性为 null，TextBlock 会自动隐藏-->
+                <TextBlock Text="{x:Bind ViewModel.SelectedStartSlursError, Mode=OneWay}"
+                           Foreground="{StaticResource SystemErrorTextColor}"
+                           FontSize="{StaticResource ToolTipContentThemeFontSize}"
+                           Margin="0,4,0,0"/>
             </StackPanel>
 
             <!--演奏方式-->

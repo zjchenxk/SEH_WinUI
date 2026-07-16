@@ -2,7 +2,7 @@
 using Microsoft.UI.Xaml.Media;
 using System;
 
-namespace SEH.Commons
+namespace SEH.Converts
 {
     public class BoolToDashArrayConverter : IValueConverter
     {

@@ -1,0 +1,94 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SEH.Controls"
+    xmlns:conv="using:SEH.Converts">
+
+    <conv:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+
+    <Style TargetType="local:MultiSelectComboBox">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:MultiSelectComboBox">
+                    
+                    <!--使用 StackPanel 垂直排列 Header 和主体-->
+                    <StackPanel Spacing="4">
+
+                        <!--1. Header 区域-->
+                        <ContentPresenter Content="{TemplateBinding Header}">
+                            
+                            <!--修改点1：使用完整 Binding 替代 TemplateBinding 以支持 Converter-->
+                            <ContentPresenter.Visibility>
+                                <Binding Path="Header" 
+                                         RelativeSource="{RelativeSource TemplatedParent}" 
+                                         Converter="{StaticResource NullToVisibilityConverter}" />
+                            </ContentPresenter.Visibility>
+
+                            <!--修改点2：ContentPresenter 没有 TextTrimming 属性，将其移除或移入内部 TextBlock 样式中-->
+                            <!--这里的隐式样式会应用于 Header 内部的 TextBlock-->
+                            <ContentPresenter.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+                                    <Setter Property="FontSize" Value="12" />
+                                    <!--如果需要文本裁剪，可以加在这里-->
+                                    <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                    <Setter Property="TextWrapping" Value="NoWrap" />
+                                </Style>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+
+                        <!--2. 主体 Grid (包含 Border 和 Popup)-->
+                        <Grid>
+                            <!--模拟 ComboBox 的外观-->
+                            <Border x:Name="RootBorder"
+                                    Background="{ThemeResource ComboBoxBackground}"
+                                    BorderBrush="{ThemeResource ComboBoxBorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="4"
+                                    Padding="12,8">
+                                <Grid>
+                                    <TextBlock x:Name="TextBlock"
+                                               VerticalAlignment="Center"
+                                               TextWrapping="NoWrap"
+                                               TextTrimming="CharacterEllipsis" />
+                                    
+                                    <!--下拉箭头图标-->
+                                    <FontIcon Glyph="&#xE70D;"
+                                              HorizontalAlignment="Right"
+                                              FontSize="12"
+                                              Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                </Grid>
+                            </Border>
+
+                            <!--弹出的多选列表-->
+                            <Popup x:Name="Popup" VerticalOffset="{Binding ElementName=RootBorder, Path=ActualHeight}">
+                                <Border Background="{ThemeResource SurfaceBrush}"
+                                        BorderBrush="{ThemeResource ComboBoxBorderBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="4"
+                                        Padding="0,4"
+                                        MinWidth="{Binding ElementName=RootBorder, Path=ActualWidth}"
+                                        MaxHeight="300">
+                                    
+                                    <ListView x:Name="MultiSelectListView"
+                                              SelectionMode="Multiple"
+                                              ItemsSource="{TemplateBinding ItemsSource}"
+                                              DisplayMemberPath="{TemplateBinding DisplayMemberPath}">
+                                        
+                                        <ListView.ItemContainerStyle>
+                                            <Style TargetType="ListViewItem">
+                                                <Setter Property="Padding" Value="12,8"/>
+                                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                            </Style>
+                                        </ListView.ItemContainerStyle>
+                                    </ListView>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

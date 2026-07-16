@@ -13,6 +13,7 @@
                 <!-- 自定义样式覆盖 (必须在 XamlControlsResources 之后) -->
                 <ResourceDictionary Source="/Assets/Themes/FontStyles.xaml"/>
                 <ResourceDictionary Source="/Assets/Themes/AppBarButtonStyle.xaml"/>
+                <ResourceDictionary Source="/Assets/Themes/MultiSelectComboBoxStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <!-- 控件字体大小覆盖 (默认值放大125%) -->

@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SEH.Views"
     xmlns:commons="using:SEH.Commons"
+    xmlns:converters="using:SEH.Converts"
     xmlns:viewModels="using:SEH.ViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DataContext="{d:DesignInstance Type=viewModels:EditScoreViewModel}"
@@ -12,7 +13,7 @@
 
     <Page.Resources>
         <!--虚线转换器-->
-        <commons:BoolToDashArrayConverter x:Key="BoolToDashArrayConverter"/>
+        <converters:BoolToDashArrayConverter x:Key="BoolToDashArrayConverter"/>
 
         <!--文本渲染模板-->
         <DataTemplate x:Key="TextTemplate" x:DataType="commons:ScoreRenderTextElement">
