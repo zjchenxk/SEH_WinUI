@@ -135,13 +135,13 @@
             <MenuBarItem Title="文件操作">
                 <MenuFlyoutItem Text="保存简谱" Command="{x:Bind ViewModel.SaveCommand}">
                     <MenuFlyoutItem.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/保存.png" ShowAsMonochrome="False"/>
+                        <SymbolIcon Symbol="Save" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
 
                 <MenuFlyoutItem Text="打印简谱" Command="{x:Bind ViewModel.PrintCommand}">
                     <MenuFlyoutItem.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/打印.png" ShowAsMonochrome="False"/>
+                        <SymbolIcon Symbol="Print" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
 
@@ -149,7 +149,7 @@
 
                 <MenuFlyoutItem Text="关闭退出" Command="{x:Bind ViewModel.CloseCommand}">
                     <MenuFlyoutItem.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/关闭.png" ShowAsMonochrome="False"/>
+                        <FontIcon Glyph="&#xE7E8;" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
             </MenuBarItem>
@@ -157,19 +157,19 @@
             <MenuBarItem Title="行操作">
                 <MenuFlyoutItem Text="新增行" Command="{x:Bind ViewModel.NewLineCommand}">
                     <MenuFlyoutItem.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/添加一行.png" ShowAsMonochrome="False"/>
+                        <SymbolIcon Symbol="Add" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
 
                 <MenuFlyoutItem Text="修改行" Command="{x:Bind ViewModel.EditLineCommand}">
                     <MenuFlyoutItem.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/修改一行.png" ShowAsMonochrome="False"/>
+                        <SymbolIcon Symbol="Edit" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
 
                 <MenuFlyoutItem Text="删除行" Command="{x:Bind ViewModel.DeleteLineCommand}">
                     <MenuFlyoutItem.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/删除一行.png" ShowAsMonochrome="False"/>
+                        <SymbolIcon Symbol="Delete" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
             </MenuBarItem>
@@ -177,19 +177,19 @@
             <MenuBarItem Title="小节操作">
                 <MenuFlyoutItem Text="新增小节" Command="{x:Bind ViewModel.NewMeasureCommand}">
                     <MenuFlyoutItem.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/添加小节.png" ShowAsMonochrome="False"/>
+                        <SymbolIcon Symbol="Add" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
 
                 <MenuFlyoutItem Text="修改小节" Command="{x:Bind ViewModel.EditMeasureCommand}">
                     <MenuFlyoutItem.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/修改小节.png" ShowAsMonochrome="False"/>
+                        <SymbolIcon Symbol="Edit" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
 
                 <MenuFlyoutItem Text="删除小节" Command="{x:Bind ViewModel.DeleteMeasureCommand}">
                     <MenuFlyoutItem.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/删除小节.png" ShowAsMonochrome="False"/>
+                        <SymbolIcon Symbol="Delete" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
             </MenuBarItem>
@@ -197,19 +197,19 @@
             <MenuBarItem Title="音符操作">
                 <MenuFlyoutItem Text="新增音符" Command="{x:Bind ViewModel.NewNoteCommand}">
                     <MenuFlyoutItem.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/添加音符.png" ShowAsMonochrome="False"/>
+                        <SymbolIcon Symbol="Add" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
 
                 <MenuFlyoutItem Text="修改音符" Command="{x:Bind ViewModel.EditNoteCommand}">
                     <MenuFlyoutItem.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/修改音符.png" ShowAsMonochrome="False"/>
+                        <SymbolIcon Symbol="Edit" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
 
                 <MenuFlyoutItem Text="删除音符" Command="{x:Bind ViewModel.DeleteNoteCommand}">
                     <MenuFlyoutItem.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/删除音符.png" ShowAsMonochrome="False"/>
+                        <SymbolIcon Symbol="Delete" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
             </MenuBarItem>
@@ -217,13 +217,13 @@
             <MenuBarItem Title="组合操作">
                 <MenuFlyoutItem Text="新增组合" Command="{x:Bind ViewModel.NewBeamCommand}">
                     <MenuFlyoutItem.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/添加组合.png" ShowAsMonochrome="False"/>
+                        <SymbolIcon Symbol="Add" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
 
                 <MenuFlyoutItem Text="删除组合" Command="{x:Bind ViewModel.DeleteBeamCommand}">
                     <MenuFlyoutItem.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/删除组合.png" ShowAsMonochrome="False"/>
+                        <SymbolIcon Symbol="Delete" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
             </MenuBarItem>
@@ -231,19 +231,19 @@
             <MenuBarItem Title="连音线操作">
                 <MenuFlyoutItem Text="新增连音线">
                     <MenuFlyoutItem.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/添加弧线.png" ShowAsMonochrome="False"/>
+                        <SymbolIcon Symbol="Add" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
 
                 <MenuFlyoutItem Text="修改连音线">
                     <MenuFlyoutItem.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/修改弧线.png" ShowAsMonochrome="False"/>
+                        <SymbolIcon Symbol="Edit" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
 
                 <MenuFlyoutItem Text="删除连音线">
                     <MenuFlyoutItem.Icon>
-                        <BitmapIcon UriSource="/Assets/Images/删除弧线.png" ShowAsMonochrome="False"/>
+                        <SymbolIcon Symbol="Delete" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
             </MenuBarItem>

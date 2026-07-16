@@ -130,53 +130,47 @@
 
             <TitleBar.Content>
                 <CommandBar Background="Transparent" IsOpen="False" DefaultLabelPosition="Right" Padding="0">
-                    <AppBarButton Label="新增类别" Style="{StaticResource MyAppBarButtonStyle}" 
-                                  Command="{x:Bind ViewModel.NewCategoryCommand}">
+                    <AppBarButton Label="新增类别" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.NewCategoryCommand}">
                         <AppBarButton.Icon>
-                            <BitmapIcon UriSource="/Assets/Images/添加.png" ShowAsMonochrome="False"/>
+                            <SymbolIcon Symbol="Add" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                    <AppBarButton Label="修改类别" Style="{StaticResource MyAppBarButtonStyle}"
-                                  Command="{x:Bind ViewModel.EditCategoryCommand}">
+                    <AppBarButton Label="修改类别" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.EditCategoryCommand}">
                         <AppBarButton.Icon>
-                            <BitmapIcon UriSource="/Assets/Images/修改.png" ShowAsMonochrome="False"/>
+                            <SymbolIcon Symbol="Edit" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                    <AppBarButton Label="删除类别" Style="{StaticResource MyAppBarButtonStyle}"
-                                  Command="{x:Bind ViewModel.DeleteCategoryCommand}">
+                    <AppBarButton Label="删除类别" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.DeleteCategoryCommand}">
                         <AppBarButton.Icon>
-                            <BitmapIcon UriSource="/Assets/Images/删除.png" ShowAsMonochrome="False"/>
+                            <SymbolIcon Symbol="Delete" />
                         </AppBarButton.Icon>
                     </AppBarButton>
+                    
                     <AppBarSeparator/>
-                    <AppBarButton Label="新增简谱" Style="{StaticResource MyAppBarButtonStyle}"
-                                  Command="{x:Bind ViewModel.NewScoreCommand}">
+                    
+                    <AppBarButton Label="新增简谱" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.NewScoreCommand}">
                         <AppBarButton.Icon>
-                            <BitmapIcon UriSource="/Assets/Images/添加.png" ShowAsMonochrome="False"/>
+                            <SymbolIcon Symbol="Add" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                    <AppBarButton Label="修改简谱" Style="{StaticResource MyAppBarButtonStyle}"
-                                  Command="{x:Bind ViewModel.EditScoreCommand}">
+                    <AppBarButton Label="修改简谱" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.EditScoreCommand}">
                         <AppBarButton.Icon>
-                            <BitmapIcon UriSource="/Assets/Images/修改.png" ShowAsMonochrome="False"/>
+                            <SymbolIcon Symbol="Edit" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                    <AppBarButton Label="删除简谱" Style="{StaticResource MyAppBarButtonStyle}"
-                                  Command="{x:Bind ViewModel.DeleteScoreCommand}">
+                    <AppBarButton Label="删除简谱" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.DeleteScoreCommand}">
                         <AppBarButton.Icon>
-                            <BitmapIcon UriSource="/Assets/Images/删除.png" ShowAsMonochrome="False"/>
+                            <SymbolIcon Symbol="Delete" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                    <AppBarButton Label="查看简谱" Style="{StaticResource MyAppBarButtonStyle}"
-                                  Command="{x:Bind ViewModel.ViewScoreCommand}">
+                    <AppBarButton Label="查看简谱" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.ViewScoreCommand}">
                         <AppBarButton.Icon>
-                            <BitmapIcon UriSource="/Assets/Images/打开.png" ShowAsMonochrome="False"/>
+                            <SymbolIcon Symbol="Document" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                    <AppBarButton Label="移动简谱" Style="{StaticResource MyAppBarButtonStyle}"
-                                  Command="{x:Bind ViewModel.MoveScoreCommand}">
+                    <AppBarButton Label="移动简谱" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.MoveScoreCommand}">
                         <AppBarButton.Icon>
-                            <BitmapIcon UriSource="/Assets/Images/移动.png" ShowAsMonochrome="False"/>
+                            <SymbolIcon Symbol="Send" />
                         </AppBarButton.Icon>
                     </AppBarButton>
                 </CommandBar>
