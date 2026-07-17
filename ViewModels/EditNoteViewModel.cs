@@ -73,10 +73,16 @@ namespace SEH.ViewModels
         private string? _fermataError = "";
 
         /// <summary>
-        /// 当前已打开（未结束）的连音线集合
+        /// 开始连音线集合
         /// </summary>
         [ObservableProperty]
-        private ObservableCollection<Slur> _slurs = [];
+        private ObservableCollection<Slur> _startSlurs = [];
+
+        /// <summary>
+        /// 结束连音线集合
+        /// </summary>
+        [ObservableProperty]
+        private ObservableCollection<Slur> _endSlurs = [];
 
         /// <summary>
         /// 选择开始的连音线（如果不结束则为 null）
@@ -324,7 +330,7 @@ namespace SEH.ViewModels
         /// </summary>
         /// <param name="beams"></param>
         /// <param name="note"></param>
-        public void Initialize(List<Beam>? beams = null, List<Slur>? slurs = null, Note? note = null)
+        public void Initialize(List<Beam>? beams = null, List<Slur>? startSlurs = null, List<Slur>? endSlurs = null, Note? note = null)
         {
             if (beams != null)
             {
@@ -334,11 +340,19 @@ namespace SEH.ViewModels
                 }
             }
 
-            if (slurs != null)
+            if (startSlurs != null)
             {
-                foreach (var slur in slurs)
+                foreach (var startSlur in startSlurs)
                 {
-                    Slurs.Add(slur);
+                    StartSlurs.Add(startSlur);
+                }
+            }
+
+            if (endSlurs != null)
+            {
+                foreach (var endSlur in endSlurs)
+                {
+                    EndSlurs.Add(endSlur);
                 }
             }
 

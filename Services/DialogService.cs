@@ -107,10 +107,11 @@ namespace SEH.Services
         /// 显示音符编辑对话框
         /// </summary>
         /// <param name="beams"></param>
-        /// <param name="slurs"></param>
+        /// <param name="startSlurs"></param>
+        /// <param name="endSlurs"></param>
         /// <param name="note"></param>
         /// <returns></returns>
-        public async Task<Note?> ShowEditNoteDialogAsync(List<Beam>? beams = null, List<Slur>? slurs = null, Note? note = null)
+        public async Task<Note?> ShowEditNoteDialogAsync(List<Beam>? beams = null, List<Slur>? startSlurs = null, List<Slur>? endSlurs = null, Note? note = null)
         {
             if (XamlRoot == null)
             {
@@ -120,7 +121,7 @@ namespace SEH.Services
             var viewModel = new EditNoteViewModel();
 
             //实现传参初始化
-            viewModel.Initialize(beams, slurs, note);
+            viewModel.Initialize(beams, startSlurs, endSlurs, note);
 
             var dialog = new EditNoteDialog(viewModel)
             {

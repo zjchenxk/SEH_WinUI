@@ -207,7 +207,7 @@
             <!--开始连音线-->
             <StackPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch">
                 <controls:MultiSelectComboBox Header="开始连音线：" PlaceholderText="选择开始的连音线..."
-                                              ItemsSource="{x:Bind ViewModel.Slurs}"
+                                              ItemsSource="{x:Bind ViewModel.StartSlurs}"
                                               SelectedItems="{x:Bind ViewModel.SelectedStartSlurs, Mode=TwoWay}"
                                               DisplayMemberPath="Name"
                                               Delimiter=", "
@@ -224,7 +224,7 @@
             <!--结束连音线-->
             <StackPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch">
                 <controls:MultiSelectComboBox Header="结束连音线：" PlaceholderText="选择结束的连音线..."
-                                              ItemsSource="{x:Bind ViewModel.Slurs}"
+                                              ItemsSource="{x:Bind ViewModel.EndSlurs}"
                                               SelectedItems="{x:Bind ViewModel.SelectedEndSlurs, Mode=TwoWay}"
                                               DisplayMemberPath="Name"
                                               Delimiter=", "

@@ -922,14 +922,17 @@ namespace SEH.ViewModels
                 return;
             }
 
+            //获取当前小节开始的连音线
+            var startSlurs = _score.Slurs?.Where(s => s.StartLineId == _line.Id && s.StartMeasureId == _measure.Id).ToList();
+
             //获取当前已打开的连音线
-            var slurs = _score.Slurs?.Where(s => string.IsNullOrEmpty(s.EndNoteId)).ToList();
+            var endSlurs = _score.Slurs?.Where(s => string.IsNullOrEmpty(s.EndNoteId)).ToList();
 
             //调用服务显示弹窗并获取结果
-            var ret = await _dialogService.ShowEditNoteDialogAsync(_measure.Beams, slurs, null);
+            var ret = await _dialogService.ShowEditNoteDialogAsync(_measure.Beams, startSlurs, endSlurs, null);
             if (ret != null)
             {
-                #region 检查当前小节总拍数是否已满
+                #region 1.检查当前小节总拍数是否已满
                 double currentMeasureBeats = 0;
                 if (_measure.Notes != null)
                 {
@@ -1111,7 +1114,7 @@ namespace SEH.ViewModels
                 }
                 #endregion
 
-                #region 添加音符到小节
+                #region 2.添加音符到小节
 
                 //初始化 Note 集合
                 _measure.Notes ??= [];
@@ -1146,9 +1149,9 @@ namespace SEH.ViewModels
 
                 #endregion
 
-                #region 处理连音线
+                #region 3.绑定连音线
 
-                //如果选择了开始连音线
+                //绑定开始连音线
                 if (ret.StartSlurs != null && ret.StartSlurs.Count > 0)
                 {
                     foreach (var startSlur in ret.StartSlurs)
@@ -1161,7 +1164,7 @@ namespace SEH.ViewModels
                     }
                 }
 
-                //如果选择了结束连音线
+                //绑定结束连音线
                 if (ret.EndSlurs != null && ret.EndSlurs.Count > 0)
                 {
                     foreach (var endSlur in ret.EndSlurs)
@@ -1169,6 +1172,8 @@ namespace SEH.ViewModels
                         var slur = _score.Slurs?.FirstOrDefault(s => s.Id == endSlur.Id);
                         if (slur != null)
                         {
+                            slur.EndLineId = _line.Id;
+                            slur.EndMeasureId = _measure.Id;
                             slur.EndNoteId = _note.Id;
                         }
                     }
@@ -1200,14 +1205,50 @@ namespace SEH.ViewModels
                 return;
             }
 
+            //获取当前小节开始的连音线
+            var startSlurs = _score.Slurs?.Where(s => s.StartLineId == _line.Id && s.StartMeasureId == _measure.Id).ToList();
+
             //获取当前已打开的连音线
-            var slurs = _score.Slurs?.Where(s => string.IsNullOrEmpty(s.EndNoteId)).ToList();
+            var endSlurs = _score.Slurs?.Where(s => string.IsNullOrEmpty(s.EndNoteId) || s.EndNoteId == _note.Id).ToList();
 
             //调用服务显示弹窗并获取结果
-            var ret = await _dialogService.ShowEditNoteDialogAsync(_measure.Beams, slurs, _note);
+            var ret = await _dialogService.ShowEditNoteDialogAsync(_measure.Beams, startSlurs, endSlurs, _note);
             if (ret != null)
             {
-                //修改音符
+                #region 1.解绑连音线
+
+                //解绑开始连音线
+                if (_note.StartSlurs != null && _note.StartSlurs.Count > 0)
+                {
+                    foreach (var startSlur in _note.StartSlurs)
+                    {
+                        var slur = _score.Slurs?.FirstOrDefault(s => s.Id == startSlur.Id);
+                        if (slur != null)
+                        {
+                            slur.StartNoteId = "";
+                        }
+                    }
+                }
+
+                //解绑结束连音线
+                if (_note.EndSlurs != null && _note.EndSlurs.Count > 0)
+                {
+                    foreach (var endSlur in _note.EndSlurs)
+                    {
+                        var slur = _score.Slurs?.FirstOrDefault(s => s.Id == endSlur.Id);
+                        if (slur != null)
+                        {
+                            slur.EndLineId = "";
+                            slur.EndMeasureId = "";
+                            slur.EndNoteId = "";
+                        }
+                    }
+                }
+
+                #endregion
+
+                #region 2.修改音符
+
                 _note.Pitch = ret.Pitch;
                 _note.Duration = ret.Duration;
                 _note.Dots = ret.Dots;
@@ -1223,6 +1264,40 @@ namespace SEH.ViewModels
                 _note.Beam = ret.Beam;
                 _note.StartSlurs = ret.StartSlurs;
                 _note.EndSlurs = ret.EndSlurs;
+
+                #endregion
+
+                #region 3.绑定连音线
+
+                //绑定开始连音线
+                if (ret.StartSlurs != null && ret.StartSlurs.Count > 0)
+                {
+                    foreach (var startSlur in ret.StartSlurs)
+                    {
+                        var slur = _score.Slurs?.FirstOrDefault(s => s.Id == startSlur.Id);
+                        if (slur != null)
+                        {
+                            slur.StartNoteId = _note.Id;
+                        }
+                    }
+                }
+
+                //绑定结束连音线
+                if (ret.EndSlurs != null && ret.EndSlurs.Count > 0)
+                {
+                    foreach (var endSlur in ret.EndSlurs)
+                    {
+                        var slur = _score.Slurs?.FirstOrDefault(s => s.Id == endSlur.Id);
+                        if (slur != null)
+                        {
+                            slur.EndLineId = _line.Id;
+                            slur.EndMeasureId = _measure.Id;
+                            slur.EndNoteId = _note.Id;
+                        }
+                    }
+                }
+
+                #endregion
 
                 //重新绘制简谱
                 DrawScore();
@@ -1251,6 +1326,38 @@ namespace SEH.ViewModels
             {
                 return;
             }
+
+            #region 解绑连音线
+
+            //解绑开始连音线
+            if (_note.StartSlurs != null && _note.StartSlurs.Count > 0)
+            {
+                foreach (var startSlur in _note.StartSlurs)
+                {
+                    var slur = _score.Slurs?.FirstOrDefault(s => s.Id == startSlur.Id);
+                    if (slur != null)
+                    {
+                        slur.StartNoteId = "";
+                    }
+                }
+            }
+
+            //解绑结束连音线
+            if (_note.EndSlurs != null && _note.EndSlurs.Count > 0)
+            {
+                foreach (var endSlur in _note.EndSlurs)
+                {
+                    var slur = _score.Slurs?.FirstOrDefault(s => s.Id == endSlur.Id);
+                    if (slur != null)
+                    {
+                        slur.EndLineId = "";
+                        slur.EndMeasureId = "";
+                        slur.EndNoteId = "";
+                    }
+                }
+            }
+
+            #endregion
 
             _measure.Notes.Remove(_note);
 
@@ -1473,6 +1580,8 @@ namespace SEH.ViewModels
             double measureLeftPadding = 10;//小节左边距
             double measureRightPadding = 10;//小节右边距
             double noteBaseYOffset = 40;//音符在每行中的相对Y位置
+
+            Dictionary<string, Note> dictNotes = [];//所有音符字典
 
             double currentY = startY;
 
@@ -2455,8 +2564,7 @@ namespace SEH.ViewModels
                                     }
                                     #endregion
 
-                                    currentX += line.NoteWidth;
-
+                                    #region 5.计算当前小节音符拍数
                                     if (string.IsNullOrWhiteSpace(note.BeamId))
                                     {
                                         if (note.Duration == 1)//四分音符
@@ -2528,9 +2636,14 @@ namespace SEH.ViewModels
                                             }
                                         }
                                     }
+                                    #endregion
+
+                                    currentX += line.NoteWidth;
+
+                                    dictNotes[note.Id] = note;//存储到音符字典
                                 }
 
-                                //计算组合拍数，一个组合为一拍
+                                #region 计算当前小节音符组合拍数，一个组合为一拍
                                 if (measure.Beams != null && measure.Beams.Count > 0)
                                 {
                                     foreach (var beam in measure.Beams)
@@ -2545,12 +2658,14 @@ namespace SEH.ViewModels
                                         }
                                     }
                                 }
+                                #endregion
 
-                                //填充占位音符宽度，如果当前小节拍数小于拍号中的小节拍数，则需要绘制空白音符占位
+                                #region 填充占位音符宽度，如果当前小节拍数小于拍号中的小节拍数，则需要绘制空白音符占位
                                 if (currentMeasureBeats < _score.MeasureBeatCount)
                                 {
                                     currentX += line.NoteWidth * (_score.MeasureBeatCount - currentMeasureBeats);
                                 }
+                                #endregion
                             }
                             else
                             {
@@ -2818,147 +2933,105 @@ namespace SEH.ViewModels
                     }
                     #endregion
 
-                    #region 5.绘制连音线
-                    {
-                        List<(Note? from, Note? to)> slurNotes = [];//连音音符集合
-
-                        //if (line.Measures != null && line.Measures.Count > 0)
-                        //{
-                        //    foreach (var measure in line.Measures)
-                        //    {
-                        //        if (measure.Notes != null && measure.Notes.Count > 0)
-                        //        {
-                        //            foreach (var note in measure.Notes)
-                        //            {
-                        //                if (note.Slur == 1)//连音线开始
-                        //                {
-                        //                    slurNotes.Add((note, null));
-                        //                }
-                        //                else if (note.Slur == 0)//连音线结束
-                        //                {
-                        //                    int i = slurNotes.Count - 1;
-                        //                    while (i >= 0)
-                        //                    {
-                        //                        if (slurNotes[i].from != null && slurNotes[i].to == null)
-                        //                        {
-                        //                            slurNotes[i] = (slurNotes[i].from, note);
-                        //                            break;
-                        //                        }
-                        //                        i--;
-                        //                    }
-                        //                    if (i < 0)
-                        //                    {
-                        //                        slurNotes.Add((null, note));
-                        //                    }
-                        //                }
-                        //                else if (note.Slur == 2)//连音线结束后开始新连音线
-                        //                {
-                        //                    int i = slurNotes.Count - 1;
-                        //                    while (i >= 0)
-                        //                    {
-                        //                        if (slurNotes[i].from != null && slurNotes[i].to == null)
-                        //                        {
-                        //                            slurNotes[i] = (slurNotes[i].from, note);
-                        //                            break;
-                        //                        }
-                        //                        i--;
-                        //                    }
-                        //                    if (i < 0)
-                        //                    {
-                        //                        slurNotes.Add((null, note));
-                        //                    }
-
-                        //                    slurNotes.Add((note, null));
-                        //                }
-                        //            }
-                        //        }
-                        //    }
-                        //}
-                        if (slurNotes.Count > 0)
-                        {
-                            for (int i = 0; i < slurNotes.Count; i++)
-                            {
-                                Note? fromNote = slurNotes[i].from;
-                                Note? toNote = slurNotes[i].to;
-
-                                if (fromNote != null && toNote != null)
-                                {
-                                    if (fromNote.X != null && fromNote.Width != null && toNote.X != null && toNote.Width != null)
-                                    {
-                                        double fromX = (double)(fromNote.X + fromNote.Width / 2);
-                                        double fromY = currentY + noteBaseYOffset;
-                                        if (fromNote.Pitch.StartsWith("+++") || fromNote.Pitch.StartsWith("++") || fromNote.Pitch.StartsWith("+"))
-                                        {
-                                            fromY -= 4;
-                                        }
-                                        if (fromNote.Pitch.StartsWith("+++") || fromNote.Pitch.StartsWith("++"))
-                                        {
-                                            fromY -= 4;
-                                        }
-                                        if (fromNote.Pitch.StartsWith("+++"))
-                                        {
-                                            fromY -= 4;
-                                        }
-                                        if (fromNote.Fermata == 1)
-                                        {
-                                            fromY -= 20;
-                                        }
-                                        fromY -= 5;
-
-                                        double toX = (double)(toNote.X + toNote.Width / 2);
-                                        double toY = currentY + noteBaseYOffset;
-                                        if (toNote.Pitch.StartsWith("+++") || toNote.Pitch.StartsWith("++") || toNote.Pitch.StartsWith("+"))
-                                        {
-                                            toY -= 4;
-                                        }
-                                        if (toNote.Pitch.StartsWith("+++") || toNote.Pitch.StartsWith("++"))
-                                        {
-                                            toY -= 4;
-                                        }
-                                        if (toNote.Pitch.StartsWith("+++"))
-                                        {
-                                            toY -= 4;
-                                        }
-                                        if (toNote.Fermata == 1)
-                                        {
-                                            toY -= 20;
-                                        }
-                                        toY -= 5;
-
-                                        double Y = Math.Min(fromY, toY);
-
-                                        RenderElements.Add(new ScoreRenderTieLineElement
-                                        {
-                                            X = fromX,
-                                            Y = Y,
-                                            Width = toX - fromX,
-                                            Height = 1,
-                                            Shape = TieLineShape.Full //两端带圆角
-                                        });
-                                    }
-                                }
-                                else
-                                {
-                                    if (fromNote != null)
-                                    {
-
-                                    }
-                                    else if (toNote != null)
-                                    {
-
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    #endregion
-
                     currentY += line.Height;
                 }
             }
             #endregion
 
-            #region 3.绘制分页符和页码
+            #region 3.绘制连音线
+            if (_score.Slurs != null && _score.Slurs.Count > 0)
+            {
+                foreach (var slur in _score.Slurs)
+                {
+                    if (dictNotes.TryGetValue(slur.StartNoteId, out var fromNote) && dictNotes.TryGetValue(slur.EndNoteId, out var toNote))
+                    {
+                        if (fromNote != null && fromNote.X != null && fromNote.Y != null && fromNote.Width != null &&
+                            toNote != null && toNote.X != null && toNote.Y != null && toNote.Width != null)
+                        {
+                            double fromX = (double)(fromNote.X + fromNote.Width / 2);
+                            double fromY = (double)fromNote.Y;
+                            if (fromNote.Pitch.StartsWith("+++") || fromNote.Pitch.StartsWith("++") || fromNote.Pitch.StartsWith("+"))
+                            {
+                                fromY -= 4;
+                            }
+                            if (fromNote.Pitch.StartsWith("+++") || fromNote.Pitch.StartsWith("++"))
+                            {
+                                fromY -= 4;
+                            }
+                            if (fromNote.Pitch.StartsWith("+++"))
+                            {
+                                fromY -= 4;
+                            }
+                            if (fromNote.Fermata == 1)
+                            {
+                                fromY -= 20;
+                            }
+                            fromY -= 5;
+
+                            double toX = (double)(toNote.X + toNote.Width / 2);
+                            double toY = (double)toNote.Y;
+                            if (toNote.Pitch.StartsWith("+++") || toNote.Pitch.StartsWith("++") || toNote.Pitch.StartsWith("+"))
+                            {
+                                toY -= 4;
+                            }
+                            if (toNote.Pitch.StartsWith("+++") || toNote.Pitch.StartsWith("++"))
+                            {
+                                toY -= 4;
+                            }
+                            if (toNote.Pitch.StartsWith("+++"))
+                            {
+                                toY -= 4;
+                            }
+                            if (toNote.Fermata == 1)
+                            {
+                                toY -= 20;
+                            }
+                            toY -= 5;
+
+                            //判断是否跨行：如果 fromNote 和 toNote 不在同一行
+                            bool isCrossLine = fromNote.LineId != toNote.LineId;
+                            bool isSameLine = !isCrossLine;
+
+                            if (isSameLine)
+                            {
+                                RenderElements.Add(new ScoreRenderTieLineElement
+                                {
+                                    X = fromX,
+                                    Y = Math.Min(fromY, toY),
+                                    Width = toX - fromX,
+                                    Height = 1,
+                                    Shape = TieLineShape.Full
+                                });
+                            }
+                            else
+                            {
+                                //跨行：第一行末尾画半截
+                                RenderElements.Add(new ScoreRenderTieLineElement
+                                {
+                                    X = fromX,
+                                    Y = fromY,
+                                    Width = Width - _score.RightMargin - fromX,
+                                    Height = 1,
+                                    Shape = TieLineShape.EndStraight
+                                });
+
+                                //跨行：下一行开头画半截
+                                RenderElements.Add(new ScoreRenderTieLineElement
+                                {
+                                    X = _score.LeftMargin,
+                                    Y = toY,
+                                    Width = toX - _score.LeftMargin,
+                                    Height = 1,
+                                    Shape = TieLineShape.StartStraight
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region 4.绘制分页符和页码
             {
                 int pageHeight;
                 if (_score.Direction == 1)//纵向

@@ -27,6 +27,7 @@ namespace SEH.Services
                     db.CreateTable<Measure>();
                     db.CreateTable<Note>();
                     db.CreateTable<Beam>();
+                    db.CreateTable<Slur>();
                 }
             }
             catch (Exception ex)
@@ -255,6 +256,10 @@ namespace SEH.Services
                     var score = db.Find<Score>(id);
                     if (score != null)
                     {
+                        //读取连音线记录
+                        var slurs = db.Table<Slur>().Where(u => u.ScoreId == id).OrderBy(u => u.Number).ToList();
+                        score.Slurs = slurs;
+
                         //读取行记录
                         var lines = db.Table<Line>().Where(u => u.ScoreId == id).OrderBy(u => u.Number).ToList();
                         if (lines != null && lines.Count > 0)
@@ -277,12 +282,32 @@ namespace SEH.Services
                                         {
                                             foreach (var note in notes)
                                             {
+                                                //读取音符所属的组合
                                                 if (!string.IsNullOrWhiteSpace(note.BeamId))
                                                 {
                                                     if (beams != null)
                                                     {
                                                         var beam = beams.Find(b => b.Id == note.BeamId);
                                                         note.Beam = beam;
+                                                    }
+                                                }
+
+                                                //读取音符所属的连音线
+                                                if (slurs != null)
+                                                {
+                                                    foreach (var slur in slurs)
+                                                    {
+                                                        if (slur.StartNoteId == note.Id)
+                                                        {
+                                                            note.StartSlurs ??= [];
+                                                            note.StartSlurs.Add(slur);
+                                                        }
+
+                                                        if (slur.EndNoteId == note.Id)
+                                                        {
+                                                            note.EndSlurs ??= [];
+                                                            note.EndSlurs.Add(slur);
+                                                        }
                                                     }
                                                 }
                                             }
@@ -294,10 +319,6 @@ namespace SEH.Services
                             }
                         }
                         score.Lines = lines;
-
-                        //读取连音线记录
-                        var slurs = db.Table<Slur>().Where(u => u.ScoreId == id).OrderBy(u => u.Number).ToList();
-                        score.Slurs = slurs;
                     }
                     return score;
                 }
@@ -369,7 +390,7 @@ namespace SEH.Services
                                         }
                                     }
 
-                                    //新增连尾组合记录
+                                    //新增音符组合记录
                                     if (measure.Beams != null && measure.Beams.Count > 0)
                                     {
                                         foreach (var beam in measure.Beams)
@@ -377,12 +398,26 @@ namespace SEH.Services
                                             if (db.Insert(beam) <= 0)
                                             {
                                                 db.Rollback();
-                                                Log.Error($"新增简谱小节连尾组合记录失败！{JsonSerializer.Serialize(beam)}");
+                                                Log.Error($"新增简谱小节音符组合记录失败！{JsonSerializer.Serialize(beam)}");
                                                 return false;
                                             }
                                         }
                                     }
                                 }
+                            }
+                        }
+                    }
+
+                    //新增连音线记录
+                    if (data.Slurs != null && data.Slurs.Count > 0)
+                    {
+                        foreach (var slur in data.Slurs)
+                        {
+                            if (db.Insert(slur) <= 0)
+                            {
+                                db.Rollback();
+                                Log.Error($"新增简谱连音线记录失败！{JsonSerializer.Serialize(slur)}");
+                                return false;
                             }
                         }
                     }
@@ -393,10 +428,8 @@ namespace SEH.Services
             }
             catch (Exception ex)
             {
-                if (db != null)
-                {
-                    db.Rollback();
-                }
+                db?.Rollback();
+
                 Log.Error(ex, "发生致命错误");
                 return false;
             }
@@ -447,11 +480,19 @@ namespace SEH.Services
                         return false;
                     }
 
-                    //删除连尾组合记录
+                    //删除音符组合记录
                     if (!DeleteBeamsByScoreId(data.Id))
                     {
                         db.Rollback();
-                        Log.Error($"删除简谱连尾组合记录失败！Id={data.Id}");
+                        Log.Error($"删除简谱音符组合记录失败！Id={data.Id}");
+                        return false;
+                    }
+
+                    //删除连音线记录
+                    if (!DeleteSlursByScoreId(data.Id))
+                    {
+                        db.Rollback();
+                        Log.Error($"删除简谱连音线记录失败！Id={data.Id}");
                         return false;
                     }
 
@@ -493,7 +534,7 @@ namespace SEH.Services
                                         }
                                     }
 
-                                    //新增连尾组合记录
+                                    //新增音符组合记录
                                     if (measure.Beams != null && measure.Beams.Count > 0)
                                     {
                                         foreach (var beam in measure.Beams)
@@ -501,12 +542,26 @@ namespace SEH.Services
                                             if (db.Insert(beam) <= 0)
                                             {
                                                 db.Rollback();
-                                                Log.Error($"新增简谱小节连尾组合记录失败！{JsonSerializer.Serialize(beam)}");
+                                                Log.Error($"新增简谱小节音符组合记录失败！{JsonSerializer.Serialize(beam)}");
                                                 return false;
                                             }
                                         }
                                     }
                                 }
+                            }
+                        }
+                    }
+
+                    //新增连音线记录
+                    if (data.Slurs != null && data.Slurs.Count > 0)
+                    {
+                        foreach (var slur in data.Slurs)
+                        {
+                            if (db.Insert(slur) <= 0)
+                            {
+                                db.Rollback();
+                                Log.Error($"新增简谱连音线记录失败！{JsonSerializer.Serialize(slur)}");
+                                return false;
                             }
                         }
                     }
@@ -517,10 +572,8 @@ namespace SEH.Services
             }
             catch (Exception ex)
             {
-                if (db != null)
-                {
-                    db.Rollback();
-                }
+                db?.Rollback();
+
                 Log.Error(ex, "发生致命错误");
                 return false;
             }
@@ -735,7 +788,7 @@ namespace SEH.Services
         }
         #endregion
 
-        #region 音符组合管理
+        #region 组合管理
         /// <summary>
         /// 删除指定简谱的连尾组合记录
         /// </summary>
@@ -770,5 +823,39 @@ namespace SEH.Services
         }
         #endregion
 
+        #region 连音线管理
+        /// <summary>
+        /// 删除指定简谱的连音线记录
+        /// </summary>
+        /// <param name="scoreId"></param>
+        /// <returns></returns>
+        public bool DeleteSlursByScoreId(string scoreId)
+        {
+            try
+            {
+                if (db != null)
+                {
+                    var slurs = db.Table<Slur>().Where(s => s.ScoreId == scoreId).ToList();
+                    if (slurs.Count > 0)
+                    {
+                        foreach (var slur in slurs)
+                        {
+                            if (db.Delete<Slur>(slur.Id) <= 0)
+                            {
+                                Log.Error($"删除连音符记录失败！Id={slur.Id}");
+                                return false;
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "发生致命错误");
+                return false;
+            }
+        }
+        #endregion
     }
 }
