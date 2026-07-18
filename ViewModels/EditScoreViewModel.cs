@@ -1132,6 +1132,7 @@ namespace SEH.ViewModels
                     Dots = ret.Dots,
                     Articulation = ret.Articulation,
                     Fermata = ret.Fermata,
+                    Paren = ret.Paren,
                     Lyrics = ret.Lyrics,
                     Lyrics2 = ret.Lyrics2,
                     Lyrics3 = ret.Lyrics3,
@@ -1254,6 +1255,7 @@ namespace SEH.ViewModels
                 _note.Dots = ret.Dots;
                 _note.Articulation = ret.Articulation;
                 _note.Fermata = ret.Fermata;
+                _note.Paren = ret.Paren;
                 _note.Lyrics = ret.Lyrics;
                 _note.Lyrics2 = ret.Lyrics2;
                 _note.Lyrics3 = ret.Lyrics3;
@@ -2081,7 +2083,6 @@ namespace SEH.ViewModels
                                                     Text = note.Pitch,
                                                     Note = note
                                                 });
-
                                             }
                                             break;
                                         #endregion
@@ -2564,7 +2565,30 @@ namespace SEH.ViewModels
                                     }
                                     #endregion
 
-                                    #region 5.计算当前小节音符拍数
+                                    #region 5.绘制圆括号
+                                    if (note.Paren == 1)
+                                    {
+                                        RenderElements.Add(new ScoreRenderTextElement
+                                        {
+                                            FontSize = 22,
+                                            X = currentX - 5,
+                                            Y = currentY + noteBaseYOffset,
+                                            Text = "(",
+                                        });
+                                    }
+                                    else if (note.Paren == 0)
+                                    {
+                                        RenderElements.Add(new ScoreRenderTextElement
+                                        {
+                                            FontSize = 22,
+                                            X = currentX + line.NoteWidth,
+                                            Y = currentY + noteBaseYOffset,
+                                            Text = ")",
+                                        });
+                                    }
+                                    #endregion
+
+                                    #region 6.计算当前小节音符拍数
                                     if (string.IsNullOrWhiteSpace(note.BeamId))
                                     {
                                         if (note.Duration == 1)//四分音符

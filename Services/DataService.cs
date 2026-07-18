@@ -624,11 +624,19 @@ namespace SEH.Services
                         return false;
                     }
 
-                    //删除连尾组合记录
+                    //删除组合记录
                     if (!DeleteBeamsByScoreId(id))
                     {
                         db.Rollback();
-                        Log.Error($"删除简谱连尾组合记录失败！Id={id}");
+                        Log.Error($"删除简谱组合记录失败！Id={id}");
+                        return false;
+                    }
+
+                    //删除连音线记录
+                    if (!DeleteSlursByScoreId(id))
+                    {
+                        db.Rollback();
+                        Log.Error($"删除简谱连音线记录失败！Id={id}");
                         return false;
                     }
 

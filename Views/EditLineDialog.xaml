@@ -22,12 +22,14 @@
                       Header="小节数：" 
                       PlaceholderText="选择小节数量..." 
                       HorizontalAlignment="Stretch">
-                <x:String>6</x:String>
-                <x:String>5</x:String>
-                <x:String>4</x:String>
-                <x:String>3</x:String>
-                <x:String>2</x:String>
                 <x:String>1</x:String>
+                <x:String>2</x:String>
+                <x:String>3</x:String>
+                <x:String>4</x:String>
+                <x:String>5</x:String>
+                <x:String>6</x:String>
+                <x:String>7</x:String>
+                <x:String>8</x:String>
             </ComboBox>
 
             <!--红字错误提示，绑定到 ViewModel 的 MeasureCountError 属性-->
