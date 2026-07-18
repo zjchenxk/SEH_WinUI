@@ -923,7 +923,7 @@ namespace SEH.ViewModels
             }
 
             //获取当前小节开始的连音线
-            var startSlurs = _score.Slurs?.Where(s => s.StartLineId == _line.Id && s.StartMeasureId == _measure.Id).ToList();
+            var startSlurs = _score.Slurs?.Where(s => s.StartLineId == _line.Id && s.StartMeasureId == _measure.Id && string.IsNullOrWhiteSpace(s.StartNoteId)).ToList();
 
             //获取当前已打开的连音线
             var endSlurs = _score.Slurs?.Where(s => string.IsNullOrEmpty(s.EndNoteId)).ToList();
@@ -1207,7 +1207,7 @@ namespace SEH.ViewModels
             }
 
             //获取当前小节开始的连音线
-            var startSlurs = _score.Slurs?.Where(s => s.StartLineId == _line.Id && s.StartMeasureId == _measure.Id).ToList();
+            var startSlurs = _score.Slurs?.Where(s => (s.StartLineId == _line.Id && s.StartMeasureId == _measure.Id && string.IsNullOrWhiteSpace(s.StartNoteId)) || s.StartNoteId == _note.Id).ToList();
 
             //获取当前已打开的连音线
             var endSlurs = _score.Slurs?.Where(s => string.IsNullOrEmpty(s.EndNoteId) || s.EndNoteId == _note.Id).ToList();
@@ -1479,7 +1479,7 @@ namespace SEH.ViewModels
             }
 
             var slurs = _score.Slurs?.Where(s => s.ScoreId == _score.Id && s.StartLineId == _line.Id && s.StartMeasureId == _measure.Id).ToList();
-            var name = $"第{_line.Number}行第{_measure.Number}小节第{(slurs?.Count + 1 ?? 1)}条连音线";
+            var name = $"第{_line.Number}行第{_measure.Number}节第{(slurs?.Count + 1 ?? 1)}条连音线";
 
             //调用服务显示弹窗并获取结果
             var ret = await _dialogService.ShowEditSlurDialogAsync(name);
@@ -2354,7 +2354,7 @@ namespace SEH.ViewModels
                                                     Radius = 4
                                                 });
 
-                                                topYOffset -= 4;
+                                                topYOffset -= 6;
                                             }
                                         }
                                         if (note.Pitch.StartsWith("+++") || note.Pitch.StartsWith("++"))
@@ -2368,7 +2368,7 @@ namespace SEH.ViewModels
                                                     Radius = 4
                                                 });
 
-                                                topYOffset -= 4;
+                                                topYOffset -= 6;
                                             }
                                         }
                                         if (note.Pitch.StartsWith("+++"))
@@ -2382,7 +2382,7 @@ namespace SEH.ViewModels
                                                     Radius = 4
                                                 });
 
-                                                topYOffset -= 4;
+                                                topYOffset -= 6;
                                             }
                                         }
                                         #endregion
@@ -2571,7 +2571,7 @@ namespace SEH.ViewModels
                                         RenderElements.Add(new ScoreRenderTextElement
                                         {
                                             FontSize = 22,
-                                            X = currentX - 5,
+                                            X = currentX - 4,
                                             Y = currentY + noteBaseYOffset,
                                             Text = "(",
                                         });
@@ -2581,7 +2581,7 @@ namespace SEH.ViewModels
                                         RenderElements.Add(new ScoreRenderTextElement
                                         {
                                             FontSize = 22,
-                                            X = currentX + line.NoteWidth,
+                                            X = currentX + line.NoteWidth - 4,
                                             Y = currentY + noteBaseYOffset,
                                             Text = ")",
                                         });
@@ -2976,41 +2976,41 @@ namespace SEH.ViewModels
                             double fromY = (double)fromNote.Y;
                             if (fromNote.Pitch.StartsWith("+++") || fromNote.Pitch.StartsWith("++") || fromNote.Pitch.StartsWith("+"))
                             {
-                                fromY -= 4;
+                                fromY -= 6;
                             }
                             if (fromNote.Pitch.StartsWith("+++") || fromNote.Pitch.StartsWith("++"))
                             {
-                                fromY -= 4;
+                                fromY -= 6;
                             }
                             if (fromNote.Pitch.StartsWith("+++"))
                             {
-                                fromY -= 4;
+                                fromY -= 6;
                             }
                             if (fromNote.Fermata == 1)
                             {
                                 fromY -= 20;
                             }
-                            fromY -= 5;
+                            fromY -= 8;
 
                             double toX = (double)(toNote.X + toNote.Width / 2);
                             double toY = (double)toNote.Y;
                             if (toNote.Pitch.StartsWith("+++") || toNote.Pitch.StartsWith("++") || toNote.Pitch.StartsWith("+"))
                             {
-                                toY -= 4;
+                                toY -= 6;
                             }
                             if (toNote.Pitch.StartsWith("+++") || toNote.Pitch.StartsWith("++"))
                             {
-                                toY -= 4;
+                                toY -= 6;
                             }
                             if (toNote.Pitch.StartsWith("+++"))
                             {
-                                toY -= 4;
+                                toY -= 6;
                             }
                             if (toNote.Fermata == 1)
                             {
                                 toY -= 20;
                             }
-                            toY -= 5;
+                            toY -= 8;
 
                             //判断是否跨行：如果 fromNote 和 toNote 不在同一行
                             bool isCrossLine = fromNote.LineId != toNote.LineId;
