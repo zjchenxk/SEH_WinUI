@@ -1,6 +1,4 @@
-﻿using Microsoft.UI.Text;
-using SEH.Models;
-using Windows.UI.Text;
+﻿using SEH.Models;
 
 namespace SEH.Commons
 {
@@ -11,10 +9,9 @@ namespace SEH.Commons
     {
         public string Text { get; set; } = "";
         public double FontSize { get; set; } = 22;
-        public bool IsBold { get; set; } = false;
 
         public Note? Note { get; set; } = null;
 
-        public FontWeight GetFontWeight() => IsBold ? FontWeights.Bold : FontWeights.Normal;
+        public bool IsBold { get; set; } = false;
     }
 }

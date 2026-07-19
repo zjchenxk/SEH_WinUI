@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:commons="using:SEH.Commons"
+    xmlns:converters="using:SEH.Converts">
+
+    <!--虚线转换器-->
+    <converters:BoolToDashArrayConverter x:Key="BoolToDashArrayConverter"/>
+
+    <!--字体粗体转换器-->
+    <converters:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter"/>
+
+    <!--文本渲染模板-->
+    <DataTemplate x:Key="TextTemplate">
+        <TextBlock Text="{Binding Text}" 
+                   FontSize="{Binding FontSize}" 
+                   FontWeight="{Binding IsBold, Converter={StaticResource BoolToFontWeightConverter}}"
+                   Foreground="Black"
+                   HorizontalAlignment="Left" 
+                   VerticalAlignment="Top"
+                   IsTapEnabled="True">
+            <TextBlock.RenderTransform>
+                <TranslateTransform X="{Binding X}" Y="{Binding Y}"/>
+            </TextBlock.RenderTransform>
+        </TextBlock>
+    </DataTemplate>
+
+    <!--圆点渲染模板-->
+    <DataTemplate x:Key="DotTemplate">
+        <Ellipse Width="{Binding Radius}" 
+                 Height="{Binding Radius}" 
+                 Fill="Black"
+                 HorizontalAlignment="Left" 
+                 VerticalAlignment="Top">
+            <Ellipse.RenderTransform>
+                <TranslateTransform X="{Binding X}" Y="{Binding Y}"/>
+            </Ellipse.RenderTransform>
+        </Ellipse>
+    </DataTemplate>
+
+    <!--线条渲染模板-->
+    <DataTemplate x:Key="LineTemplate">
+        <Canvas HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Canvas.RenderTransform>
+                <TranslateTransform X="{Binding X}" Y="{Binding Y}"/>
+            </Canvas.RenderTransform>
+
+            <!--通过计算属性直接绘制横线或竖线-->
+            <Line X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}"
+                  Stroke="{Binding LineBrush}" 
+                  StrokeThickness="{Binding Thickness}" 
+                  StrokeStartLineCap="Square" 
+                  StrokeEndLineCap="Square"
+                  StrokeDashArray="{Binding IsDashed, Converter={StaticResource BoolToDashArrayConverter}}"
+                  IsTapEnabled="True"/>
+        </Canvas>
+    </DataTemplate>
+
+    <!--直线连音线模板-->
+    <DataTemplate x:Key="TieLineTemplate">
+        <Path Stroke="Black" StrokeThickness="{Binding Height}" Data="{Binding PathData}" 
+              StrokeStartLineCap="Round" 
+              StrokeEndLineCap="Round"
+              HorizontalAlignment="Left" 
+              VerticalAlignment="Top">
+            <Path.RenderTransform>
+                <TranslateTransform X="{Binding X}" Y="{Binding Y}"/>
+            </Path.RenderTransform>
+        </Path>
+    </DataTemplate>
+
+    <!--弧线渲染模板-->
+    <DataTemplate x:Key="ArcTemplate">
+        <Path Stroke="Black" StrokeThickness="1" Fill="Transparent" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Path.RenderTransform>
+                <TranslateTransform X="{Binding X}" Y="{Binding Y}"/>
+            </Path.RenderTransform>
+            <Path.Data>
+                <PathGeometry>
+                    <PathFigure StartPoint="{Binding StartPoint}">
+                        <QuadraticBezierSegment Point1="{Binding ControlPoint}" Point2="{Binding EndPoint}" />
+                    </PathFigure>
+                </PathGeometry>
+            </Path.Data>
+        </Path>
+    </DataTemplate>
+
+    <!--延长号渲染模板(半圆+圆点)-->
+    <DataTemplate x:Key="FermataTemplate">
+        <Grid Width="10" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Grid.RenderTransform>
+                <TranslateTransform X="{Binding X}" Y="{Binding Y}"/>
+            </Grid.RenderTransform>
+            <!-- 
+                Path 数据: M 0,10 A 5,5 0 0 1 10,10
+                表示从 (0,10) 开始，画一个 X半径为5、Y半径为5 的顺时针弧线到 (10,10)。
+                这会形成一个宽度为10、高度为10的开口朝下的半圆。
+            -->
+            <Path Stroke="Black" StrokeThickness="1" Data="M 0,10 A 5,5 0 0 1 10,10" />
+            <!-- 
+                圆点: 宽高4。
+                X轴居中: (10总宽 - 4圆点宽) / 2 = 3，所以 Left = 3。
+                Y轴位置: 放在半圆内部偏下方，比如 Top = 7。
+                Margin="3,7,0,0" 使其包在半圆内部。
+            -->
+            <Ellipse Width="4" Height="4" Fill="Black" Margin="3,7,0,0" 
+                     HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </Grid>
+    </DataTemplate>
+
+    <!--渲染模板选择器-->
+    <commons:ScoreRenderTemplateSelector x:Key="ScoreTemplateSelector"
+                                         TextDataTemplate="{StaticResource TextTemplate}"
+                                         DotDataTemplate="{StaticResource DotTemplate}"
+                                         LineDataTemplate="{StaticResource LineTemplate}"
+                                         TieLineDataTemplate="{StaticResource TieLineTemplate}"
+                                         ArcDataTemplate="{StaticResource ArcTemplate}"
+                                         FermataDataTemplate="{StaticResource FermataTemplate}"/>
+
+</ResourceDictionary>
