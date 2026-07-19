@@ -373,19 +373,23 @@ namespace SEH.ViewModels
                 Lyrics6 = note.Lyrics6 ?? "";
                 SelectedBeam = note.Beam;
 
-                if (note.StartSlurs != null)
+                if (note.StartSlurs != null && note.StartSlurs.Count > 0)
                 {
+                    SelectedStartSlurs ??= [];
+
                     foreach (var slur in note.StartSlurs)
                     {
-                        SelectedStartSlurs?.Add(slur);
+                        SelectedStartSlurs.Add(slur);
                     }
                 }
 
-                if (note.EndSlurs != null)
+                if (note.EndSlurs != null && note.EndSlurs.Count > 0)
                 {
+                    SelectedEndSlurs ??= [];
+
                     foreach (var slur in note.EndSlurs)
                     {
-                        SelectedEndSlurs?.Add(slur);
+                        SelectedEndSlurs.Add(slur);
                     }
                 }
             }
