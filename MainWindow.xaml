@@ -201,7 +201,9 @@
                               SelectedItem="{x:Bind ViewModel.SelectedScoreItem, Mode=TwoWay}"
                               ItemTemplateSelector="{StaticResource ScoreItemTemplateSelector}"
                               VerticalAlignment="Stretch"
-                              HorizontalAlignment="Stretch"/>
+                              HorizontalAlignment="Stretch"
+                              IsDoubleTapEnabled="True"
+                              DoubleTapped="ScoreTreeView_DoubleTapped"/>
                 </Grid>
             </SplitView.Pane>
 

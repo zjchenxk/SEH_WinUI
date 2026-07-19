@@ -1,7 +1,9 @@
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using SEH.Commons;
 using SEH.Services.Interfaces;
 using SEH.ViewModels;
+using SEH.Views;
 
 namespace SEH
 {
@@ -11,7 +13,7 @@ namespace SEH
     public partial class MainWindow : Window
     {
         public MainViewModel ViewModel { get; }
-        private readonly INavigationService NavigationService;
+        private readonly INavigationService _navigationService;
 
         public MainWindow(MainViewModel viewModel, INavigationService navigationService)
         {
@@ -23,8 +25,8 @@ namespace SEH
 
             //将依赖注入的 NavigationService 注入到 MainWindow 中
             //一定要放在 InitializeComponent() 之后，否则导航服务可能无法正确初始化
-            NavigationService = navigationService;
-            NavigationService.Initialize(rootFrame);
+            _navigationService = navigationService;
+            _navigationService.Initialize(rootFrame);
 
             //隐藏系统默认标题栏
             ExtendsContentIntoTitleBar = true;
@@ -49,5 +51,22 @@ namespace SEH
             presenter.Maximize();
         }
 
+        private void ScoreTreeView_DoubleTapped(object sender, Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        {
+            //获取当前选中的项
+            if (ScoreTreeView.SelectedItem is ScoreItem item)
+            {
+                //判断是否为简谱文件（叶子节点）
+                //文件夹通常有 Children，而简谱文件没有（或 Count 为 0）
+                if (item.Children == null || item.Children.Count == 0)
+                {
+                    //调用导航服务，跳转到 ViewScorePage
+                    //参数传入 item.Id，对应 ViewScorePage 中的 string 参数接收
+                    _navigationService.NavigateTo(typeof(ViewScorePage), item.Id);
+
+                    ViewModel.BreadcrumbItems = ["首页", "查看简谱"];
+                }
+            }
+        }
     }
 }
