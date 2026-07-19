@@ -1597,11 +1597,22 @@ namespace SEH.ViewModels
             double noteBaseYOffset = 40;//音符在每行中的相对Y位置
 
             Dictionary<string, Note> dictNotes = [];//音符总字典
-            Dictionary<string, int> noteOrderDict = [];//音符总序号字典
+            Dictionary<string, int> dictNoteOrder = [];//音符总序号字典
 
             double currentY = startY;
 
-            #region 1.绘制元信息
+            #region 1.重置页面尺寸
+            if (_score.Direction == 1)//纵向
+            {
+                Height = 1123;
+            }
+            else//横向
+            {
+                Height = 794;
+            }
+            #endregion
+
+            #region 2.绘制元信息
 
             #region 1.绘制标题
             if (!string.IsNullOrWhiteSpace(_score.Title))
@@ -1754,7 +1765,7 @@ namespace SEH.ViewModels
 
             #endregion
 
-            #region 2.绘制简谱
+            #region 3.绘制简谱
             if (_score.Lines != null && _score.Lines.Count > 0)
             {
                 int measureIndex = 1;//小节总序号
@@ -1786,6 +1797,27 @@ namespace SEH.ViewModels
                                             if (lineHeight < 160)
                                             {
                                                 lineHeight = 160;
+                                            }
+                                        }
+                                        if (!string.IsNullOrWhiteSpace(note.Lyrics4))
+                                        {
+                                            if (lineHeight < 180)
+                                            {
+                                                lineHeight = 180;
+                                            }
+                                        }
+                                        if (!string.IsNullOrWhiteSpace(note.Lyrics5))
+                                        {
+                                            if (lineHeight < 200)
+                                            {
+                                                lineHeight = 200;
+                                            }
+                                        }
+                                        if (!string.IsNullOrWhiteSpace(note.Lyrics6))
+                                        {
+                                            if (lineHeight < 220)
+                                            {
+                                                lineHeight = 220;
                                             }
                                         }
                                     }
@@ -2561,6 +2593,36 @@ namespace SEH.ViewModels
                                                 Text = note.Lyrics3
                                             });
                                         }
+                                        if (!string.IsNullOrWhiteSpace(note.Lyrics4) && note.X != null)
+                                        {
+                                            RenderElements.Add(new ScoreRenderTextElement
+                                            {
+                                                FontSize = 14,
+                                                X = (double)note.X,
+                                                Y = currentY + 160,
+                                                Text = note.Lyrics4
+                                            });
+                                        }
+                                        if (!string.IsNullOrWhiteSpace(note.Lyrics5) && note.X != null)
+                                        {
+                                            RenderElements.Add(new ScoreRenderTextElement
+                                            {
+                                                FontSize = 14,
+                                                X = (double)note.X,
+                                                Y = currentY + 180,
+                                                Text = note.Lyrics5
+                                            });
+                                        }
+                                        if (!string.IsNullOrWhiteSpace(note.Lyrics6) && note.X != null)
+                                        {
+                                            RenderElements.Add(new ScoreRenderTextElement
+                                            {
+                                                FontSize = 14,
+                                                X = (double)note.X,
+                                                Y = currentY + 200,
+                                                Text = note.Lyrics6
+                                            });
+                                        }
                                         #endregion
                                     }
                                     #endregion
@@ -2680,7 +2742,7 @@ namespace SEH.ViewModels
                                     currentX += line.NoteWidth;
 
                                     dictNotes[note.Id] = note;//存储到音符总字典
-                                    noteOrderDict[note.Id] = nodeIndex++;//存储到音符总序号字典
+                                    dictNoteOrder[note.Id] = nodeIndex++;//存储到音符总序号字典
                                 }
 
                                 #region 计算当前小节音符组合拍数，一个组合为一拍
@@ -2978,13 +3040,13 @@ namespace SEH.ViewModels
             }
             #endregion
 
-            #region 3.绘制连音线
+            #region 4.绘制连音线
             if (_score.Slurs != null && _score.Slurs.Count > 0)
             {
                 //1.计算每条连音线的层级 (Level)
                 foreach (var slur in _score.Slurs)
                 {
-                    if (noteOrderDict.TryGetValue(slur.StartNoteId, out int slurStartIndex) && noteOrderDict.TryGetValue(slur.EndNoteId, out int slurEndIndex))
+                    if (dictNoteOrder.TryGetValue(slur.StartNoteId, out int slurStartIndex) && dictNoteOrder.TryGetValue(slur.EndNoteId, out int slurEndIndex))
                     {
                         int level = 0;
 
@@ -2993,7 +3055,7 @@ namespace SEH.ViewModels
                         {
                             if (slur.Id == _slur.Id) continue;
 
-                            if (noteOrderDict.TryGetValue(_slur.StartNoteId, out int _slurStartIndex) && noteOrderDict.TryGetValue(_slur.EndNoteId, out int _slurEndIndex))
+                            if (dictNoteOrder.TryGetValue(_slur.StartNoteId, out int _slurStartIndex) && dictNoteOrder.TryGetValue(_slur.EndNoteId, out int _slurEndIndex))
                             {
                                 //如果 slur 包含 _slur
                                 if (slurStartIndex <= _slurStartIndex && _slurEndIndex <= slurEndIndex)
@@ -3010,7 +3072,7 @@ namespace SEH.ViewModels
                 foreach (var slur in _score.Slurs)
                 {
                     if (dictNotes.TryGetValue(slur.StartNoteId, out var fromNote) && dictNotes.TryGetValue(slur.EndNoteId, out var toNote) &&
-                        noteOrderDict.TryGetValue(slur.StartNoteId, out _) && noteOrderDict.TryGetValue(slur.EndNoteId, out _))
+                        dictNoteOrder.TryGetValue(slur.StartNoteId, out _) && dictNoteOrder.TryGetValue(slur.EndNoteId, out _))
                     {
                         if (fromNote != null && fromNote.X != null && fromNote.Y != null && fromNote.Width != null &&
                             toNote != null && toNote.X != null && toNote.Y != null && toNote.Width != null)
@@ -3106,7 +3168,7 @@ namespace SEH.ViewModels
             }
             #endregion
 
-            #region 4.绘制分页符和页码
+            #region 5.绘制分页符和页码
             {
                 int pageHeight;
                 if (_score.Direction == 1)//纵向
