@@ -2392,7 +2392,7 @@ namespace SEH.ViewModels
                                         #region 1.绘制高音点
                                         if (note.Pitch.StartsWith("+++") || note.Pitch.StartsWith("++") || note.Pitch.StartsWith("+"))
                                         {
-                                            if (note.X != null && note.Y != null && note.Width != null)
+                                            if (note.X != null && note.Width != null)
                                             {
                                                 RenderElements.Add(new ScoreRenderDotElement
                                                 {
@@ -2406,7 +2406,7 @@ namespace SEH.ViewModels
                                         }
                                         if (note.Pitch.StartsWith("+++") || note.Pitch.StartsWith("++"))
                                         {
-                                            if (note.X != null && note.Y != null && note.Width != null)
+                                            if (note.X != null && note.Width != null)
                                             {
                                                 RenderElements.Add(new ScoreRenderDotElement
                                                 {
@@ -2420,7 +2420,7 @@ namespace SEH.ViewModels
                                         }
                                         if (note.Pitch.StartsWith("+++"))
                                         {
-                                            if (note.X != null && note.Y != null && note.Width != null)
+                                            if (note.X != null && note.Width != null)
                                             {
                                                 RenderElements.Add(new ScoreRenderDotElement
                                                 {
@@ -2437,7 +2437,16 @@ namespace SEH.ViewModels
                                         #region 2.绘制延长号
                                         if (note.Fermata == 1)
                                         {
+                                            if (note.X != null && note.Width != null)
+                                            {
+                                                topYOffset -= 8;
 
+                                                RenderElements.Add(new ScoreRenderFermataElement
+                                                {
+                                                    X = (double)(currentX + (line.NoteWidth - 10) / 2),
+                                                    Y = (double)topYOffset
+                                                });
+                                            }
                                         }
                                         #endregion
                                     }
@@ -3094,7 +3103,7 @@ namespace SEH.ViewModels
                             }
                             if (fromNote.Fermata == 1)
                             {
-                                fromY -= 20;
+                                fromY -= 10;
                             }
                             fromY -= 8;
 
@@ -3115,7 +3124,7 @@ namespace SEH.ViewModels
                             }
                             if (toNote.Fermata == 1)
                             {
-                                toY -= 20;
+                                toY -= 10;
                             }
                             toY -= 8;
 

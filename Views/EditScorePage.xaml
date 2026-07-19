@@ -94,21 +94,23 @@
 
         <!--延长号渲染模板(半圆+圆点)-->
         <DataTemplate x:Key="FermataTemplate" x:DataType="commons:ScoreRenderFermataElement">
-            <Grid Width="20" Height="17" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Grid Width="10" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <Grid.RenderTransform>
                     <TranslateTransform X="{x:Bind X}" Y="{x:Bind Y}"/>
                 </Grid.RenderTransform>
                 <!-- 
-                  Path 数据: M 0,10 A 10,10 0 0 1 20,10
-                  表示从 (0,10) 开始，画一个半径为10的顺时针弧线到 (20,10)。
-                  这会形成一个宽度为20、高度为10的半圆（开口朝下）。
+                  Path 数据: M 0,10 A 5,5 0 0 1 10,10
+                  表示从 (0,10) 开始，画一个 X半径为5、Y半径为5 的顺时针弧线到 (10,10)。
+                  这会形成一个宽度为10、高度为10的开口朝下的半圆。
                 -->
-                <Path Stroke="Black" StrokeThickness="1.5" Data="M 0,10 A 10,10 0 0 1 20,10" />
+                <Path Stroke="Black" StrokeThickness="1" Data="M 0,10 A 5,5 0 0 1 10,10" />
                 <!-- 
-                  圆点: 宽高3。
-                  Margin="8.5,14,0,0" 使其居中于半圆下方 (X: 10-1.5=8.5, Y: 10+4=14)
+                  圆点: 宽高4。
+                  X轴居中: (10总宽 - 4圆点宽) / 2 = 3，所以 Left = 3。
+                  Y轴位置: 放在半圆内部偏下方，比如 Top = 7。
+                  Margin="3,7,0,0" 使其包在半圆内部。
                 -->
-                <Ellipse Width="3" Height="3" Fill="Black" Margin="8.5,14,0,0" 
+                <Ellipse Width="4" Height="4" Fill="Black" Margin="3,7,0,0" 
                          HorizontalAlignment="Left" VerticalAlignment="Top"/>
             </Grid>
         </DataTemplate>
