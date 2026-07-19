@@ -68,5 +68,11 @@ namespace SEH.Models
         /// </summary>
         [Column("end_note_id")]
         public string EndNoteId { get; set; } = "";
+
+        /// <summary>
+        /// 嵌套层级，默认为0级
+        /// </summary>
+        [Ignore]
+        public int Level { get; set; } = 0;
     }
 }

@@ -1478,8 +1478,21 @@ namespace SEH.ViewModels
                 return;
             }
 
+            //小节总序号
+            int measureIndex = 0;
+            if (_score.Lines != null && _score.Lines.Count > 0)
+            {
+                foreach (var line in _score.Lines)
+                {
+                    if (line.Measures != null)
+                    {
+                        measureIndex += line.Measures.Count;
+                    }
+                }
+            }
+
             var slurs = _score.Slurs?.Where(s => s.ScoreId == _score.Id && s.StartLineId == _line.Id && s.StartMeasureId == _measure.Id).ToList();
-            var name = $"第{_line.Number}行第{_measure.Number}节第{(slurs?.Count + 1 ?? 1)}条连音线";
+            var name = $"第{measureIndex}节第{(slurs?.Count + 1 ?? 1)}条连音线";
 
             //调用服务显示弹窗并获取结果
             var ret = await _dialogService.ShowEditSlurDialogAsync(name);
@@ -1583,7 +1596,8 @@ namespace SEH.ViewModels
             double measureRightPadding = 10;//小节右边距
             double noteBaseYOffset = 40;//音符在每行中的相对Y位置
 
-            Dictionary<string, Note> dictNotes = [];//所有音符字典
+            Dictionary<string, Note> dictNotes = [];//音符总字典
+            Dictionary<string, int> noteOrderDict = [];//音符总序号字典
 
             double currentY = startY;
 
@@ -1743,7 +1757,8 @@ namespace SEH.ViewModels
             #region 2.绘制简谱
             if (_score.Lines != null && _score.Lines.Count > 0)
             {
-                int measureIndex = 1;//小节序号
+                int measureIndex = 1;//小节总序号
+                int nodeIndex = 1;//音符总序号
 
                 foreach (var line in _score.Lines)
                 {
@@ -2664,7 +2679,8 @@ namespace SEH.ViewModels
 
                                     currentX += line.NoteWidth;
 
-                                    dictNotes[note.Id] = note;//存储到音符字典
+                                    dictNotes[note.Id] = note;//存储到音符总字典
+                                    noteOrderDict[note.Id] = nodeIndex++;//存储到音符总序号字典
                                 }
 
                                 #region 计算当前小节音符组合拍数，一个组合为一拍
@@ -2965,13 +2981,41 @@ namespace SEH.ViewModels
             #region 3.绘制连音线
             if (_score.Slurs != null && _score.Slurs.Count > 0)
             {
+                //1.计算每条连音线的层级 (Level)
                 foreach (var slur in _score.Slurs)
                 {
-                    if (dictNotes.TryGetValue(slur.StartNoteId, out var fromNote) && dictNotes.TryGetValue(slur.EndNoteId, out var toNote))
+                    if (noteOrderDict.TryGetValue(slur.StartNoteId, out int slurStartIndex) && noteOrderDict.TryGetValue(slur.EndNoteId, out int slurEndIndex))
+                    {
+                        int level = 0;
+
+                        //检查有多少条其他连音线完全包含了当前连音线
+                        foreach (var _slur in _score.Slurs)
+                        {
+                            if (slur.Id == _slur.Id) continue;
+
+                            if (noteOrderDict.TryGetValue(_slur.StartNoteId, out int _slurStartIndex) && noteOrderDict.TryGetValue(_slur.EndNoteId, out int _slurEndIndex))
+                            {
+                                //如果 slur 包含 _slur
+                                if (slurStartIndex <= _slurStartIndex && _slurEndIndex <= slurEndIndex)
+                                {
+                                    level = _slur.Level + 1;
+                                }
+                            }
+                        }
+                        slur.Level = level;
+                    }
+                }
+
+                //2.根据 Level 进行绘制
+                foreach (var slur in _score.Slurs)
+                {
+                    if (dictNotes.TryGetValue(slur.StartNoteId, out var fromNote) && dictNotes.TryGetValue(slur.EndNoteId, out var toNote) &&
+                        noteOrderDict.TryGetValue(slur.StartNoteId, out _) && noteOrderDict.TryGetValue(slur.EndNoteId, out _))
                     {
                         if (fromNote != null && fromNote.X != null && fromNote.Y != null && fromNote.Width != null &&
                             toNote != null && toNote.X != null && toNote.Y != null && toNote.Width != null)
                         {
+                            //计算起点坐标
                             double fromX = (double)(fromNote.X + fromNote.Width / 2);
                             double fromY = (double)fromNote.Y;
                             if (fromNote.Pitch.StartsWith("+++") || fromNote.Pitch.StartsWith("++") || fromNote.Pitch.StartsWith("+"))
@@ -2992,6 +3036,7 @@ namespace SEH.ViewModels
                             }
                             fromY -= 8;
 
+                            //计算终点坐标
                             double toX = (double)(toNote.X + toNote.Width / 2);
                             double toY = (double)toNote.Y;
                             if (toNote.Pitch.StartsWith("+++") || toNote.Pitch.StartsWith("++") || toNote.Pitch.StartsWith("+"))
@@ -3011,6 +3056,12 @@ namespace SEH.ViewModels
                                 toY -= 20;
                             }
                             toY -= 8;
+
+                            //根据层级向上偏移：Level 0 偏移基础距离，Level 1 再多偏移一层
+                            //假设每一层连音线间隔 10 像素
+                            double levelOffset = slur.Level * 10;
+                            fromY -= levelOffset;
+                            toY -= levelOffset;
 
                             //判断是否跨行：如果 fromNote 和 toNote 不在同一行
                             bool isCrossLine = fromNote.LineId != toNote.LineId;
