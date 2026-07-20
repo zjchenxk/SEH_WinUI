@@ -51,6 +51,7 @@ namespace SEH.ViewModels
         [ObservableProperty]
         private ScoreItem? _selectedScoreItem = null;
 
+
         /// <summary>
         /// 构造函数，初始化 MainViewModel 实例
         /// </summary>
@@ -111,14 +112,6 @@ namespace SEH.ViewModels
             }
 
             ScoreItems = scoreItems;
-        }
-
-        /// <summary>
-        /// 重置面包屑导航项为首页
-        /// </summary>
-        public void ResetBreadcrumbItems()
-        {
-            BreadcrumbItems = ["首页"];
         }
 
         /// <summary>

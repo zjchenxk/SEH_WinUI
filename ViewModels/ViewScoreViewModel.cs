@@ -1,15 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Shapes;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using SEH.Commons;
 using SEH.Models;
 using SEH.Services.Interfaces;
 using SEH.Views;
-using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace SEH.ViewModels
@@ -49,36 +47,6 @@ namespace SEH.ViewModels
         /// </summary>
         [ObservableProperty]
         private double _height = 1123;
-
-        /// <summary>
-        /// 页面方向（1-纵向，2-横向，默认为纵向）
-        /// </summary>
-        [ObservableProperty]
-        private string _direction = "1";
-
-        /// <summary>
-        /// 页面左边距（单位：像素，默认为40）
-        /// </summary>
-        [ObservableProperty]
-        private string _leftMargin = "40";
-
-        /// <summary>
-        /// 页面上边距（单位：像素，默认为40）
-        /// </summary>
-        [ObservableProperty]
-        private string _topMargin = "40";
-
-        /// <summary>
-        /// 页面右边距（单位：像素，默认为40）
-        /// </summary>
-        [ObservableProperty]
-        private string _rightMargin = "40";
-
-        /// <summary>
-        /// 页面下边距（单位：像素，默认为40）
-        /// </summary>
-        [ObservableProperty]
-        private string _bottomMargin = "40";
 
 
         /// <summary>
@@ -122,22 +90,18 @@ namespace SEH.ViewModels
                 return;
             }
 
-            Direction = _score.Direction.ToString();
-            LeftMargin = _score.LeftMargin.ToString();
-            TopMargin = _score.TopMargin.ToString();
-            RightMargin = _score.RightMargin.ToString();
-            BottomMargin = _score.BottomMargin.ToString();
-        }
-
-        /// <summary>
-        /// 绘制简谱
-        /// </summary>
-        public void DrawScore()
-        {
-            if (_score != null)
+            //初始化页面宽高，根据简谱的方向设置
+            if (_score.Direction == 1)//纵向
             {
-                Height = _drawHelper.DrawScore(_score, Width, Height, RenderElements);
+                Width = 794;
             }
+            else//横向
+            {
+                Width = 1123;
+            }
+
+            //绘制简谱
+            Height = _drawHelper.DrawScore(_score, Width, Height, RenderElements);
         }
 
         /// <summary>
@@ -161,9 +125,26 @@ namespace SEH.ViewModels
         /// 编辑简谱命令
         /// </summary>
         [RelayCommand]
-        private void Edit()
+        private async Task Edit()
         {
+            if (_score == null)
+            {
+                await _messageService.ShowErrorAsync("简谱数据未加载，无法编辑！");
+                return;
+            }
 
+            string id = _score.Id;
+
+            JObject param = new(new JProperty("Id", id));
+
+            _navigationService.NavigateTo(typeof(EditScorePage), param);
+
+            //通过 MainViewModel 设置面包屑导航
+            var mainViewModel = App.Services?.GetRequiredService<MainViewModel>();
+            if (mainViewModel != null)
+            {
+                mainViewModel.BreadcrumbItems = ["首页", "修改简谱"];
+            }
         }
 
         /// <summary>
@@ -173,7 +154,7 @@ namespace SEH.ViewModels
         private void Print()
         {
             // 发送消息通知 View 触发打印
-            //_messenger.Send(new PrintScoreMessage());
+            _messenger.Send(new PrintScoreMessage());
         }
 
         /// <summary>
