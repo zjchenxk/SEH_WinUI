@@ -51,6 +51,7 @@ namespace SEH
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IDialogService, DialogService>();
             services.AddTransient<IDataService, DataService>();
+            services.AddTransient<IAudioService, AudioService>();
 
             //2.注册ViewModel
             services.AddSingleton<MainViewModel>();

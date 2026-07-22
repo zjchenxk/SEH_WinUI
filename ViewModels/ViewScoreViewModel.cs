@@ -35,6 +35,10 @@ namespace SEH.ViewModels
         /// 消息服务，用于显示消息提示
         /// </summary>
         private readonly IMessageService _messageService;
+        /// <summary>
+        /// 播放服务，用于简谱播放
+        /// </summary>
+        private readonly IAudioService _audioService;
 
         /// <summary>
         /// 页面宽度（默认A4纸宽度）
@@ -60,13 +64,17 @@ namespace SEH.ViewModels
         /// </summary>
         private Score? _score = null;
 
+        //播放控制标志
+        private bool _isPlaying = false;
 
-        public ViewScoreViewModel(IMessenger messenger, INavigationService navigationService, IDataService dataService, IMessageService messageService)
+
+        public ViewScoreViewModel(IMessenger messenger, INavigationService navigationService, IDataService dataService, IMessageService messageService, IAudioService audioService)
         {
             _messenger = messenger;
             _navigationService = navigationService;
             _dataService = dataService;
             _messageService = messageService;
+            _audioService = audioService;
         }
 
         /// <summary>
@@ -151,8 +159,14 @@ namespace SEH.ViewModels
         /// 打印简谱命令
         /// </summary>
         [RelayCommand]
-        private void Print()
+        private async Task Print()
         {
+            if (_score == null)
+            {
+                await _messageService.ShowErrorAsync("简谱数据未加载，无法编辑！");
+                return;
+            }
+
             // 发送消息通知 View 触发打印
             _messenger.Send(new PrintScoreMessage());
         }
@@ -161,9 +175,73 @@ namespace SEH.ViewModels
         /// 播放简谱命令
         /// </summary>
         [RelayCommand]
-        private void Play()
+        private async Task Play()
         {
+            if (_score == null)
+            {
+                await _messageService.ShowErrorAsync("简谱数据未加载，无法编辑！");
+                return;
+            }
 
+            //防止重复播放
+            if (_isPlaying)
+            {
+                return;
+            }
+
+            try
+            {
+                _isPlaying = true;
+
+                //1.计算基础时间单位(毫秒)
+                //例如：Tempo = 120，意味着四分音符时长 = 60000 / 120 = 500ms
+                double beatDurationMs = 60000.0 / _score.Tempo;
+
+                //2.遍历所有行、小节、音符
+                if (_score.Lines != null && _score.Lines.Count > 0)
+                {
+                    foreach (var line in _score.Lines)
+                    {
+                        if (!_isPlaying) break; //支持停止
+
+                        if (line.Measures != null && line.Measures.Count > 0)
+                        {
+                            foreach (var measure in line.Measures)
+                            {
+                                if (!_isPlaying) break; //支持停止
+
+                                if (measure.Notes != null && measure.Notes.Count > 0)
+                                {
+                                    foreach (var note in measure.Notes)
+                                    {
+                                        if (!_isPlaying) break; //支持停止
+
+                                        //3.视觉高亮
+                                        //找到对应的 RenderElement 并设置高亮颜色 (如红色)
+                                        //UpdateNoteHighlight(note.Id, true); 
+
+                                        //4.音频播放
+                                        //await _audioService.PlayNoteAsync(note.Pitch, CalculateDuration(note));
+
+                                        //5.计算等待时间
+                                        double noteTime = beatDurationMs * note.Duration;
+                                        if (note.Dots > 0) noteTime *= 1.5; // 附点处理简化版
+
+                                        await Task.Delay((int)noteTime);
+
+                                        //6.取消高亮
+                                        //UpdateNoteHighlight(note.Id, false);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                _isPlaying = false;
+            }
         }
 
         /// <summary>
