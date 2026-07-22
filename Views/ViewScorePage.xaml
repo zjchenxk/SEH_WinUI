@@ -100,12 +100,14 @@
             <Grid Grid.Row="0" Grid.Column="0" Width="60" Height="60"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center">
-                <TextBlock  Text="吹音" 
-                            FontSize="{StaticResource TextStyleLargeFontSize}"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"/>
+                <TextBlock Text="吹音" 
+                           FontSize="{StaticResource TextStyleLargeFontSize}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
             </Grid>
 
+            <!-- 1 -->
+            <!-- • -->
             <Border Grid.Row="0" Grid.Column="1" 
                     Background="Moccasin"
                     BorderThickness="1,1,0,0"
@@ -155,6 +157,8 @@
                 </Grid>
             </Border>
 
+            <!-- 3 -->
+            <!-- • -->
             <Border Grid.Row="0" Grid.Column="2" 
                     Background="Moccasin"
                     BorderThickness="0,1,0,0"
@@ -203,6 +207,8 @@
                 </Grid>
             </Border>
 
+            <!-- 5 -->
+            <!-- • -->
             <Border Grid.Row="0" Grid.Column="3" 
                     Background="Moccasin"
                     BorderThickness="0,1,0,0"
@@ -251,6 +257,7 @@
                 </Grid>
             </Border>
 
+            <!-- 1 -->
             <Border Grid.Row="0" Grid.Column="4" 
                     Background="Moccasin"
                     BorderThickness="0,1,0,0"
@@ -299,7 +306,57 @@
                 </Grid>
             </Border>
 
+            <!-- 1 -->
             <Border Grid.Row="0" Grid.Column="5" 
+                    Background="Moccasin"
+                    BorderThickness="0,1,0,0"
+                    BorderBrush="Peru">
+                <Grid Width="60" Height="60">
+                    <Border Background="White" CornerRadius="4" Margin="8"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--高音点行-->
+                            <RowDefinition Height="*"/>
+                            <!--数字行-->
+                            <RowDefinition Height="20"/>
+                            <!--低音点行-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!--高音点-->
+                        <Ellipse Grid.Row="0"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Bottom"
+                                 Margin="0,0,0,2"
+                                 Visibility="Collapsed"/>
+
+                        <!--音符数字-->
+                        <TextBlock Grid.Row="1"
+                                   Text="1" 
+                                   FontSize="{StaticResource TextStyleLargeFontSize}"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+
+                        <!--低音点-->
+                        <Ellipse Grid.Row="2"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Top"
+                                 Margin="0,2,0,0"
+                                 Visibility="Collapsed"/>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- 3 -->
+            <Border Grid.Row="0" Grid.Column="6" 
                     Background="Moccasin"
                     BorderThickness="0,1,0,0"
                     BorderBrush="Peru">
@@ -347,7 +404,8 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Row="0" Grid.Column="6" 
+            <!-- 5 -->
+            <Border Grid.Row="0" Grid.Column="7" 
                     Background="Moccasin"
                     BorderThickness="0,1,0,0"
                     BorderBrush="Peru">
@@ -395,54 +453,8 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Row="0" Grid.Column="7" 
-                    Background="Moccasin"
-                    BorderThickness="0,1,0,0"
-                    BorderBrush="Peru">
-                <Grid Width="60" Height="60">
-                    <Border Background="White" CornerRadius="4" Margin="8"/>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <!--高音点行-->
-                            <RowDefinition Height="*"/>
-                            <!--数字行-->
-                            <RowDefinition Height="20"/>
-                            <!--低音点行-->
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <!--高音点-->
-                        <Ellipse Grid.Row="0"
-                                 Width="5" 
-                                 Height="5"
-                                 Fill="Black"
-                                 HorizontalAlignment="Center"
-                                 VerticalAlignment="Bottom"
-                                 Margin="0,0,0,2"
-                                 Visibility="Visible"/>
-
-                        <!--音符数字-->
-                        <TextBlock Grid.Row="1"
-                                   Text="1" 
-                                   FontSize="{StaticResource TextStyleLargeFontSize}"
-                                   FontWeight="Bold"
-                                   Foreground="Black"
-                                   HorizontalAlignment="Center" 
-                                   VerticalAlignment="Center"/>
-
-                        <!--低音点-->
-                        <Ellipse Grid.Row="2"
-                                 Width="5" 
-                                 Height="5"
-                                 Fill="Black"
-                                 HorizontalAlignment="Center"
-                                 VerticalAlignment="Top"
-                                 Margin="0,2,0,0"
-                                 Visibility="Collapsed"/>
-                    </Grid>
-                </Grid>
-            </Border>
-
+            <!-- • -->
+            <!-- 1 -->
             <Border Grid.Row="0" Grid.Column="8" 
                     Background="Moccasin"
                     BorderThickness="0,1,0,0"
@@ -491,7 +503,59 @@
                 </Grid>
             </Border>
 
+            <!-- • -->
+            <!-- 1 -->
             <Border Grid.Row="0" Grid.Column="9" 
+                    Background="Moccasin"
+                    BorderThickness="0,1,0,0"
+                    BorderBrush="Peru">
+                <Grid Width="60" Height="60">
+                    <Border Background="White" CornerRadius="4" Margin="8"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--高音点行-->
+                            <RowDefinition Height="*"/>
+                            <!--数字行-->
+                            <RowDefinition Height="20"/>
+                            <!--低音点行-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!--高音点-->
+                        <Ellipse Grid.Row="0"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Bottom"
+                                 Margin="0,0,0,2"
+                                 Visibility="Visible"/>
+
+                        <!--音符数字-->
+                        <TextBlock Grid.Row="1"
+                                   Text="1" 
+                                   FontSize="{StaticResource TextStyleLargeFontSize}"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+
+                        <!--低音点-->
+                        <Ellipse Grid.Row="2"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Top"
+                                 Margin="0,2,0,0"
+                                 Visibility="Collapsed"/>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- • -->
+            <!-- 3 -->
+            <Border Grid.Row="0" Grid.Column="10" 
                     Background="Moccasin"
                     BorderThickness="0,1,0,0"
                     BorderBrush="Peru">
@@ -539,7 +603,9 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Row="0" Grid.Column="10" 
+            <!-- • -->
+            <!-- 5 -->
+            <Border Grid.Row="0" Grid.Column="11" 
                     Background="Moccasin"
                     BorderThickness="0,1,0,0"
                     BorderBrush="Peru">
@@ -587,22 +653,59 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Row="0" Grid.Column="11" 
-                    Background="Moccasin"
-                    BorderThickness="0,1,0,0"
-                    BorderBrush="Peru">
-                <Grid Width="60" Height="60">
-
-                </Grid>
-            </Border>
-
+            <!-- • -->
+            <!-- • -->
+            <!-- 1 -->
             <Border Grid.Row="0" Grid.Column="12" 
                     Background="Moccasin"
                     BorderThickness="0,1,1,0"
                     BorderBrush="Peru"
                     CornerRadius="0,8,0,0">
                 <Grid Width="60" Height="60">
+                    <Border Background="White" CornerRadius="4" Margin="8"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--高音点行-->
+                            <RowDefinition Height="*"/>
+                            <!--数字行-->
+                            <RowDefinition Height="20"/>
+                            <!--低音点行-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
+                        <!--高音点-->
+                        <StackPanel Grid.Row="0" Margin="0,0,0,2" 
+                                    Spacing="2"
+                                    VerticalAlignment="Bottom" 
+                                    Visibility="Visible">
+                            <Ellipse Width="5" Height="5"
+                                     Fill="Black"
+                                     HorizontalAlignment="Center"/>
+
+                            <Ellipse Width="5" Height="5"
+                                     Fill="Black"
+                                     HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!--音符数字-->
+                        <TextBlock Grid.Row="1"
+                                   Text="1" 
+                                   FontSize="{StaticResource TextStyleLargeFontSize}"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+
+                        <!--低音点-->
+                        <Ellipse Grid.Row="2"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Top"
+                                 Margin="0,2,0,0"
+                                 Visibility="Collapsed"/>
+                    </Grid>
                 </Grid>
             </Border>
 
@@ -625,6 +728,7 @@
                 </Grid>
             </Border>
 
+            <!-- 1 -->
             <Border Grid.Row="1" Grid.Column="1"
                     Background="Silver"
                     BorderThickness="0,1,0,1"
@@ -640,6 +744,7 @@
                 </Grid>
             </Border>
 
+            <!-- 2 -->
             <Border Grid.Row="1" Grid.Column="2"
                     Background="Silver"
                     BorderThickness="0,1,0,1"
@@ -655,6 +760,7 @@
                 </Grid>
             </Border>
 
+            <!-- 3 -->
             <Border Grid.Row="1" Grid.Column="3"
                     Background="Silver"
                     BorderThickness="0,1,0,1"
@@ -670,6 +776,7 @@
                 </Grid>
             </Border>
 
+            <!-- 4 -->
             <Border Grid.Row="1" Grid.Column="4"
                     Background="Silver"
                     BorderThickness="0,1,0,1"
@@ -685,6 +792,7 @@
                 </Grid>
             </Border>
 
+            <!-- 5 -->
             <Border Grid.Row="1" Grid.Column="5"
                     Background="Silver"
                     BorderThickness="0,1,0,1"
@@ -700,6 +808,7 @@
                 </Grid>
             </Border>
 
+            <!-- 6 -->
             <Border Grid.Row="1" Grid.Column="6"
                     Background="Silver"
                     BorderThickness="0,1,0,1"
@@ -715,6 +824,7 @@
                 </Grid>
             </Border>
 
+            <!-- 7 -->
             <Border Grid.Row="1" Grid.Column="7"
                     Background="Silver"
                     BorderThickness="0,1,0,1"
@@ -730,6 +840,7 @@
                 </Grid>
             </Border>
 
+            <!-- 8 -->
             <Border Grid.Row="1" Grid.Column="8"
                     Background="Silver"
                     BorderThickness="0,1,0,1"
@@ -745,6 +856,7 @@
                 </Grid>
             </Border>
 
+            <!-- 9 -->
             <Border Grid.Row="1" Grid.Column="9"
                     Background="Silver"
                     BorderThickness="0,1,0,1"
@@ -760,6 +872,7 @@
                 </Grid>
             </Border>
 
+            <!-- 10 -->
             <Border Grid.Row="1" Grid.Column="10"
                     Background="Silver"
                     BorderThickness="0,1,0,1"
@@ -775,6 +888,7 @@
                 </Grid>
             </Border>
 
+            <!-- 11 -->
             <Border Grid.Row="1" Grid.Column="11"
                     Background="Silver"
                     BorderThickness="0,1,0,1"
@@ -790,6 +904,7 @@
                 </Grid>
             </Border>
 
+            <!-- 12 -->
             <Border Grid.Row="1" Grid.Column="12"
                     Background="Silver"
                     BorderThickness="0,1,0,1"
@@ -819,118 +934,606 @@
             <Grid Grid.Row="2" Grid.Column="0" Width="60" Height="60"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center">
-                <TextBlock  Text="吸音" FontSize="{StaticResource TextStyleLargeFontSize}"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"/>
+                <TextBlock Text="吸音" FontSize="{StaticResource TextStyleLargeFontSize}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
             </Grid>
 
+            <!-- 2 -->
+            <!-- • -->
             <Border Grid.Row="2" Grid.Column="1" 
                     Background="Moccasin"
                     BorderThickness="1,0,0,1"
                     BorderBrush="Peru"
                     CornerRadius="0,0,0,8">
                 <Grid Width="60" Height="60">
+                    <Border Background="White" CornerRadius="4" Margin="8"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--高音点行-->
+                            <RowDefinition Height="*"/>
+                            <!--数字行-->
+                            <RowDefinition Height="20"/>
+                            <!--低音点行-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
+                        <!--高音点-->
+                        <Ellipse Grid.Row="0"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Bottom"
+                                 Margin="0,0,0,2"
+                                 Visibility="Collapsed"/>
+
+                        <!--音符数字-->
+                        <TextBlock Grid.Row="1"
+                                   Text="2" 
+                                   FontSize="{StaticResource TextStyleLargeFontSize}"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+
+                        <!--低音点-->
+                        <Ellipse Grid.Row="2"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Top"
+                                 Margin="0,2,0,0"
+                                 Visibility="Visible"/>
+                    </Grid>
                 </Grid>
             </Border>
 
+            <!-- 4 -->
+            <!-- • -->
             <Border Grid.Row="2" Grid.Column="2" 
                     Background="Moccasin"
                     BorderThickness="0,0,0,1"
                     BorderBrush="Peru">
                 <Grid Width="60" Height="60">
+                    <Border Background="White" CornerRadius="4" Margin="8"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--高音点行-->
+                            <RowDefinition Height="*"/>
+                            <!--数字行-->
+                            <RowDefinition Height="20"/>
+                            <!--低音点行-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
+                        <!--高音点-->
+                        <Ellipse Grid.Row="0"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Bottom"
+                                 Margin="0,0,0,2"
+                                 Visibility="Collapsed"/>
+
+                        <!--音符数字-->
+                        <TextBlock Grid.Row="1"
+                                   Text="4" 
+                                   FontSize="{StaticResource TextStyleLargeFontSize}"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+
+                        <!--低音点-->
+                        <Ellipse Grid.Row="2"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Top"
+                                 Margin="0,2,0,0"
+                                 Visibility="Visible"/>
+                    </Grid>
                 </Grid>
             </Border>
 
+            <!-- 6 -->
+            <!-- • -->
             <Border Grid.Row="2" Grid.Column="3" 
                     Background="Moccasin"
                     BorderThickness="0,0,0,1"
                     BorderBrush="Peru">
                 <Grid Width="60" Height="60">
+                    <Border Background="White" CornerRadius="4" Margin="8"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--高音点行-->
+                            <RowDefinition Height="*"/>
+                            <!--数字行-->
+                            <RowDefinition Height="20"/>
+                            <!--低音点行-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
+                        <!--高音点-->
+                        <Ellipse Grid.Row="0"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Bottom"
+                                 Margin="0,0,0,2"
+                                 Visibility="Collapsed"/>
+
+                        <!--音符数字-->
+                        <TextBlock Grid.Row="1"
+                                   Text="6" 
+                                   FontSize="{StaticResource TextStyleLargeFontSize}"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+
+                        <!--低音点-->
+                        <Ellipse Grid.Row="2"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Top"
+                                 Margin="0,2,0,0"
+                                 Visibility="Visible"/>
+                    </Grid>
                 </Grid>
             </Border>
 
+            <!-- 7 -->
+            <!-- • -->
             <Border Grid.Row="2" Grid.Column="4" 
                     Background="Moccasin"
                     BorderThickness="0,0,0,1"
                     BorderBrush="Peru">
                 <Grid Width="60" Height="60">
+                    <Border Background="White" CornerRadius="4" Margin="8"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--高音点行-->
+                            <RowDefinition Height="*"/>
+                            <!--数字行-->
+                            <RowDefinition Height="20"/>
+                            <!--低音点行-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
+                        <!--高音点-->
+                        <Ellipse Grid.Row="0"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Bottom"
+                                 Margin="0,0,0,2"
+                                 Visibility="Collapsed"/>
+
+                        <!--音符数字-->
+                        <TextBlock Grid.Row="1"
+                                   Text="7" 
+                                   FontSize="{StaticResource TextStyleLargeFontSize}"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+
+                        <!--低音点-->
+                        <Ellipse Grid.Row="2"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Top"
+                                 Margin="0,2,0,0"
+                                 Visibility="Visible"/>
+                    </Grid>
                 </Grid>
             </Border>
 
+            <!-- 2 -->
             <Border Grid.Row="2" Grid.Column="5" 
                     Background="Moccasin"
                     BorderThickness="0,0,0,1"
                     BorderBrush="Peru">
                 <Grid Width="60" Height="60">
+                    <Border Background="White" CornerRadius="4" Margin="8"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--高音点行-->
+                            <RowDefinition Height="*"/>
+                            <!--数字行-->
+                            <RowDefinition Height="20"/>
+                            <!--低音点行-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
+                        <!--高音点-->
+                        <Ellipse Grid.Row="0"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Bottom"
+                                 Margin="0,0,0,2"
+                                 Visibility="Collapsed"/>
+
+                        <!--音符数字-->
+                        <TextBlock Grid.Row="1"
+                                   Text="2" 
+                                   FontSize="{StaticResource TextStyleLargeFontSize}"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+
+                        <!--低音点-->
+                        <Ellipse Grid.Row="2"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Top"
+                                 Margin="0,2,0,0"
+                                 Visibility="Collapsed"/>
+                    </Grid>
                 </Grid>
             </Border>
 
+            <!-- 4 -->
             <Border Grid.Row="2" Grid.Column="6" 
                     Background="Moccasin"
                     BorderThickness="0,0,0,1"
                     BorderBrush="Peru">
                 <Grid Width="60" Height="60">
+                    <Border Background="White" CornerRadius="4" Margin="8"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--高音点行-->
+                            <RowDefinition Height="*"/>
+                            <!--数字行-->
+                            <RowDefinition Height="20"/>
+                            <!--低音点行-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
+                        <!--高音点-->
+                        <Ellipse Grid.Row="0"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Bottom"
+                                 Margin="0,0,0,2"
+                                 Visibility="Collapsed"/>
+
+                        <!--音符数字-->
+                        <TextBlock Grid.Row="1"
+                                   Text="4" 
+                                   FontSize="{StaticResource TextStyleLargeFontSize}"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+
+                        <!--低音点-->
+                        <Ellipse Grid.Row="2"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Top"
+                                 Margin="0,2,0,0"
+                                 Visibility="Collapsed"/>
+                    </Grid>
                 </Grid>
             </Border>
 
+            <!-- 6 -->
             <Border Grid.Row="2" Grid.Column="7" 
                     Background="Moccasin"
                     BorderThickness="0,0,0,1"
                     BorderBrush="Peru">
                 <Grid Width="60" Height="60">
+                    <Border Background="White" CornerRadius="4" Margin="8"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--高音点行-->
+                            <RowDefinition Height="*"/>
+                            <!--数字行-->
+                            <RowDefinition Height="20"/>
+                            <!--低音点行-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
+                        <!--高音点-->
+                        <Ellipse Grid.Row="0"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Bottom"
+                                 Margin="0,0,0,2"
+                                 Visibility="Collapsed"/>
+
+                        <!--音符数字-->
+                        <TextBlock Grid.Row="1"
+                                   Text="6" 
+                                   FontSize="{StaticResource TextStyleLargeFontSize}"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+
+                        <!--低音点-->
+                        <Ellipse Grid.Row="2"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Top"
+                                 Margin="0,2,0,0"
+                                 Visibility="Collapsed"/>
+                    </Grid>
                 </Grid>
             </Border>
 
+            <!-- 7 -->
             <Border Grid.Row="2" Grid.Column="8" 
                     Background="Moccasin"
                     BorderThickness="0,0,0,1"
                     BorderBrush="Peru">
                 <Grid Width="60" Height="60">
+                    <Border Background="White" CornerRadius="4" Margin="8"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--高音点行-->
+                            <RowDefinition Height="*"/>
+                            <!--数字行-->
+                            <RowDefinition Height="20"/>
+                            <!--低音点行-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
+                        <!--高音点-->
+                        <Ellipse Grid.Row="0"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Bottom"
+                                 Margin="0,0,0,2"
+                                 Visibility="Collapsed"/>
+
+                        <!--音符数字-->
+                        <TextBlock Grid.Row="1"
+                                   Text="7" 
+                                   FontSize="{StaticResource TextStyleLargeFontSize}"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+
+                        <!--低音点-->
+                        <Ellipse Grid.Row="2"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Top"
+                                 Margin="0,2,0,0"
+                                 Visibility="Collapsed"/>
+                    </Grid>
                 </Grid>
             </Border>
 
+            <!-- • -->
+            <!-- 2 -->
             <Border Grid.Row="2" Grid.Column="9" 
                     Background="Moccasin"
                     BorderThickness="0,0,0,1"
                     BorderBrush="Peru">
                 <Grid Width="60" Height="60">
+                    <Border Background="White" CornerRadius="4" Margin="8"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--高音点行-->
+                            <RowDefinition Height="*"/>
+                            <!--数字行-->
+                            <RowDefinition Height="20"/>
+                            <!--低音点行-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
+                        <!--高音点-->
+                        <Ellipse Grid.Row="0"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Bottom"
+                                 Margin="0,0,0,2"
+                                 Visibility="Visible"/>
+
+                        <!--音符数字-->
+                        <TextBlock Grid.Row="1"
+                                   Text="2" 
+                                   FontSize="{StaticResource TextStyleLargeFontSize}"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+
+                        <!--低音点-->
+                        <Ellipse Grid.Row="2"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Top"
+                                 Margin="0,2,0,0"
+                                 Visibility="Collapsed"/>
+                    </Grid>
                 </Grid>
             </Border>
 
+            <!-- • -->
+            <!-- 4 -->
             <Border Grid.Row="2" Grid.Column="10" 
                     Background="Moccasin"
                     BorderThickness="0,0,0,1"
                     BorderBrush="Peru">
                 <Grid Width="60" Height="60">
+                    <Border Background="White" CornerRadius="4" Margin="8"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--高音点行-->
+                            <RowDefinition Height="*"/>
+                            <!--数字行-->
+                            <RowDefinition Height="20"/>
+                            <!--低音点行-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
+                        <!--高音点-->
+                        <Ellipse Grid.Row="0"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Bottom"
+                                 Margin="0,0,0,2"
+                                 Visibility="Visible"/>
+
+                        <!--音符数字-->
+                        <TextBlock Grid.Row="1"
+                                   Text="4" 
+                                   FontSize="{StaticResource TextStyleLargeFontSize}"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+
+                        <!--低音点-->
+                        <Ellipse Grid.Row="2"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Top"
+                                 Margin="0,2,0,0"
+                                 Visibility="Collapsed"/>
+                    </Grid>
                 </Grid>
             </Border>
 
+            <!-- • -->
+            <!-- 6 -->
             <Border Grid.Row="2" Grid.Column="11" 
                     Background="Moccasin"
                     BorderThickness="0,0,0,1"
                     BorderBrush="Peru">
                 <Grid Width="60" Height="60">
+                    <Border Background="White" CornerRadius="4" Margin="8"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--高音点行-->
+                            <RowDefinition Height="*"/>
+                            <!--数字行-->
+                            <RowDefinition Height="20"/>
+                            <!--低音点行-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
+                        <!--高音点-->
+                        <Ellipse Grid.Row="0"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Bottom"
+                                 Margin="0,0,0,2"
+                                 Visibility="Visible"/>
+
+                        <!--音符数字-->
+                        <TextBlock Grid.Row="1"
+                                   Text="6" 
+                                   FontSize="{StaticResource TextStyleLargeFontSize}"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+
+                        <!--低音点-->
+                        <Ellipse Grid.Row="2"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Top"
+                                 Margin="0,2,0,0"
+                                 Visibility="Collapsed"/>
+                    </Grid>
                 </Grid>
             </Border>
 
+            <!-- • -->
+            <!-- 7 -->
             <Border Grid.Row="2" Grid.Column="12" 
                     Background="Moccasin"
                     BorderThickness="0,0,1,1"
                     BorderBrush="Peru"
                     CornerRadius="0,0,8,0">
                 <Grid Width="60" Height="60">
+                    <Border Background="White" CornerRadius="4" Margin="8"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--高音点行-->
+                            <RowDefinition Height="*"/>
+                            <!--数字行-->
+                            <RowDefinition Height="20"/>
+                            <!--低音点行-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
+                        <!--高音点-->
+                        <Ellipse Grid.Row="0"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Bottom"
+                                 Margin="0,0,0,2"
+                                 Visibility="Visible"/>
+
+                        <!--音符数字-->
+                        <TextBlock Grid.Row="1"
+                                   Text="7" 
+                                   FontSize="{StaticResource TextStyleLargeFontSize}"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+
+                        <!--低音点-->
+                        <Ellipse Grid.Row="2"
+                                 Width="5" 
+                                 Height="5"
+                                 Fill="Black"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Top"
+                                 Margin="0,2,0,0"
+                                 Visibility="Collapsed"/>
+                    </Grid>
                 </Grid>
             </Border>
 
