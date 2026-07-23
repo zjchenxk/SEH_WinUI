@@ -8,6 +8,7 @@ using SEH.Models;
 using SEH.Services.Interfaces;
 using SEH.Views;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SEH.ViewModels
@@ -52,12 +53,17 @@ namespace SEH.ViewModels
         [ObservableProperty]
         private double _height = 1123;
 
-
         /// <summary>
         /// 简谱渲染元素集合
         /// </summary>
         [ObservableProperty]
         private ObservableCollection<ScoreRenderElement> _renderElements = [];
+
+        /// <summary>
+        /// 当前正在播放的音符（用于驱动 UI 高亮蒙板移动）
+        /// </summary>
+        [ObservableProperty]
+        private Note? _currentPlayingNote;
 
         /// <summary>
         /// 简谱对象，用于保存当前编辑的简谱数据
@@ -66,6 +72,7 @@ namespace SEH.ViewModels
 
         //播放控制标志
         private bool _isPlaying = false;
+        private CancellationTokenSource? _cts;
 
 
         public ViewScoreViewModel(IMessenger messenger, INavigationService navigationService, IDataService dataService, IMessageService messageService, IAudioService audioService)
@@ -183,54 +190,64 @@ namespace SEH.ViewModels
                 return;
             }
 
-            //防止重复播放
+            //1.状态切换逻辑
             if (_isPlaying)
             {
+                StopInternal();
                 return;
             }
 
             try
             {
+                //2.初始化播放环境
                 _isPlaying = true;
+                _cts = new CancellationTokenSource();
 
-                //1.计算基础时间单位(毫秒)
+                //3.初始化 MIDI 合成器（如果尚未初始化）
+                await _audioService.InitializeAsync();
+
+                //4.计算基础时间单位 (BPM转毫秒)
                 //例如：Tempo = 120，意味着四分音符时长 = 60000 / 120 = 500ms
-                double beatDurationMs = 60000.0 / _score.Tempo;
+                double baseBeatMs = 60000.0 / _score.Tempo;
 
-                //2.遍历所有行、小节、音符
+                //5.遍历所有行、小节、音符
                 if (_score.Lines != null && _score.Lines.Count > 0)
                 {
                     foreach (var line in _score.Lines)
                     {
-                        if (!_isPlaying) break; //支持停止
-
                         if (line.Measures != null && line.Measures.Count > 0)
                         {
                             foreach (var measure in line.Measures)
                             {
-                                if (!_isPlaying) break; //支持停止
-
                                 if (measure.Notes != null && measure.Notes.Count > 0)
                                 {
                                     foreach (var note in measure.Notes)
                                     {
-                                        if (!_isPlaying) break; //支持停止
+                                        //检查是否请求了停止
+                                        if (_cts.IsCancellationRequested)
+                                            return;
 
-                                        //3.视觉高亮
-                                        //找到对应的 RenderElement 并设置高亮颜色 (如红色)
-                                        //UpdateNoteHighlight(note.Id, true); 
+                                        //6.计算当前音符的实际时长
+                                        double durationMs = CalculateNoteDuration(note, baseBeatMs);
 
-                                        //4.音频播放
-                                        //await _audioService.PlayNoteAsync(note.Pitch, CalculateDuration(note));
+                                        //7.UI 交互：设置当前播放音符（触发 View 移动蒙板）
+                                        CurrentPlayingNote = note;
 
-                                        //5.计算等待时间
-                                        double noteTime = beatDurationMs * note.Duration;
-                                        if (note.Dots > 0) noteTime *= 1.5; // 附点处理简化版
+                                        //7.音频播放
+                                        //过滤掉休止符和空白符，只播放实际音符
+                                        bool isSilent = note.Pitch == "0" || note.Pitch == "_" || note.Pitch == "X";
+                                        if (!isSilent)
+                                        {
+                                            await _audioService.PlayNoteAsync(note.Pitch, durationMs);
+                                        }
+                                        else
+                                        {
+                                            //如果是休止符，只等待时间，不发声
+                                            await Task.Delay((int)durationMs, _cts.Token);
+                                        }
 
-                                        await Task.Delay((int)noteTime);
-
-                                        //6.取消高亮
-                                        //UpdateNoteHighlight(note.Id, false);
+                                        //8.播放完毕，清除高亮
+                                        CurrentPlayingNote = null;
                                     }
                                 }
                             }
@@ -238,10 +255,62 @@ namespace SEH.ViewModels
                     }
                 }
             }
+            catch (TaskCanceledException)
+            {
+                //正常停止，无需处理
+            }
             finally
             {
+                //9.清理状态
                 _isPlaying = false;
+
+                CurrentPlayingNote = null;
             }
+        }
+
+        /// <summary>
+        /// 根据音符属性计算实际播放时长（含附点）
+        /// </summary>
+        private double CalculateNoteDuration(Note note, double baseBeatMs)
+        {
+            //基础时长 = 基础拍长 * 音符时值 (如四分音符=1, 八分音符=0.5)
+            double duration = baseBeatMs * note.Duration;
+
+            //附点处理逻辑 (参考 DrawScoreHelper 的计算方式)
+            //每一个附点增加前一时值的一半长度
+            //1个附点: duration += duration * 0.5
+            //2个附点: duration += duration * (0.5 + 0.25) ...
+            double dotMultiplier = 0;
+            double fraction = 0.5; //第一个附点加 50%
+
+            for (int i = 0; i < note.Dots; i++)
+            {
+                dotMultiplier += fraction;
+                fraction *= 0.5; // 后续附点比例减半
+            }
+
+            duration += (baseBeatMs * note.Duration) * dotMultiplier;
+
+            return duration;
+        }
+
+        /// <summary>
+        /// 内部停止逻辑
+        /// </summary>
+        private void StopInternal()
+        {
+            _cts?.Cancel();
+            _isPlaying = false;
+            CurrentPlayingNote = null;
+        }
+
+        /// <summary>
+        /// 停止播放命令
+        /// </summary>
+        [RelayCommand]
+        private void Stop()
+        {
+
         }
 
         /// <summary>

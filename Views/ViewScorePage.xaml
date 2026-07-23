@@ -40,6 +40,11 @@
                     <FontIcon Glyph="&#xE768;" />
                 </AppBarButton.Icon>
             </AppBarButton>
+            <AppBarButton Label="停止播放" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.StopCommand}">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xE71A;" />
+                </AppBarButton.Icon>
+            </AppBarButton>
             <AppBarButton Label="打印简谱" Style="{StaticResource MyAppBarButtonStyle}" Command="{x:Bind ViewModel.PrintCommand}">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE749;" />
