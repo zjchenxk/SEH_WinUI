@@ -62,16 +62,34 @@
                         HorizontalContentAlignment="Center" VerticalContentAlignment="Top">
                 <!--用 Grid 包裹 Border，Grid 会根据内容自适应大小-->
                 <Grid>
-                    <Border x:Name="ScoreCanvas" BorderBrush="{ThemeResource SystemChromeHighColor}" BorderThickness="1" Margin="40"
-                            HorizontalAlignment="Center" VerticalAlignment="Top">
-                        <ItemsControl ItemsSource="{x:Bind ViewModel.RenderElements, Mode=OneWay}"
-                                      ItemTemplateSelector="{StaticResource ScoreTemplateSelector}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <Grid Width="{Binding Width, Mode=OneWay}" Height="{Binding Height, Mode=OneWay}"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
+                    <!--原画布 Border-->
+                    <Border x:Name="ScoreCanvas" BorderBrush="{ThemeResource SystemChromeHighColor}" BorderThickness="1" 
+                            Margin="40"
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Top">
+
+                        <!--内部包裹一个 Grid，用于叠加蒙板-->
+                        <Grid>
+                            <!--音符渲染层-->
+                            <ItemsControl ItemsSource="{x:Bind ViewModel.RenderElements, Mode=OneWay}"
+                                          ItemTemplateSelector="{StaticResource ScoreTemplateSelector}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Grid Width="{Binding Width, Mode=OneWay}" Height="{Binding Height, Mode=OneWay}"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+
+                            <!--浮动蒙板层-->
+                            <!--放在 ItemsControl 后面，保证层级在上-->
+                            <!--IsHitTestVisible="False" 确保不阻挡鼠标点击-->
+                            <Border x:Name="HighlightMask" Background="#FFA500"
+                                    Opacity="0.0"
+                                    CornerRadius="4"
+                                    IsHitTestVisible="False"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"/>
+                        </Grid>
                     </Border>
                 </Grid>
             </ScrollView>

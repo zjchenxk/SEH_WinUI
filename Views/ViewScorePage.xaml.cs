@@ -21,7 +21,6 @@ namespace SEH.Views
     public sealed partial class ViewScorePage : Page
     {
         public ViewScoreViewModel? ViewModel { get; }
-
         private readonly IMessenger? Messenger;
 
         //打印相关变量
@@ -73,16 +72,17 @@ namespace SEH.Views
         {
             base.OnNavigatedTo(e);
 
+            //1.初始化业务逻辑
             if (e.Parameter != null)
             {
                 //将参数传给 ViewModel 进行初始化
                 ViewModel?.Initialize((string)e.Parameter);
             }
 
+            //2.初始化打印环境
             if (App.MainWindow == null) return;
 
             PrintHwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
-            Log.Information($"打印准备: HWND = {PrintHwnd}, 是否为零 = {PrintHwnd == IntPtr.Zero}");
 
             //直接使用强类型调用，不再需要反射
             try
@@ -91,7 +91,6 @@ namespace SEH.Views
                 if (PrintMan != null)
                 {
                     PrintMan.PrintTaskRequested += PrintTaskRequested;
-                    Log.Information("PrintManager 事件注册成功");
                 }
             }
             catch (Exception ex)
@@ -99,7 +98,14 @@ namespace SEH.Views
                 Log.Error(ex, "PrintManager 注册失败");
             }
 
+            //3.注册消息
             Messenger?.Register<PrintScoreMessage>(this, (r, m) => { _ = PrintAsync(); });
+
+            //4.监听 ViewModel 属性变化（用于驱动蒙板）
+            if (ViewModel != null)
+            {
+                ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            }
         }
 
         protected override void OnNavigatedFrom(Microsoft.UI.Xaml.Navigation.NavigationEventArgs e)
@@ -113,6 +119,12 @@ namespace SEH.Views
 
             //使用 DI 获取的实例注销
             Messenger?.Unregister<PrintScoreMessage>(this);
+
+            //取消监听
+            if (ViewModel != null)
+            {
+                ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+            }
         }
 
         private async void PrintTaskRequested(PrintManager sender, PrintTaskRequestedEventArgs args)
@@ -275,6 +287,57 @@ namespace SEH.Views
             {
                 Log.Error(ex, "打印执行: 发生异常");
             }
+        }
+
+        /// <summary>
+        /// 蒙板移动逻辑
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            //监听 CurrentPlayingNote 的变化
+            if (e.PropertyName == nameof(ViewModel.CurrentPlayingNote))
+            {
+                UpdateHighlightMask();
+            }
+        }
+
+        /// <summary>
+        /// 根据当前播放的音符，更新蒙板的位置和尺寸
+        /// </summary>
+        private void UpdateHighlightMask()
+        {
+            //确保在 UI 网格加载完成后操作
+            if (ViewModel == null || HighlightMask == null) return;
+
+            var note = ViewModel.CurrentPlayingNote;
+
+            //1.如果没有播放音符，隐藏蒙板
+            if (note == null || note.X == null || note.Y == null)
+            {
+                HighlightMask.Opacity = 0;
+                return;
+            }
+
+            //2.设置蒙板尺寸
+            //DrawHelper 计算的尺寸可能比较紧凑，我们可以稍微加一点 padding 视觉效果更好
+            double width = note.Width ?? 20;
+            double height = note.Height ?? 20;
+
+            HighlightMask.Width = width;
+            HighlightMask.Height = height;
+
+            //3.设置蒙板位置
+            //因为蒙板在 ScoreCanvas 内部的 Grid 中，坐标系是一致的 (0,0) 对齐
+            //直接使用 Margin.Left 和 Margin.Top 进行绝对定位
+            HighlightMask.Margin = new Thickness(note.X.Value, note.Y.Value, 0, 0);
+
+            //4.显示蒙板
+            HighlightMask.Opacity = 0.6;
+
+            //强制刷新视觉层，防止快速播放时卡顿
+            HighlightMask.InvalidateArrange();
         }
 
         private async void ScoreRegion_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
