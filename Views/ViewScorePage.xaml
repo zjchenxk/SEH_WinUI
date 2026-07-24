@@ -83,7 +83,7 @@
                             <!--浮动蒙板层-->
                             <!--放在 ItemsControl 后面，保证层级在上-->
                             <!--IsHitTestVisible="False" 确保不阻挡鼠标点击-->
-                            <Border x:Name="HighlightMask" Background="#FFA500"
+                            <Border x:Name="HighlightMask" Background="DarkOrange"
                                     Opacity="0.0"
                                     CornerRadius="4"
                                     IsHitTestVisible="False"

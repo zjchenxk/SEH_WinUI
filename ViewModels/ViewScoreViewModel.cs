@@ -8,6 +8,7 @@ using SEH.Models;
 using SEH.Services.Interfaces;
 using SEH.Views;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -65,14 +66,20 @@ namespace SEH.ViewModels
         [ObservableProperty]
         private Note? _currentPlayingNote;
 
+        //播放控制标志
+        //使用 [ObservableProperty] 生成 IsPlaying 属性
+        //使用 [NotifyCanExecuteChangedFor] 在状态改变时自动通知命令刷新按钮状态
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(PlayCommand))]
+        [NotifyCanExecuteChangedFor(nameof(StopCommand))]
+        private bool _isPlaying = false;
+
+        private CancellationTokenSource? _cts;
+
         /// <summary>
         /// 简谱对象，用于保存当前编辑的简谱数据
         /// </summary>
         private Score? _score = null;
-
-        //播放控制标志
-        private bool _isPlaying = false;
-        private CancellationTokenSource? _cts;
 
 
         public ViewScoreViewModel(IMessenger messenger, INavigationService navigationService, IDataService dataService, IMessageService messageService, IAudioService audioService)
@@ -180,8 +187,9 @@ namespace SEH.ViewModels
 
         /// <summary>
         /// 播放简谱命令
+        /// 添加 CanExecute：只有不在播放时才能点击
         /// </summary>
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanPlay))]
         private async Task Play()
         {
             if (_score == null)
@@ -190,17 +198,12 @@ namespace SEH.ViewModels
                 return;
             }
 
-            //1.状态切换逻辑
-            if (_isPlaying)
-            {
-                StopInternal();
-                return;
-            }
-
             try
             {
+                //1.设置状态为播放中 (触发 UI：播放按钮灰化，停止按钮激活)
+                IsPlaying = true;
+
                 //2.初始化播放环境
-                _isPlaying = true;
                 _cts = new CancellationTokenSource();
 
                 //3.初始化 MIDI 合成器（如果尚未初始化）
@@ -225,7 +228,9 @@ namespace SEH.ViewModels
                                     {
                                         //检查是否请求了停止
                                         if (_cts.IsCancellationRequested)
-                                            return;
+                                        {
+                                            break;
+                                        }
 
                                         //6.计算当前音符的实际时长
                                         double durationMs = CalculateNoteDuration(note, baseBeatMs);
@@ -250,7 +255,19 @@ namespace SEH.ViewModels
                                         CurrentPlayingNote = null;
                                     }
                                 }
+
+                                //检查是否请求了停止
+                                if (_cts.IsCancellationRequested)
+                                {
+                                    break;
+                                }
                             }
+                        }
+
+                        //检查是否请求了停止
+                        if (_cts.IsCancellationRequested)
+                        {
+                            break;
                         }
                     }
                 }
@@ -261,12 +278,18 @@ namespace SEH.ViewModels
             }
             finally
             {
-                //9.清理状态
-                _isPlaying = false;
+                //9.恢复状态 (触发 UI：播放按钮激活，停止按钮灰化)
+                IsPlaying = false;
 
                 CurrentPlayingNote = null;
             }
         }
+
+        /// <summary>
+        /// 判断是否可以播放
+        /// </summary>
+        /// <returns></returns>
+        private bool CanPlay() => !IsPlaying;
 
         /// <summary>
         /// 根据音符属性计算实际播放时长（含附点）
@@ -306,12 +329,20 @@ namespace SEH.ViewModels
 
         /// <summary>
         /// 停止播放命令
+        /// 添加 CanExecute：只有正在播放时才能点击
         /// </summary>
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanStop))]
         private void Stop()
         {
-
+            //调用取消源
+            _cts?.Cancel();
         }
+
+        /// <summary>
+        /// 判断是否可以停止
+        /// </summary>
+        /// <returns></returns>
+        private bool CanStop() => IsPlaying;
 
         /// <summary>
         /// 关闭退出命令
